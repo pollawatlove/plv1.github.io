@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="th">
-<head>
-    <meta charset="UTF-8">
-    <title>สวัสดี HTML</title>
-</head>
-<body>
-    <h1>11สวัสดี! ยินดีต้อนรับสู่เว็บไซต์ของฉัน22</h1>
-</body>
-</html>
+<!DOCTYPE html><html lang="th"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>XAU/USD ทองคำ</title>
+<style>:root{--bg:#07101d;--p:#101c2e;--p2:#15243a;--l:#29405f;--t:#f5f8fd;--m:#98abc3;--g:#2bd487;--r:#ff6678;--y:#ffc857}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#163762 0,transparent 35%),var(--bg);color:var(--t);font-family:system-ui,"Segoe UI",sans-serif}.w{max-width:1400px;margin:auto;padding:20px}.h{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}h1{margin:0;font-size:clamp(27px,4vw,43px)}.m{color:var(--m)}.st{border:1px solid var(--l);background:#0e1b2d;padding:9px 13px;border-radius:99px}.btn{margin:18px 0;border:0;border-radius:11px;padding:11px 16px;background:linear-gradient(135deg,#2583ef,#7358ee);color:#fff;font-weight:800;cursor:pointer}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}.c{background:var(--p);border:1px solid var(--l);border-radius:18px;padding:18px}.price{font-size:clamp(42px,7vw,70px);font-weight:900;margin:8px 0}.times{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.box{background:var(--p2);border:1px solid var(--l);border-radius:13px;padding:14px}.box b{display:block;font-size:23px;margin-top:6px}.sig{text-align:center}.sigmain{font-size:clamp(31px,5vw,50px);font-weight:900;margin:12px 0;color:var(--y)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two .box b{font-size:31px}.chart{height:530px;padding:0;overflow:hidden;margin-top:20px}.chart h3{margin:0;padding:13px 16px;border-bottom:1px solid var(--l)}iframe{width:100%;height:calc(100% - 48px);border:0}.err{display:none;background:#431e28;border:1px solid #8d394a;color:#ffc2ca;border-radius:12px;padding:12px;margin-bottom:12px;white-space:pre-wrap}.pos{color:var(--g)}.neg{color:var(--r)}@media(max-width:900px){.grid{grid-template-columns:1fr}.times{grid-template-columns:1fr 1fr}}@media(max-width:520px){.times,.two{grid-template-columns:1fr}}</style></head>
+<body><div class="w"><div class="h"><div><h1>XAU/USD ทองคำ</h1><div class="m">ดึงข้อมูลผ่าน Google Apps Script ไม่ติด CORS</div></div><div class="st"><span id="status">กำลังเชื่อมต่อ</span> • <span id="count">—</span></div></div>
+<button class="btn" onclick="loadGold()">↻ อัปเดตข้อมูล</button><div id="err" class="err"></div>
+<div class="grid"><section class="c"><div class="m">ราคาทองล่าสุด</div><div id="price" class="price">กำลังโหลด...</div><div id="day">—</div><div id="updated" class="m" style="margin-top:7px">—</div><div class="times"><div class="box"><span class="m">1 นาที</span><b id="t1">—</b><small id="c1">—</small></div><div class="box"><span class="m">5 นาที</span><b id="t5">—</b><small id="c5">—</small></div><div class="box"><span class="m">15 นาที</span><b id="t15">—</b><small id="c15">—</small></div><div class="box"><span class="m">30 นาที</span><b id="t30">—</b><small id="c30">—</small></div></div><div id="source" class="m" style="margin-top:12px">—</div></section>
+<section class="c sig"><div class="m">ผลประเมินโมเมนตัม</div><div id="signal" class="sigmain">รอข้อมูล</div><div class="two"><div class="box"><span class="m">แรงซื้อ</span><b id="buy" class="pos">—</b></div><div class="box"><span class="m">แรงขาย</span><b id="sell" class="neg">—</b></div><div class="box"><span class="m">Stop Loss</span><b id="sl">—</b></div><div class="box"><span class="m">Take Profit</span><b id="tp">—</b></div></div><p class="m">ใช้ประกอบการตัดสินใจ ไม่รับประกันกำไร</p></section></div>
+<section class="c chart"><h3>กราฟ TradingView — OANDA:XAUUSD</h3><iframe scrolling="no" allowtransparency="true" src="https://www.tradingview-widget.com/embed-widget/advanced-chart/?locale=th_TH#%7B%22autosize%22%3Atrue%2C%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22interval%22%3A%221%22%2C%22timezone%22%3A%22Asia%2FBangkok%22%2C%22theme%22%3A%22dark%22%2C%22style%22%3A%221%22%2C%22allow_symbol_change%22%3Afalse%7D"></iframe></section></div>
+<script>
+let sec=30,busy=false;
+const el=id=>document.getElementById(id);
+
+document.addEventListener('DOMContentLoaded',()=>{
+  if(!(window.google&&google.script&&google.script.run)){
+    fail('ต้องเปิดผ่าน URL Google Apps Script Web App เท่านั้น');
+    return;
+  }
+  loadGold();
+  setInterval(()=>{
+    sec--;
+    el('count').textContent=Math.max(0,sec)+' วินาที';
+    if(sec<=0)loadGold();
+  },1000);
+});
+
+function loadGold(){
+  if(busy)return;
+  busy=true;
+  sec=30;
+  el('status').textContent='กำลังดึงข้อมูล';
+  el('err').style.display='none';
+  google.script.run
+    .withSuccessHandler(d=>{
+      busy=false;
+      if(!d||!d.ok){
+        fail((d&&d.error)||'ดึงข้อมูลไม่สำเร็จ',d&&d.details);
+        return;
+      }
+      render(d);
+      el('status').textContent='ออนไลน์';
+    })
+    .withFailureHandler(e=>{
+      busy=false;
+      fail(e&&e.message?e.message:String(e));
+    })
+    .getGoldDashboardData();
+}
+
+function render(d){
+  el('price').textContent='$'+fmt(d.price);
+  const day=Number(d.dayChangePercent);
+  el('day').textContent=isFinite(day)?sign(day)+'% วันนี้':'ไม่มีราคาปิดก่อนหน้า';
+  el('day').className=day>0?'pos':day<0?'neg':'';
+  el('updated').textContent='อัปเดต: '+(d.updatedAt||'—');
+  el('source').textContent='แหล่งข้อมูล: '+(d.source||'—')+(d.note?' • '+d.note:'');
+  trend('1',d.changes&&d.changes.m1);
+  trend('5',d.changes&&d.changes.m5);
+  trend('15',d.changes&&d.changes.m15);
+  trend('30',d.changes&&d.changes.m30);
+  el('signal').textContent=d.signal||'รอจังหวะ';
+  el('signal').style.color=el('signal').textContent.includes('ซื้อ')?'var(--g)':el('signal').textContent.includes('ขาย')||el('signal').textContent.includes('หลีก')?'var(--r)':'var(--y)';
+  el('buy').textContent=Math.round(d.buyScore||0)+'%';
+  el('sell').textContent=Math.round(d.sellScore||0)+'%';
+  el('sl').textContent='$'+fmt(d.stopLoss);
+  el('tp').textContent='$'+fmt(d.takeProfit);
+}
+
+function trend(id,v){
+  const n=Number(v),t=el('t'+id),c=el('c'+id);
+  if(!isFinite(n)){t.textContent='ไม่มีข้อมูล';c.textContent='—';return}
+  t.textContent=n>.015?'กำลังขึ้น':n<-.015?'กำลังลง':'ทรงตัว';
+  t.style.color=n>.015?'var(--g)':n<-.015?'var(--r)':'var(--y)';
+  c.textContent=sign(n)+'%';
+}
+
+function fail(message,details){
+  el('err').style.display='block';
+  el('err').textContent=message+(details?'\n'+details:'');
+  el('status').textContent='ผิดพลาด';
+}
+function fmt(n){return isFinite(Number(n))?Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}
+function sign(n){return(n>=0?'+':'')+Number(n).toFixed(3)}
+</script></body></html>
