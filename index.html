@@ -1,82 +1,1062 @@
-<!DOCTYPE html><html lang="th"><head><base target="_top"><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>XAU/USD ทองคำ</title>
-<style>:root{--bg:#07101d;--p:#101c2e;--p2:#15243a;--l:#29405f;--t:#f5f8fd;--m:#98abc3;--g:#2bd487;--r:#ff6678;--y:#ffc857}*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0,#163762 0,transparent 35%),var(--bg);color:var(--t);font-family:system-ui,"Segoe UI",sans-serif}.w{max-width:1400px;margin:auto;padding:20px}.h{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}h1{margin:0;font-size:clamp(27px,4vw,43px)}.m{color:var(--m)}.st{border:1px solid var(--l);background:#0e1b2d;padding:9px 13px;border-radius:99px}.btn{margin:18px 0;border:0;border-radius:11px;padding:11px 16px;background:linear-gradient(135deg,#2583ef,#7358ee);color:#fff;font-weight:800;cursor:pointer}.grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px}.c{background:var(--p);border:1px solid var(--l);border-radius:18px;padding:18px}.price{font-size:clamp(42px,7vw,70px);font-weight:900;margin:8px 0}.times{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:18px}.box{background:var(--p2);border:1px solid var(--l);border-radius:13px;padding:14px}.box b{display:block;font-size:23px;margin-top:6px}.sig{text-align:center}.sigmain{font-size:clamp(31px,5vw,50px);font-weight:900;margin:12px 0;color:var(--y)}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}.two .box b{font-size:31px}.chart{height:530px;padding:0;overflow:hidden;margin-top:20px}.chart h3{margin:0;padding:13px 16px;border-bottom:1px solid var(--l)}iframe{width:100%;height:calc(100% - 48px);border:0}.err{display:none;background:#431e28;border:1px solid #8d394a;color:#ffc2ca;border-radius:12px;padding:12px;margin-bottom:12px;white-space:pre-wrap}.pos{color:var(--g)}.neg{color:var(--r)}@media(max-width:900px){.grid{grid-template-columns:1fr}.times{grid-template-columns:1fr 1fr}}@media(max-width:520px){.times,.two{grid-template-columns:1fr}}</style></head>
-<body><div class="w"><div class="h"><div><h1>XAU/USD ทองคำ</h1><div class="m">ดึงข้อมูลผ่าน Google Apps Script ไม่ติด CORS</div></div><div class="st"><span id="status">กำลังเชื่อมต่อ</span> • <span id="count">—</span></div></div>
-<button class="btn" onclick="loadGold()">↻ อัปเดตข้อมูล</button><div id="err" class="err"></div>
-<div class="grid"><section class="c"><div class="m">ราคาทองล่าสุด</div><div id="price" class="price">กำลังโหลด...</div><div id="day">—</div><div id="updated" class="m" style="margin-top:7px">—</div><div class="times"><div class="box"><span class="m">1 นาที</span><b id="t1">—</b><small id="c1">—</small></div><div class="box"><span class="m">5 นาที</span><b id="t5">—</b><small id="c5">—</small></div><div class="box"><span class="m">15 นาที</span><b id="t15">—</b><small id="c15">—</small></div><div class="box"><span class="m">30 นาที</span><b id="t30">—</b><small id="c30">—</small></div></div><div id="source" class="m" style="margin-top:12px">—</div></section>
-<section class="c sig"><div class="m">ผลประเมินโมเมนตัม</div><div id="signal" class="sigmain">รอข้อมูล</div><div class="two"><div class="box"><span class="m">แรงซื้อ</span><b id="buy" class="pos">—</b></div><div class="box"><span class="m">แรงขาย</span><b id="sell" class="neg">—</b></div><div class="box"><span class="m">Stop Loss</span><b id="sl">—</b></div><div class="box"><span class="m">Take Profit</span><b id="tp">—</b></div></div><p class="m">ใช้ประกอบการตัดสินใจ ไม่รับประกันกำไร</p></section></div>
-<section class="c chart"><h3>กราฟ TradingView — OANDA:XAUUSD</h3><iframe scrolling="no" allowtransparency="true" src="https://www.tradingview-widget.com/embed-widget/advanced-chart/?locale=th_TH#%7B%22autosize%22%3Atrue%2C%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22interval%22%3A%221%22%2C%22timezone%22%3A%22Asia%2FBangkok%22%2C%22theme%22%3A%22dark%22%2C%22style%22%3A%221%22%2C%22allow_symbol_change%22%3Afalse%7D"></iframe></section></div>
-<script>
-let sec=30,busy=false;
-const el=id=>document.getElementById(id);
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>US หุ้น</title>
+<style>
+:root{--bg:#08111f;--panel:#101c2d;--panel2:#13243a;--text:#edf4ff;--muted:#9fb0c6;--green:#19c37d;--red:#ff5c68;--amber:#ffbd3f;--line:#263a55}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07101d,#0b1626 50%,#07101d);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+.wrap{max-width:1400px;margin:auto;padding:20px}.hero{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-bottom:16px}
+h1{margin:0 0 6px;font-size:clamp(24px,4vw,42px)}.sub,.small,.name{color:var(--muted)}.sub{line-height:1.6;max-width:850px}
+.badge{display:flex;gap:8px;align-items:center;background:#0c2b21;border:1px solid #1a6549;color:#bdf6dc;padding:9px 12px;border-radius:999px;font-weight:700}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+.toolbar,.panel{background:rgba(16,28,45,.95);border:1px solid var(--line);border-radius:16px;box-shadow:0 16px 35px #0005}
+.toolbar{padding:14px;display:grid;grid-template-columns:1fr auto auto auto;gap:10px;margin-bottom:16px}
+input,button{border-radius:10px;border:1px solid var(--line);background:#0b1727;color:var(--text);padding:11px 12px;font-size:14px}
+button{cursor:pointer;font-weight:700}.primary{background:var(--green);color:#04140d;border-color:var(--green)}.secondary{background:#17304d}.danger{background:#3a1520;border-color:#70303d}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px}
+.label{color:var(--muted);font-size:12px}.value{font-size:25px;font-weight:800;margin-top:5px}.pos{color:#71e9ad}.neg{color:#ff8d96}
+.grid{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;margin-top:16px}.panel{padding:16px;margin-bottom:16px}.panel h2{margin:0 0 12px;font-size:18px}
+.table-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.sort-controls{display:flex;gap:8px;flex-wrap:wrap}
+.sort-btn{padding:8px 11px;border-radius:999px;background:#17304d;border:1px solid var(--line);color:var(--text)}
+.sort-btn.active{background:var(--green);border-color:var(--green);color:#04140d}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;font-weight:900}.name{font-size:12px;margin-top:3px}
+.signal{display:inline-flex;min-width:92px;justify-content:center;padding:7px 10px;border-radius:999px;font-weight:900}
+.dividend-badge{display:inline-flex;padding:6px 10px;border-radius:999px;font-weight:800;border:1px solid transparent}
+.div-monthly{background:#0f3b32;color:#7ff0ba;border-color:#1e815c}
+.div-quarterly{background:#173653;color:#8dc8ff;border-color:#2b6394}
+.div-yearly{background:#4b3513;color:#ffd681;border-color:#8d651f}
+.div-none{background:#3d2027;color:#ff9ca6;border-color:#7b3544}
+.div-unknown{background:#2b3240;color:#c4cfdd;border-color:#465166}.buy{background:#113d2e;color:#7ff0ba;border:1px solid #1e815c}
+.wait{background:#3b3016;color:#ffd773;border:1px solid #806727}.avoid{background:#421d25;color:#ff9ca6;border:1px solid #8c3546}
+.scorebar{width:110px;height:8px;background:#273950;border-radius:99px;overflow:hidden;margin-top:5px}.scorebar i{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--amber),var(--green))}
+.pill{font-size:11px;border-radius:99px;padding:4px 8px;background:#1d3049;color:#caddf5}.small{font-size:12px;line-height:1.6}
+#tv_chart{height:520px}
+.tv-quote{width:210px;min-height:72px;overflow:hidden;border-radius:10px}.tv-quote .tradingview-widget-container,.tv-quote .tradingview-widget-container__widget{width:100%;min-height:72px}.quote-note{font-size:11px;color:var(--muted);margin-top:4px}
+.hot-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.hot-card{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:14px;cursor:pointer}
+.hot-card:hover{transform:translateY(-2px);border-color:#3f5f86}
+.hot-card .hot-symbol{font-size:20px;font-weight:900}
+.hot-card .hot-upside{font-size:22px;font-weight:900;color:var(--green);margin:8px 0}
+.hot-card .hot-reason{font-size:12px;line-height:1.5;color:var(--muted)}
+.filter-buttons{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 14px}
+.filter-btn{background:#17304d;border:1px solid var(--line);color:var(--text);padding:8px 12px;border-radius:999px}
+.filter-btn.active{background:var(--green);border-color:var(--green);color:#04140d}
+@media(max-width:1100px){.hot-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.hot-grid{grid-template-columns:1fr}}
+.search-results{display:none;margin:-6px 0 16px;background:rgba(16,28,45,.98);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.search-result{display:grid;grid-template-columns:120px 1fr 110px auto;gap:12px;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line)}
+.search-result:last-child{border-bottom:0}.search-result:hover{background:#ffffff08}.market{color:var(--muted);font-size:12px}
+@media(max-width:700px){.search-result{grid-template-columns:90px 1fr}.search-result .market,.search-result button{grid-column:auto}}
+@media(max-width:980px){.grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.toolbar{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.toolbar{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div>
+      <h1>US Stock Opportunity Dashboard</h1>
+      <div class="sub">ค่าเริ่มต้นเป็นหุ้นเฝ้าดูที่นักวิเคราะห์บางสำนักประเมินโอกาสเติบโตใกล้หรือมากกว่า 20% พร้อม ETF รายเดือน และเพิ่มหุ้นด้วย Symbol</div>
+    </div>
+    <div class="badge"><span class="dot"></span><span id="status">กำลังเตรียมข้อมูล</span><span id="countdown" class="pill">60 วินาที</span></div>
+  </div>
 
-document.addEventListener('DOMContentLoaded',()=>{
-  if(!(window.google&&google.script&&google.script.run)){
-    fail('ต้องเปิดผ่าน URL Google Apps Script Web App เท่านั้น');
+  <div class="toolbar">
+    <input id="search" placeholder="ค้นหาชื่อหรือ Symbol เช่น Visa, Google, V, GOOGL">
+    <button class="primary" onclick="showSearchResults()">ค้นหาและเพิ่ม</button>
+    <button class="secondary" onclick="refreshAll()">อัปเดตข้อมูล</button>
+    <button class="danger" onclick="resetData()">คืนค่าเริ่มต้น</button>
+  </div>
+  <div id="searchResults" class="search-results" style="display:none"></div>
+
+  <div class="cards">
+    <div class="kpi"><div class="label">หุ้นในรายการ</div><div class="value" id="kpiCount">0</div></div>
+    <div class="kpi"><div class="label">จังหวะเข้าซื้อ</div><div class="value pos" id="kpiBuy">0</div></div>
+    <div class="kpi"><div class="label">ปันผลรายเดือน</div><div class="value" id="kpiMonthly">0</div></div>
+  </div>
+
+
+  <section class="panel" style="margin-top:16px">
+    <h2>หุ้นกำลังมาแรง / โอกาสเติบโต 5 หุ้น</h2>
+    <div class="filter-buttons">
+      <button class="filter-btn active" onclick="setHotFilter('ทั้งหมด',this)">ปันผลทั้งหมด</button>
+      <button class="filter-btn" onclick="setHotFilter('รายเดือน',this)">รายเดือน</button>
+      <button class="filter-btn" onclick="setHotFilter('รายไตรมาส',this)">รายไตรมาส</button>
+      <button class="filter-btn" onclick="setHotFilter('รายปี',this)">รายปี</button>
+    </div>
+    <div class="hot-grid" id="hotStocks"></div>
+    <p class="small">เลือกประเภทปันผล แล้วกดการ์ดหุ้นตัวที่ต้องการ ระบบจะเพิ่มลงตารางประเมินหุ้นทันที</p>
+  </section>
+
+  <div class="grid">
+    <main>
+      <section class="panel">
+        <div class="table-head">
+          <h2 style="margin:0">ตารางประเมินหุ้น</h2>
+          <div class="sort-controls">
+            <button class="sort-btn active" onclick="setTableSort('default',this)">ค่าเริ่มต้น</button>
+            <button class="sort-btn" onclick="setTableSort('az',this)">A–Z</button>
+            <button class="sort-btn" onclick="setTableSort('za',this)">Z–A</button>
+            <button class="sort-btn" onclick="setTableSort('score',this)">คะแนนสูงสุด</button>
+            <button class="sort-btn" onclick="setTableSort('upside',this)">โอกาสโตสูงสุด</button>
+            <button class="sort-btn" onclick="setTableSort('signal',this)">จัดตามสัญญาณ</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>หุ้น</th><th>วันนี้</th><th>รูปแบบปันผล</th><th>โอกาสโต</th><th>Dime</th><th>คะแนน</th><th>สัญญาณ</th><th></th></tr></thead>
+            <tbody id="rows"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 id="chartTitle">กราฟ TradingView — NASDAQ:NVDA</h2>
+        <div id="tv_chart"></div>
+      </section>
+    </main>
+
+    <aside>
+      <section class="panel">
+        <h2>หลักการคัดหุ้นเริ่มต้น</h2>
+        <p class="small">โอกาสโตคำนวณจากผลตอบแทนย้อนหลังประมาณ 6 เดือน แนวโน้มเทียบค่าเฉลี่ย 20/50 วัน และราคาเป้าหมายเดิมที่มีอยู่ ตัวเลขเป็นการประเมิน ไม่ใช่การรับประกันว่าราคาจะขึ้น</p>
+      </section>
+      <section class="panel">
+        <h2>การเพิ่มหุ้น</h2>
+        <p class="small">เพิ่มหุ้นได้ 2 วิธี: พิมพ์ Symbol เช่น AAPL, COST, O หรือ SGOV แล้วกด “ค้นหาและเพิ่มหุ้น” หรือกดการ์ดในหัวข้อหุ้นกำลังมาแรง ระบบจะเพิ่มลงตารางทันที</p>
+      </section>
+      <section class="panel">
+        <h2>แหล่งข้อมูลและ Dime</h2>
+        <p class="small">ระบบค้นหา Symbol จากฐานข้อมูลหุ้นและ TradingView ส่วนราคาและเปอร์เซ็นต์วันนี้จะแสดงในกล่อง TradingView โดยตรง โดยเทียบราคาล่าสุดกับราคาปิดวันก่อนหน้า เพื่อลดปัญหาเบราว์เซอร์บล็อกข้อมูล ก่อนซื้อให้ค้นหา Symbol เดียวกันในแอป Dime อีกครั้ง เพราะรายการที่เปิดให้ซื้ออาจเปลี่ยนแปลงได้</p>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+const HOT_STOCKS=[
+  {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
+  {symbol:"AMZN",name:"Amazon",exchange:"NASDAQ",upside:28,dividend:"ไม่จ่ายปันผล",reason:"AWS คลาวด์ โฆษณา และ AI"},
+  {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
+  {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"},
+  {symbol:"NOW",name:"ServiceNow",exchange:"NYSE",upside:45,dividend:"ไม่จ่ายปันผล",reason:"ซอฟต์แวร์องค์กรและ AI Workflow"}
+];
+
+const DEFAULTS=[
+  {symbol:"NVDA",name:"NVIDIA",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:44,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"AMZN",name:"Amazon",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:28,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"MSFT",name:"Microsoft",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:45,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"ASML",name:"ASML Holding",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:49,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"NOW",name:"ServiceNow",dividend:"ไม่จ่ายปันผล",tvExchange:"NYSE",expectedUpside:45,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"AMD",name:"Advanced Micro Devices",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:31,watchReason:"นักวิเคราะห์บางสำนักประเมินมากกว่า 20%"},
+  {symbol:"AVGO",name:"Broadcom",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:26,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"PLTR",name:"Palantir Technologies",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:24,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"GEN",name:"Gen Digital",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:48,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"TSEM",name:"Tower Semiconductor",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:40,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"}
+].map(x=>({...x,price:null,prev:null,sma20:null,sma50:null,dividendSource:"รูปแบบการจ่ายปกติ",dimeStatus:"ตรวจในแอป"}));
+
+const DIVIDEND_FREQUENCY={
+  COST:"รายไตรมาส",SGOV:"รายเดือน",JEPI:"รายเดือน",JEPQ:"รายเดือน",O:"รายเดือน",MAIN:"รายเดือน",
+  AAPL:"รายไตรมาส",MSFT:"รายไตรมาส",NVDA:"รายไตรมาส",META:"รายไตรมาส",AVGO:"รายไตรมาส",
+  GOOGL:"ไม่จ่ายปันผล",GOOG:"ไม่จ่ายปันผล",AMZN:"ไม่จ่ายปันผล",TSLA:"ไม่จ่ายปันผล",
+  KO:"รายไตรมาส",PEP:"รายไตรมาส",SCHD:"รายไตรมาส",VOO:"รายไตรมาส",QQQ:"รายไตรมาส",SPY:"รายไตรมาส",
+  DIA:"รายเดือน",TLT:"รายเดือน",BIL:"รายเดือน",SHV:"รายเดือน",USFR:"รายเดือน",AGG:"รายเดือน",BND:"รายเดือน",
+  VTI:"รายไตรมาส",VT:"รายไตรมาส",ABBV:"รายไตรมาส",JNJ:"รายไตรมาส",PG:"รายไตรมาส",MCD:"รายไตรมาส",
+  XOM:"รายไตรมาส",CVX:"รายไตรมาส",WMT:"รายไตรมาส",HD:"รายไตรมาส",JPM:"รายไตรมาส",BAC:"รายไตรมาส",
+  V:"รายไตรมาส",MA:"รายไตรมาส",ASML:"รายไตรมาส",MSFT:"รายไตรมาส",AVGO:"รายไตรมาส",GEN:"รายไตรมาส"
+};
+
+let stocks=JSON.parse(localStorage.getItem("stockDashboardV22")||"null")||DEFAULTS;
+let busy=false,secondsToRefresh=60;
+
+function save(){localStorage.setItem("stockDashboardV22",JSON.stringify(stocks))}
+function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
+function fmt(n,d=2){return Number.isFinite(Number(n))?Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"—"}
+
+function score(s){
+  let n=30;
+  if(s.price&&s.sma20)n+=s.price>=s.sma20?15:-8;
+  if(s.price&&s.sma50)n+=s.price>=s.sma50?15:-8;
+  if(s.price&&s.prev)n+=s.price>=s.prev?10:-5;
+  if(s.dividend==="รายเดือน")n+=10;
+  else if(s.dividend==="รายไตรมาส")n+=4;
+  return Math.max(0,Math.min(100,Math.round(n)));
+}
+function signal(s){const n=score(s);return n>=70?["เข้าซื้อ","buy"]:n>=50?["รอจังหวะ","wait"]:["หลีกเลี่ยง","avoid"]}
+
+
+
+
+
+const HOT_STOCK_POOLS={
+  "ทั้งหมด":[
+    {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
+    {symbol:"AMZN",name:"Amazon",exchange:"NASDAQ",upside:28,dividend:"ไม่จ่ายปันผล",reason:"AWS คลาวด์ โฆษณา และ AI"},
+    {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
+    {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"},
+    {symbol:"NOW",name:"ServiceNow",exchange:"NYSE",upside:45,dividend:"ไม่จ่ายปันผล",reason:"ซอฟต์แวร์องค์กรและ AI Workflow"}
+  ],
+  "รายเดือน":[
+    {symbol:"O",name:"Realty Income",exchange:"NYSE",upside:20,dividend:"รายเดือน",reason:"REIT รายได้ค่าเช่าและจ่ายรายเดือน"},
+    {symbol:"MAIN",name:"Main Street Capital",exchange:"NYSE",upside:20,dividend:"รายเดือน",reason:"BDC และกระแสเงินสดรายเดือน"},
+    {symbol:"JEPI",name:"JPMorgan Equity Premium Income ETF",exchange:"AMEX",upside:20,dividend:"รายเดือน",reason:"ETF เน้นรายได้รายเดือน"},
+    {symbol:"JEPQ",name:"JPMorgan Nasdaq Equity Premium Income ETF",exchange:"NASDAQ",upside:20,dividend:"รายเดือน",reason:"ETF Nasdaq เน้นรายได้รายเดือน"},
+    {symbol:"SGOV",name:"iShares 0-3 Month Treasury Bond ETF",exchange:"AMEX",upside:0,dividend:"รายเดือน",reason:"พักเงินระยะสั้นและจ่ายรายเดือน"}
+  ],
+  "รายไตรมาส":[
+    {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
+    {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
+    {symbol:"AVGO",name:"Broadcom",exchange:"NASDAQ",upside:26,dividend:"รายไตรมาส",reason:"ชิปเครือข่าย AI และซอฟต์แวร์"},
+    {symbol:"META",name:"Meta Platforms",exchange:"NASDAQ",upside:23,dividend:"รายไตรมาส",reason:"โฆษณาดิจิทัลและ AI"},
+    {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"}
+  ],
+  "รายปี":[
+    {symbol:"BABA",name:"Alibaba Group",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"อีคอมเมิร์ซและคลาวด์"},
+    {symbol:"NVO",name:"Novo Nordisk",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"ยารักษาเบาหวานและโรคอ้วน"},
+    {symbol:"SONY",name:"Sony Group",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"เกม เซนเซอร์ และคอนเทนต์"},
+    {symbol:"TM",name:"Toyota Motor",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"รถยนต์ไฮบริดและกระแสเงินสด"},
+    {symbol:"SNY",name:"Sanofi",exchange:"NASDAQ",upside:20,dividend:"รายปี",reason:"ยาและวัคซีน"}
+  ]
+};
+
+let currentHotFilter="ทั้งหมด";
+
+function setHotFilter(filter,button){
+  currentHotFilter=filter;
+  document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+  renderHotStocks();
+}
+
+function renderHotStocks(){
+  const box=document.getElementById("hotStocks");
+  if(!box)return;
+  const list=HOT_STOCK_POOLS[currentHotFilter]||HOT_STOCK_POOLS["ทั้งหมด"];
+  box.innerHTML=list.map((s)=>`
+    <div class="hot-card" onclick="addHotStockObject('${s.symbol}','${s.name.replaceAll("'","&#39;")}','${s.exchange}',${s.upside},'${s.dividend}','${s.reason.replaceAll("'","&#39;")}')">
+      <div class="hot-symbol">${s.symbol}</div>
+      <div class="name">${s.name}</div>
+      <div class="hot-upside">${s.upside>0?'ประมาณ +'+s.upside+'%':'เน้นรายได้'}</div>
+      <div class="hot-reason">${s.reason}</div>
+      <div class="name" style="margin-top:8px">ปันผล: ${s.dividend}</div>
+      <div class="name" style="margin-top:10px;color:#71e9ad;font-weight:700">คลิกเพื่อเพิ่มลงตาราง</div>
+    </div>
+  `).join("");
+}
+
+function addHotStockObject(symbol,name,exchange,upside,dividend,reason){
+  symbol=String(symbol||"").trim().toUpperCase();
+  const existing=stocks.find(s=>s.symbol===symbol);
+
+  if(existing){
+    selectChartSymbol(symbol,existing.tvExchange||exchange||"NASDAQ");
+    document.getElementById("status").textContent=`มี ${symbol} อยู่ในตารางแล้ว`;
     return;
   }
-  loadGold();
-  setInterval(()=>{
-    sec--;
-    el('count').textContent=Math.max(0,sec)+' วินาที';
-    if(sec<=0)loadGold();
-  },1000);
-});
 
-function loadGold(){
+  const item={
+    symbol,
+    name:name||symbol,
+    dividend:dividend||DIVIDEND_FREQUENCY[symbol]||"ต้องตรวจสอบล่าสุด",
+    dividendSource:"รูปแบบการจ่ายปกติ",
+    dimeStatus:"ตรวจในแอป",
+    expectedUpside:Number(upside)||0,
+    watchReason:reason||"หุ้นที่เพิ่มจากรายการแนะนำ",
+    price:null,prev:null,sma20:null,sma50:null,
+    exchangeHint:exchange||"",
+    tvExchange:exchange||"NASDAQ",
+    dataSource:"กำลังโหลดข้อมูล",
+    updated:null
+  };
+
+  stocks.push(item);
+  save();
+  render();
+  selectChartSymbol(symbol,item.tvExchange);
+  document.getElementById("status").textContent=`เพิ่ม ${symbol} ลงตารางแล้ว กำลังโหลดราคา`;
+
+  const i=stocks.findIndex(s=>s.symbol===symbol);
+  refreshOne(i).then(()=>{
+    save();
+    render();
+    document.getElementById("status").textContent=`เพิ่มและอัปเดต ${symbol} สำเร็จ`;
+  }).catch((e)=>{
+    item.dataSource="ยังโหลดราคาไม่ได้";
+    item.updated=null;
+    save();
+    render();
+    document.getElementById("status").textContent=`เพิ่ม ${symbol} แล้ว แต่ยังโหลดราคาไม่ได้`;
+    console.warn("Price update failed:",e);
+  });
+}
+
+function addHotStockBySymbol(symbol){
+  const index=HOT_STOCKS.findIndex(s=>s.symbol===symbol);
+  if(index>=0)addHotStock(index);
+}
+
+async function addHotStock(index){
+  const h=HOT_STOCKS[index];
+  if(!h)return;
+  addHotStockObject(h.symbol,h.name,h.exchange,h.upside,h.dividend,h.reason);
+}
+
+
+function dividendClass(value){
+  if(value==="รายเดือน")return "div-monthly";
+  if(value==="รายไตรมาส")return "div-quarterly";
+  if(value==="รายปี")return "div-yearly";
+  if(value==="ไม่จ่ายปันผล")return "div-none";
+  return "div-unknown";
+}
+
+
+let currentTableSort="default";
+
+function setTableSort(mode,button){
+  currentTableSort=mode;
+  document.querySelectorAll(".sort-btn").forEach(b=>b.classList.remove("active"));
+  if(button)button.classList.add("active");
+  render();
+}
+
+function sortedStocksForTable(){
+  const list=[...stocks];
+
+  if(currentTableSort==="az"){
+    return list.sort((a,b)=>String(a.symbol).localeCompare(String(b.symbol)));
+  }
+  if(currentTableSort==="za"){
+    return list.sort((a,b)=>String(b.symbol).localeCompare(String(a.symbol)));
+  }
+  if(currentTableSort==="score"){
+    return list.sort((a,b)=>score(b)-score(a));
+  }
+  if(currentTableSort==="upside"){
+    return list.sort((a,b)=>(Number(b.expectedUpside)||0)-(Number(a.expectedUpside)||0));
+  }
+  if(currentTableSort==="signal"){
+    const order={"เข้าซื้อ":0,"รอจังหวะ":1,"หลีกเลี่ยง":2};
+    return list.sort((a,b)=>{
+      const sa=signal(a)[0], sb=signal(b)[0];
+      const diff=(order[sa]??99)-(order[sb]??99);
+      return diff!==0?diff:score(b)-score(a);
+    });
+  }
+  return list;
+}
+
+
+function historicalReturn(s){
+  const n=Number(s.return6m);
+  return Number.isFinite(n)?n:null;
+}
+
+function forecastGrowth(s){
+  const hist=historicalReturn(s);
+  const analyst=Number(s.expectedUpside);
+  let momentum=0;
+  if(s.price&&s.sma20)momentum+=((s.price-s.sma20)/s.sma20)*100*0.35;
+  if(s.price&&s.sma50)momentum+=((s.price-s.sma50)/s.sma50)*100*0.25;
+  let estimate=0;
+  let weight=0;
+  if(hist!==null){estimate+=hist*0.35;weight+=0.35;}
+  if(Number.isFinite(analyst)&&analyst!==0){estimate+=analyst*0.45;weight+=0.45;}
+  estimate+=momentum; weight+=0.20;
+  if(weight===0)return null;
+  return Math.max(-50,Math.min(80,Math.round((estimate/weight)*10)/10));
+}
+
+function growthTrendLabel(value){
+  if(value===null)return 'ข้อมูลไม่พอ';
+  if(value>=10)return 'แนวโน้มขึ้น';
+  if(value>0)return 'มีโอกาสบวก';
+  if(value>-5)return 'ทรงตัว';
+  return 'แนวโน้มอ่อนตัว';
+}
+
+function render(){
+  const visibleStocks=sortedStocksForTable();
+
+  document.getElementById("rows").innerHTML=visibleStocks.map((s)=>{
+    const i=stocks.findIndex(x=>x.symbol===s.symbol);
+    const ch=s.price&&s.prev?((s.price-s.prev)/s.prev)*100:null;
+    const sc=score(s);
+    const sig=signal(s);
+
+    return `<tr onclick="selectChartSymbol('${s.symbol}','${s.tvExchange||"NASDAQ"}')" style="cursor:pointer">
+      <td>
+        <div class="symbol">${s.symbol}</div>
+      </td>
+      <td class="${ch===null?'':ch>=0?'pos':'neg'}">
+        <b style="font-size:16px">${ch===null?'—':(ch>=0?'+':'')+fmt(ch)+'%'}</b>
+      </td>
+      <td>
+        <span class="dividend-badge ${dividendClass(s.dividend)}">${s.dividend||"ต้องตรวจสอบล่าสุด"}</span>
+        <div class="name">${s.dividendSource||"ตรวจสอบประกาศบริษัท"}</div>
+      </td>
+      <td>
+        ${(()=>{
+          const hist=historicalReturn(s);
+          const future=forecastGrowth(s);
+          return `<b class="${future!==null&&future>0?'pos':future!==null&&future<0?'neg':''}">${future===null?'—':(future>=0?'+':'')+fmt(future,1)+'%'}</b>
+          <div class="name">คาดการณ์ 3–6 เดือน: ${growthTrendLabel(future)}</div>
+          <div class="name">ย้อนหลัง 6 เดือน: ${hist===null?'—':(hist>=0?'+':'')+fmt(hist,1)+'%'}</div>`;
+        })()}
+      </td>
+      <td>
+        <b>${s.dimeStatus||"ตรวจในแอป"}</b>
+        <div class="name">ค้นหา ${s.symbol} ใน Dime ก่อนซื้อ</div>
+      </td>
+      <td>
+        ${s.price&&s.sma20&&s.sma50?`<b>${sc}/100</b><div class="scorebar"><i style="width:${sc}%"></i></div>`:`<b>—</b><div class="name">ดูกราฟประกอบ</div>`}
+      </td>
+      <td>
+        ${s.price&&s.sma20&&s.sma50?`<span class="signal ${sig[1]}">${sig[0]}</span>`:`<span class="signal wait">ดูกราฟ</span>`}
+      </td>
+      <td>
+        <button class="danger" onclick="event.stopPropagation();removeStock(${i})">ลบ</button>
+      </td>
+    </tr>`;
+  }).join("") || `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">ยังไม่มีหุ้นในตาราง ใช้ช่อง Symbol หรือกดหุ้นมาแรงเพื่อเพิ่ม</td></tr>`;
+
+  document.getElementById("kpiCount").textContent=stocks.length;
+  document.getElementById("kpiBuy").textContent=stocks.filter(s=>score(s)>=70).length;
+  document.getElementById("kpiMonthly").textContent=stocks.filter(s=>s.dividend==="รายเดือน").length;
+
+}
+
+function renderTableTradingViewQuotes(){
+  stocks.forEach(s=>{
+    const safe=String(s.symbol||"").replace(/[^A-Z0-9_-]/gi,"_");
+    const box=document.getElementById(`tvq-${safe}`);
+    if(!box)return;
+    box.innerHTML='<div class="tradingview-widget-container"><div class="tradingview-widget-container__widget"></div></div>';
+    const target=box.querySelector('.tradingview-widget-container');
+    const script=document.createElement('script');
+    script.src='https://s3.tradingview.com/external-embedding/embed-widget-single-quote.js';
+    script.async=true;
+    script.text=JSON.stringify({
+      symbol:`${getTradingViewExchange(s)}:${s.symbol}`,
+      width:'100%',
+      isTransparent:true,
+      colorTheme:'dark',
+      locale:'th_TH'
+    });
+    target.appendChild(script);
+  });
+}
+
+function removeStock(i){stocks.splice(i,1);save();render()}
+
+function parseUserSymbol(raw){
+  const value=raw.trim().toUpperCase().replace(/\s+/g,"");
+  if(!value)return null;
+  if(value.includes(":")){
+    const parts=value.split(":");
+    return {ticker:parts[1],exchangeHint:parts[0]};
+  }
+  return {ticker:value,exchangeHint:""};
+}
+
+function tradingViewExchange(meta,hint){
+  if(hint)return hint;
+  const raw=String(meta.exchangeName||meta.fullExchangeName||meta.exchange||"").toUpperCase();
+  if(raw.includes("NASDAQ")||["NMS","NGM","NCM"].includes(raw))return "NASDAQ";
+  if(raw.includes("NEW YORK")||raw.includes("NYSE")||raw==="NYQ")return "NYSE";
+  if(raw.includes("ARCA")||raw==="PCX")return "AMEX";
+  if(raw.includes("BATS"))return "BATS";
+  return "NASDAQ";
+}
+
+function inferDividendFrequency(symbol,quoteType){
+  if(DIVIDEND_FREQUENCY[symbol])return DIVIDEND_FREQUENCY[symbol];
+  if(String(quoteType).toUpperCase()==="ETF")return "ต้องตรวจสอบกองทุน";
+  return "ต้องตรวจสอบล่าสุด";
+}
+
+async function fetchJSON(url){
+  const routes=[
+    url,
+    "https://api.allorigins.win/raw?url="+encodeURIComponent(url),
+    "https://corsproxy.io/?url="+encodeURIComponent(url)
+  ];
+  let last;
+  for(const u of routes){
+    try{
+      const r=await fetch(u,{cache:"no-store"});
+      if(!r.ok)throw new Error("HTTP "+r.status);
+      return await r.json();
+    }catch(e){last=e}
+  }
+  throw last||new Error("โหลดข้อมูลไม่สำเร็จ");
+}
+
+async function fetchText(url){
+  const routes=[
+    url,
+    "https://api.allorigins.win/raw?url="+encodeURIComponent(url),
+    "https://corsproxy.io/?url="+encodeURIComponent(url)
+  ];
+  let last;
+  for(const u of routes){
+    try{
+      const r=await fetch(u,{cache:"no-store"});
+      if(!r.ok)throw new Error("HTTP "+r.status);
+      return await r.text();
+    }catch(e){last=e}
+  }
+  throw last||new Error("โหลดข้อมูลไม่สำเร็จ");
+}
+
+async function loadYahoo(symbol){
+  const hosts=["query1.finance.yahoo.com","query2.finance.yahoo.com"];
+  let last;
+  for(const host of hosts){
+    try{
+      const url=`https://${host}/v8/finance/chart/${encodeURIComponent(symbol)}?range=6mo&interval=1d&includePrePost=false`;
+      const j=await fetchJSON(url);
+      const r=j.chart.result?.[0];
+      if(!r)throw new Error("ไม่พบข้อมูล");
+      const closes=(r.indicators.quote?.[0]?.close||[]).filter(Number.isFinite);
+      return {
+        meta:r.meta||{},
+        closes,
+        source:host.includes("query1")?"Yahoo Finance 1":"Yahoo Finance 2"
+      };
+    }catch(e){last=e}
+  }
+  throw last||new Error("Yahoo ไม่ตอบสนอง");
+}
+
+async function loadStooq(symbol){
+  const stooqSymbol=symbol.toLowerCase()+".us";
+  const url=`https://stooq.com/q/d/l/?s=${encodeURIComponent(stooqSymbol)}&i=d`;
+  const text=await fetchText(url);
+  const lines=text.trim().split(/\r?\n/);
+  if(lines.length<3||!lines[0].toLowerCase().includes("close"))throw new Error("Stooq ไม่พบข้อมูล");
+  const rows=lines.slice(1)
+    .map(line=>line.split(","))
+    .filter(x=>x.length>=5&&Number.isFinite(Number(x[4])));
+  const closes=rows.map(x=>Number(x[4]));
+  if(closes.length<2)throw new Error("ข้อมูล Stooq ไม่เพียงพอ");
+  return {
+    meta:{
+      regularMarketPrice:closes.at(-1),
+      chartPreviousClose:closes.at(-2),
+      shortName:symbol,
+      exchangeName:""
+    },
+    closes,
+    source:"Stooq"
+  };
+}
+
+async function refreshOne(i){
+  const s=stocks[i];
+  if(!s)throw new Error("ไม่พบหุ้นในตาราง");
+  let result;
+  try{
+    result=await loadYahoo(s.symbol);
+  }catch(e){
+    result=await loadStooq(s.symbol);
+  }
+
+  const meta=result.meta||{};
+  const closes=result.closes||[];
+  s.return6m=closes.length>1?((closes.at(-1)-closes[0])/closes[0])*100:null;
+  s.name=meta.longName||meta.shortName||s.name||s.symbol;
+  s.price=meta.regularMarketPrice??closes.at(-1)??s.price;
+  s.prev=meta.chartPreviousClose??closes.at(-2)??s.prev;
+  s.sma20=avg(closes.slice(-20));
+  s.sma50=avg(closes.slice(-50));
+  s.tvExchange=tradingViewExchange(meta,s.exchangeHint);
+  s.dividend=inferDividendFrequency(s.symbol,meta.instrumentType||meta.quoteType||"");
+  s.dividendSource=DIVIDEND_FREQUENCY[s.symbol]?"รูปแบบการจ่ายปกติ":"ควรตรวจสอบประกาศล่าสุด";
+  s.dimeStatus="ตรวจในแอป";
+  s.dataSource=result.source;
+  s.updated=new Date().toISOString();
+}
+
+async function refreshAll(){
   if(busy)return;
   busy=true;
-  sec=30;
-  el('status').textContent='กำลังดึงข้อมูล';
-  el('err').style.display='none';
-  google.script.run
-    .withSuccessHandler(d=>{
-      busy=false;
-      if(!d||!d.ok){
-        fail((d&&d.error)||'ดึงข้อมูลไม่สำเร็จ',d&&d.details);
-        return;
+  secondsToRefresh=60;
+  document.getElementById("status").textContent="กำลังอัปเดตราคาและคำนวณเปอร์เซ็นต์วันนี้";
+
+  let ok=0,failed=0;
+  for(let i=0;i<stocks.length;i++){
+    try{
+      await refreshOne(i);
+      ok++;
+    }catch(e){
+      failed++;
+      if(stocks[i])stocks[i].dataSource="แสดงราคาจาก TradingView แต่ยังอ่านตัวเลขมาคำนวณไม่ได้";
+      console.warn(e);
+    }
+    render();
+  }
+
+  save();
+  render();
+  const title=document.getElementById("chartTitle")?.textContent||"";
+  const match=title.match(/—\s*([^:]+):(.+)$/);
+  if(match)renderTradingView(match[2],match[1]);
+  busy=false;
+  document.getElementById("status").textContent=`คำนวณเปอร์เซ็นต์ได้ ${ok}/${stocks.length}${failed?` • รอข้อมูล ${failed}`:""} • ${new Date().toLocaleTimeString("th-TH")}`;
+}
+
+async function searchYahooSymbol(query){
+  const url=`https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(query)}&quotesCount=8&newsCount=0`;
+  const data=await fetchJSON(url);
+  const quotes=(data.quotes||[]).filter(q=>{
+    const type=String(q.quoteType||"").toUpperCase();
+    const exchange=String(q.exchange||q.exchDisp||"").toUpperCase();
+    return ["EQUITY","ETF"].includes(type) &&
+      (exchange.includes("NASDAQ")||exchange.includes("NYSE")||exchange.includes("AMEX")||exchange.includes("ARCA")||exchange.includes("BATS")||["NMS","NYQ","PCX","ASE"].includes(exchange));
+  });
+  if(!quotes.length)throw new Error("ไม่พบหุ้นที่ตรงกับชื่อ");
+  return quotes[0];
+}
+
+function normalizeExchangeFromSearch(q){
+  const raw=String(q.exchange||q.exchDisp||"").toUpperCase();
+  if(raw.includes("NASDAQ")||raw==="NMS"||raw==="NGM"||raw==="NCM")return "NASDAQ";
+  if(raw.includes("NYSE")||raw==="NYQ")return "NYSE";
+  if(raw.includes("AMEX")||raw.includes("ARCA")||raw==="PCX"||raw==="ASE")return "AMEX";
+  if(raw.includes("BATS"))return "BATS";
+  return "NASDAQ";
+}
+
+
+let pendingSearchResults=[];
+
+
+
+
+const POPULAR_US_STOCKS={
+  TSLA:{name:"Tesla, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  AAPL:{name:"Apple Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  MSFT:{name:"Microsoft Corporation",exchange:"NASDAQ",type:"EQUITY"},
+  NVDA:{name:"NVIDIA Corporation",exchange:"NASDAQ",type:"EQUITY"},
+  AMZN:{name:"Amazon.com, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  META:{name:"Meta Platforms, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  GOOGL:{name:"Alphabet Inc. Class A",exchange:"NASDAQ",type:"EQUITY"},
+  GOOG:{name:"Alphabet Inc. Class C",exchange:"NASDAQ",type:"EQUITY"},
+  AMD:{name:"Advanced Micro Devices, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  AVGO:{name:"Broadcom Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  NFLX:{name:"Netflix, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  COST:{name:"Costco Wholesale Corporation",exchange:"NASDAQ",type:"EQUITY"},
+  PLTR:{name:"Palantir Technologies Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  INTC:{name:"Intel Corporation",exchange:"NASDAQ",type:"EQUITY"},
+  QCOM:{name:"QUALCOMM Incorporated",exchange:"NASDAQ",type:"EQUITY"},
+  MU:{name:"Micron Technology, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  JPM:{name:"JPMorgan Chase & Co.",exchange:"NYSE",type:"EQUITY"},
+  BAC:{name:"Bank of America Corporation",exchange:"NYSE",type:"EQUITY"},
+  V:{name:"Visa Inc.",exchange:"NYSE",type:"EQUITY"},
+  MA:{name:"Mastercard Incorporated",exchange:"NYSE",type:"EQUITY"},
+  KO:{name:"The Coca-Cola Company",exchange:"NYSE",type:"EQUITY"},
+  PEP:{name:"PepsiCo, Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  WMT:{name:"Walmart Inc.",exchange:"NASDAQ",type:"EQUITY"},
+  DIS:{name:"The Walt Disney Company",exchange:"NYSE",type:"EQUITY"},
+  BA:{name:"The Boeing Company",exchange:"NYSE",type:"EQUITY"},
+  XOM:{name:"Exxon Mobil Corporation",exchange:"NYSE",type:"EQUITY"},
+  CVX:{name:"Chevron Corporation",exchange:"NYSE",type:"EQUITY"},
+  O:{name:"Realty Income Corporation",exchange:"NYSE",type:"EQUITY"},
+  SGOV:{name:"iShares 0-3 Month Treasury Bond ETF",exchange:"AMEX",type:"ETF"},
+  JEPI:{name:"JPMorgan Equity Premium Income ETF",exchange:"AMEX",type:"ETF"},
+  JEPQ:{name:"JPMorgan Nasdaq Equity Premium Income ETF",exchange:"NASDAQ",type:"ETF"},
+  VOO:{name:"Vanguard S&P 500 ETF",exchange:"AMEX",type:"ETF"},
+  QQQ:{name:"Invesco QQQ Trust",exchange:"NASDAQ",type:"ETF"},
+  SPY:{name:"SPDR S&P 500 ETF Trust",exchange:"AMEX",type:"ETF"}
+};
+
+const TRADINGVIEW_EXCHANGE_MAP={
+  TSLA:"NASDAQ",AAPL:"NASDAQ",NVDA:"NASDAQ",MSFT:"NASDAQ",AMZN:"NASDAQ",META:"NASDAQ",GOOGL:"NASDAQ",GOOG:"NASDAQ",AMD:"NASDAQ",AVGO:"NASDAQ",COST:"NASDAQ",PLTR:"NASDAQ",ASML:"NASDAQ",NOW:"NYSE",GEN:"NASDAQ",TSEM:"NASDAQ",
+  O:"NYSE",MAIN:"NYSE",JPM:"NYSE",V:"NYSE",MA:"NYSE",KO:"NYSE",PEP:"NASDAQ",WMT:"NASDAQ",HD:"NYSE",MCD:"NYSE",JNJ:"NYSE",PG:"NYSE",ABBV:"NYSE",XOM:"NYSE",CVX:"NYSE",BABA:"NYSE",NVO:"NYSE",SONY:"NYSE",TM:"NYSE",SNY:"NASDAQ",
+  SGOV:"AMEX",JEPI:"AMEX",JEPQ:"NASDAQ",VOO:"AMEX",SPY:"AMEX",QQQ:"NASDAQ",DIA:"AMEX",TLT:"NASDAQ",BIL:"AMEX",SHV:"NASDAQ",USFR:"AMEX",AGG:"AMEX",BND:"NASDAQ",VTI:"AMEX",VT:"AMEX",SCHD:"AMEX"
+};
+
+function getTradingViewExchange(stock){
+  return String(stock.tvExchange||stock.exchangeHint||TRADINGVIEW_EXCHANGE_MAP[stock.symbol]||"NASDAQ").toUpperCase();
+}
+
+function tradingViewUrl(stock){
+  const ex=getTradingViewExchange(stock);
+  return `https://th.tradingview.com/chart/?symbol=${encodeURIComponent(ex+":"+stock.symbol)}`;
+}
+
+const STOCK_ALIASES={
+  "VISA":"V","VISA INC":"V","วีซ่า":"V",
+  "GOOGLE":"GOOGL","ALPHABET":"GOOGL","ALPHABET INC":"GOOGL","กูเกิล":"GOOGL","กูเกิ้ล":"GOOGL",
+  "APPLE":"AAPL","แอปเปิล":"AAPL","แอปเปิ้ล":"AAPL",
+  "MICROSOFT":"MSFT","ไมโครซอฟท์":"MSFT","ไมโครซอฟต์":"MSFT",
+  "AMAZON":"AMZN","อเมซอน":"AMZN",
+  "NVIDIA":"NVDA","เอ็นวิเดีย":"NVDA",
+  "META":"META","FACEBOOK":"META","เฟซบุ๊ก":"META",
+  "TESLA":"TSLA","เทสลา":"TSLA",
+  "COSTCO":"COST","คอสโก้":"COST",
+  "REALTY INCOME":"O",
+  "BROADCOM":"AVGO",
+  "PALANTIR":"PLTR",
+  "AMD":"AMD",
+  "ASML":"ASML",
+  "SERVICENOW":"NOW",
+  "JPMORGAN":"JPM",
+  "COCA COLA":"KO","COCA-COLA":"KO","โคคาโคล่า":"KO",
+  "PEPSI":"PEP",
+  "WALMART":"WMT",
+  "MASTERCARD":"MA",
+  "BERKSHIRE":"BRK-B","BERKSHIRE HATHAWAY":"BRK-B"
+};
+
+function normalizeSearchText(value){
+  return String(value||"")
+    .trim()
+    .replace(/\s+/g," ")
+    .toUpperCase();
+}
+
+async function resolveSearchToSymbol(raw){
+  const normalized=normalizeSearchText(raw);
+
+  // Explicit exchange:symbol or ticker-like values.
+  if(normalized.includes(":")){
+    const parsed=parseUserSymbol(normalized);
+    return {symbol:parsed.ticker,exchangeHint:parsed.exchangeHint,resolvedBy:"symbol"};
+  }
+
+  if(STOCK_ALIASES[normalized]){
+    return {symbol:STOCK_ALIASES[normalized],exchangeHint:"",resolvedBy:"alias"};
+  }
+
+  // A short ticker-looking value should be validated directly.
+  if(/^[A-Z0-9.\-]{1,8}$/.test(normalized)){
+    return {symbol:normalized,exchangeHint:"",resolvedBy:"symbol"};
+  }
+
+  // Try Yahoo company-name search for names not in the local directory.
+  try{
+    const url=`https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(raw)}&quotesCount=10&newsCount=0`;
+    const data=await fetchJSON(url);
+    const match=(data.quotes||[]).find(q=>{
+      const type=String(q.quoteType||"").toUpperCase();
+      return ["EQUITY","ETF"].includes(type) && q.symbol;
+    });
+    if(match){
+      return {
+        symbol:String(match.symbol).toUpperCase(),
+        exchangeHint:normalizeExchangeFromSearch(match),
+        resolvedBy:"company-search",
+        resolvedName:match.longname||match.shortname||match.symbol
+      };
+    }
+  }catch(e){
+    console.warn("Company-name search unavailable:",e);
+  }
+
+  return null;
+}
+
+async function validateSymbol(symbol){
+  try{
+    const yahoo=await loadYahoo(symbol);
+    const meta=yahoo.meta||{};
+    const price=meta.regularMarketPrice??yahoo.closes?.at(-1);
+    if(price && Number.isFinite(Number(price))){
+      return {valid:true,result:yahoo};
+    }
+  }catch(e){}
+
+  try{
+    const stooq=await loadStooq(symbol);
+    const price=stooq.meta?.regularMarketPrice??stooq.closes?.at(-1);
+    if(price && Number.isFinite(Number(price))){
+      return {valid:true,result:stooq};
+    }
+  }catch(e){}
+
+  return {valid:false,result:null};
+}
+
+function escapeHtml(value){
+  return String(value??"")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#39;");
+}
+
+function quoteTypeLabel(value){
+  const type=String(value||"").toUpperCase();
+  if(type==="ETF")return "ETF";
+  if(type==="EQUITY")return "หุ้นสามัญ";
+  return type||"หลักทรัพย์";
+}
+
+function exchangeLabel(q){
+  return q.exchDisp||q.exchange||normalizeExchangeFromSearch(q)||"ไม่ทราบตลาด";
+}
+
+
+async function searchTradingViewSymbols(query){
+  const url=`https://symbol-search.tradingview.com/symbol_search/?text=${encodeURIComponent(query)}&hl=1&exchange=&lang=th&type=&domain=production`;
+  const data=await fetchJSON(url);
+  const items=Array.isArray(data)?data:[];
+  return items
+    .filter(x=>{
+      const type=String(x.type||'').toLowerCase();
+      const exchange=String(x.exchange||'').toUpperCase();
+      return ['stock','fund','dr'].includes(type) && x.symbol &&
+        (exchange.includes('NASDAQ')||exchange.includes('NYSE')||exchange.includes('AMEX')||exchange.includes('ARCA')||exchange.includes('BATS'));
+    })
+    .map(x=>({
+      symbol:String(x.symbol||'').toUpperCase(),
+      shortname:String(x.description||x.symbol||''),
+      longname:String(x.description||x.symbol||''),
+      quoteType:String(x.type||'').toLowerCase()==='fund'?'ETF':'EQUITY',
+      exchange:String(x.exchange||''),
+      exchDisp:String(x.exchange||''),
+      tradingView:true,
+      tradingViewTicker:`${String(x.exchange||'NASDAQ').toUpperCase()}:${String(x.symbol||'').toUpperCase()}`
+    }));
+}
+
+async function showSearchResults(){
+  const input=document.getElementById("search");
+  const box=document.getElementById("searchResults");
+  const raw=input.value.trim();
+
+  if(!raw){
+    alert("กรุณากรอกชื่อบริษัทหรือ Symbol เช่น Visa, Google, V หรือ GOOGL");
+    input.focus();
+    return;
+  }
+
+  box.style.display="block";
+  box.innerHTML=`<div class="search-result"><b>กำลังค้นหา...</b><div>${escapeHtml(raw)}</div></div>`;
+  document.getElementById("status").textContent=`กำลังค้นหา ${raw}`;
+
+  let quotes=[];
+  try{
+    const url=`https://query2.finance.yahoo.com/v1/finance/search?q=${encodeURIComponent(raw)}&quotesCount=12&newsCount=0`;
+    const data=await fetchJSON(url);
+    quotes=(data.quotes||[]).filter(q=>{
+      const type=String(q.quoteType||"").toUpperCase();
+      const exchange=String(q.exchange||q.exchDisp||"").toUpperCase();
+      return ["EQUITY","ETF"].includes(type) && q.symbol &&
+        (exchange.includes("NASDAQ")||exchange.includes("NYSE")||exchange.includes("AMEX")||exchange.includes("ARCA")||exchange.includes("BATS")||["NMS","NGM","NCM","NYQ","PCX","ASE"].includes(exchange));
+    });
+  }catch(e){
+    console.warn("Yahoo search unavailable:",e);
+  }
+
+  // ค้นหาเสริมจาก TradingView เพื่อให้ Symbol เช่น TSLA และหุ้นอื่น ๆ พบได้ง่ายขึ้น
+  try{
+    const tvQuotes=await searchTradingViewSymbols(raw);
+    for(const item of tvQuotes){
+      if(!quotes.some(q=>String(q.symbol||'').toUpperCase()===item.symbol && normalizeExchangeFromSearch(q)===normalizeExchangeFromSearch(item))){
+        quotes.push(item);
       }
-      render(d);
-      el('status').textContent='ออนไลน์';
-    })
-    .withFailureHandler(e=>{
-      busy=false;
-      fail(e&&e.message?e.message:String(e));
-    })
-    .getGoldDashboardData();
+    }
+  }catch(e){
+    console.warn("TradingView search unavailable:",e);
+  }
+
+  const normalized=normalizeSearchText(raw);
+  const aliasSymbol=STOCK_ALIASES[normalized]||(/^[A-Z0-9.\-]{1,8}$/.test(normalized)?normalized:null);
+  if(aliasSymbol && !quotes.some(q=>String(q.symbol).toUpperCase()===aliasSymbol)){
+    const known=POPULAR_US_STOCKS[aliasSymbol];
+    quotes.unshift({
+      symbol:aliasSymbol,
+      shortname:known?.name||aliasSymbol,
+      longname:known?.name||`Symbol ที่กรอก: ${aliasSymbol}`,
+      quoteType:known?.type||"EQUITY",
+      exchange:known?.exchange||TRADINGVIEW_EXCHANGE_MAP[aliasSymbol]||"",
+      directSymbol:true
+    });
+  }
+
+  // ค้นหาจากรายชื่อหุ้นยอดนิยมในเครื่อง แม้ Yahoo Search ใช้งานไม่ได้
+  const localMatches=Object.entries(POPULAR_US_STOCKS)
+    .filter(([symbol,info])=>symbol.includes(normalized)||info.name.toUpperCase().includes(normalized))
+    .map(([symbol,info])=>({symbol,longname:info.name,shortname:info.name,quoteType:info.type,exchange:info.exchange,directSymbol:true}));
+  for(const item of localMatches.reverse()){
+    if(!quotes.some(q=>String(q.symbol).toUpperCase()===item.symbol))quotes.unshift(item);
+  }
+
+  const seen=new Set();
+  pendingSearchResults=quotes.filter(q=>{
+    const symbol=String(q.symbol||"").toUpperCase();
+    if(!symbol||seen.has(symbol))return false;
+    seen.add(symbol);
+    return true;
+  }).slice(0,10);
+
+  if(!pendingSearchResults.length){
+    box.innerHTML=`<div class="search-result"><b>ไม่พบผลลัพธ์</b><div>ลองพิมพ์ชื่อภาษาอังกฤษหรือ Symbol ให้ชัดเจน เช่น Apple หรือ AAPL</div></div>`;
+    document.getElementById("status").textContent=`ไม่พบ ${raw}`;
+    return;
+  }
+
+  box.innerHTML=pendingSearchResults.map((q,index)=>{
+    const symbol=String(q.symbol||"").toUpperCase();
+    const name=q.longname||q.shortname||symbol;
+    const already=stocks.some(s=>s.symbol===symbol);
+    return `<div class="search-result">
+      <div>
+        <div class="symbol">${escapeHtml(symbol)}</div>
+        <div class="market">${escapeHtml(quoteTypeLabel(q.quoteType))}</div>
+      </div>
+      <div>
+        <b>${escapeHtml(name)}</b>
+        <div class="market">ตลาด: ${escapeHtml(exchangeLabel(q))}${q.tradingView?' • พบจาก TradingView':''}</div>
+        ${q.tradingViewTicker?`<div class="market"><a href="https://th.tradingview.com/chart/?symbol=${encodeURIComponent(q.tradingViewTicker)}" target="_blank" rel="noopener" style="color:#8dc8ff">เปิดตรวจสอบใน TradingView</a></div>`:''}
+      </div>
+      <div class="market">${already?"มีในตารางแล้ว":"รอตรวจสอบราคา"}</div>
+      <button class="${already?"secondary":"primary"}" onclick="addSelectedResult(${index})">${already?"เปิดดู":"ตรวจสอบและเพิ่ม"}</button>
+    </div>`;
+  }).join("");
+
+  document.getElementById("status").textContent=`พบ ${pendingSearchResults.length} รายการ กรุณาเลือกหุ้นที่ชื่อตรงกัน`;
 }
 
-function render(d){
-  el('price').textContent='$'+fmt(d.price);
-  const day=Number(d.dayChangePercent);
-  el('day').textContent=isFinite(day)?sign(day)+'% วันนี้':'ไม่มีราคาปิดก่อนหน้า';
-  el('day').className=day>0?'pos':day<0?'neg':'';
-  el('updated').textContent='อัปเดต: '+(d.updatedAt||'—');
-  el('source').textContent='แหล่งข้อมูล: '+(d.source||'—')+(d.note?' • '+d.note:'');
-  trend('1',d.changes&&d.changes.m1);
-  trend('5',d.changes&&d.changes.m5);
-  trend('15',d.changes&&d.changes.m15);
-  trend('30',d.changes&&d.changes.m30);
-  el('signal').textContent=d.signal||'รอจังหวะ';
-  el('signal').style.color=el('signal').textContent.includes('ซื้อ')?'var(--g)':el('signal').textContent.includes('ขาย')||el('signal').textContent.includes('หลีก')?'var(--r)':'var(--y)';
-  el('buy').textContent=Math.round(d.buyScore||0)+'%';
-  el('sell').textContent=Math.round(d.sellScore||0)+'%';
-  el('sl').textContent='$'+fmt(d.stopLoss);
-  el('tp').textContent='$'+fmt(d.takeProfit);
+async function addSelectedResult(index){
+  const q=pendingSearchResults[index];
+  if(!q)return;
+
+  const symbol=String(q.symbol||"").toUpperCase();
+  const searchedName=q.longname||q.shortname||symbol;
+  const exchangeHint=normalizeExchangeFromSearch(q);
+  const button=document.querySelectorAll("#searchResults button")[index];
+
+  const existing=stocks.find(s=>s.symbol===symbol);
+  if(existing){
+    selectChartSymbol(symbol,existing.tvExchange||exchangeHint||"NASDAQ");
+    document.getElementById("status").textContent=`มี ${existing.name||symbol} (${symbol}) อยู่ในตารางแล้ว`;
+    return;
+  }
+
+  if(button){button.disabled=true;button.textContent="กำลังตรวจสอบ..."}
+  document.getElementById("status").textContent=`กำลังตรวจสอบว่า ${searchedName} ตรงกับ ${symbol}`;
+
+  const checked=await validateSymbol(symbol);
+  const known=POPULAR_US_STOCKS[symbol];
+
+  // หากแหล่งราคาถูกบล็อกด้วย CORS แต่ Symbol อยู่ในรายชื่อที่รู้จัก
+  // ให้เพิ่มหุ้นก่อนได้ แล้วระบบจะลองอัปเดตราคาใหม่ภายหลัง
+  if(!checked.valid && !known){
+    if(button){button.disabled=false;button.textContent="ลองอีกครั้ง"}
+    document.getElementById("status").textContent=`ยังตรวจสอบ ${symbol} ไม่สำเร็จ`;
+    alert(`ยังยืนยัน Symbol ${symbol} ไม่ได้ กรุณาตรวจสอบตัวสะกด หรือลองกรอกชื่อบริษัทภาษาอังกฤษ`);
+    return;
+  }
+
+  const result=checked.result||{meta:{},closes:[],source:"รออัปเดตราคา"};
+  const meta=result.meta||{};
+  const closes=result.closes||[];
+  const confirmedSymbol=String(meta.symbol||symbol).toUpperCase();
+  const confirmedName=meta.longName||meta.shortName||known?.name||searchedName||symbol;
+  const exchange=tradingViewExchange(meta,exchangeHint||known?.exchange||TRADINGVIEW_EXCHANGE_MAP[symbol]||"");
+
+  if(checked.valid && confirmedSymbol!==symbol){
+    if(button){button.disabled=false;button.textContent="ตรวจสอบและเพิ่ม"}
+    alert(`ข้อมูลไม่ตรงกัน: ค้นหา ${symbol} แต่แหล่งราคาเป็น ${confirmedSymbol} ระบบจึงไม่เพิ่มหุ้น`);
+    return;
+  }
+
+  const item={
+    symbol,
+    name:confirmedName,
+    dividend:DIVIDEND_FREQUENCY[symbol]||inferDividendFrequency(symbol,meta.instrumentType||meta.quoteType||q.quoteType||""),
+    dividendSource:DIVIDEND_FREQUENCY[symbol]?"รูปแบบการจ่ายปกติ":"ควรตรวจสอบประกาศล่าสุด",
+    dimeStatus:"ตรวจในแอป",
+    expectedUpside:0,
+    watchReason:`เพิ่มจากผลค้นหา: ${searchedName}`,
+    price:meta.regularMarketPrice??closes.at(-1)??null,
+    prev:meta.chartPreviousClose??closes.at(-2)??null,
+    sma20:avg(closes.slice(-20)),
+    sma50:avg(closes.slice(-50)),
+    exchangeHint,
+    tvExchange:exchange,
+    dataSource:result.source,
+    updated:new Date().toISOString()
+  };
+
+  stocks.push(item);
+  save();
+  render();
+  selectChartSymbol(symbol,exchange);
+  document.getElementById("search").value="";
+  document.getElementById("searchResults").style.display="none";
+  document.getElementById("status").textContent=`ตรวจสอบแล้วและเพิ่ม ${confirmedName} (${symbol}) สำเร็จ`;
 }
 
-function trend(id,v){
-  const n=Number(v),t=el('t'+id),c=el('c'+id);
-  if(!isFinite(n)){t.textContent='ไม่มีข้อมูล';c.textContent='—';return}
-  t.textContent=n>.015?'กำลังขึ้น':n<-.015?'กำลังลง':'ทรงตัว';
-  t.style.color=n>.015?'var(--g)':n<-.015?'var(--r)':'var(--y)';
-  c.textContent=sign(n)+'%';
+async function addFromSearch(){
+  return showSearchResults();
 }
 
-function fail(message,details){
-  el('err').style.display='block';
-  el('err').textContent=message+(details?'\n'+details:'');
-  el('status').textContent='ผิดพลาด';
+
+
+function renderTradingView(symbol,exchange="NASDAQ"){
+  const el=document.getElementById("tv_chart");
+  if(!el)return;
+  el.innerHTML="";
+  const script=document.createElement("script");
+  script.src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js";
+  script.async=true;
+  script.text=JSON.stringify({
+    autosize:true,
+    symbol:`${exchange}:${symbol}`,
+    interval:"D",
+    timezone:"Asia/Bangkok",
+    theme:"dark",
+    style:"1",
+    locale:"th_TH",
+    allow_symbol_change:true,
+    calendar:false,
+    support_host:"https://www.tradingview.com"
+  });
+  el.appendChild(script);
 }
-function fmt(n){return isFinite(Number(n))?Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'—'}
-function sign(n){return(n>=0?'+':'')+Number(n).toFixed(3)}
-</script></body></html>
+
+function selectChartSymbol(symbol,exchange="NASDAQ"){
+  const title=document.getElementById("chartTitle");
+  if(title)title.textContent=`กราฟ TradingView — ${exchange}:${symbol}`;
+  renderTradingView(symbol,exchange);
+  document.getElementById("status").textContent=`กำลังแสดงกราฟ ${symbol}`;
+}
+
+function resetData(){
+  if(confirm("คืนค่ารายการเริ่มต้นหรือไม่?")){
+    stocks=structuredClone(DEFAULTS);
+    save();
+    render();
+    selectChartSymbol("NVDA","NASDAQ");
+    refreshAll();
+  }
+}
+
+document.getElementById("search").addEventListener("keydown",e=>{if(e.key==="Enter")showSearchResults()});
+renderHotStocks();
+render();
+renderTradingView("NVDA","NASDAQ");
+refreshAll();
+
+setInterval(()=>{
+  secondsToRefresh--;
+  document.getElementById("countdown").textContent=`อัปเดตอีก ${Math.max(secondsToRefresh,0)} วินาที`;
+  if(secondsToRefresh<=0){secondsToRefresh=60;refreshAll()}
+},1000);
+
+window.addEventListener("focus",()=>{secondsToRefresh=60;refreshAll()});
+window.addEventListener("online",()=>{secondsToRefresh=60;refreshAll()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden){secondsToRefresh=60;refreshAll()}});
+</script>
+</body>
+</html>
