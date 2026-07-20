@@ -86,7 +86,7 @@ th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;
 
 
   <section class="panel" style="margin-top:16px">
-    <h2>หุ้นกำลังมาแรง / โอกาสเติบโต 5 หุ้น</h2>
+    <h2>หุ้นกำลังมาแรง / โอกาสเติบโต 10 หุ้น</h2>
     <div class="filter-buttons">
       <button class="filter-btn active" onclick="setHotFilter('ทั้งหมด',this)">ปันผลทั้งหมด</button>
       <button class="filter-btn" onclick="setHotFilter('รายเดือน',this)">รายเดือน</button>
@@ -113,7 +113,7 @@ th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>หุ้น</th><th>วันนี้</th><th>รูปแบบปันผล</th><th>โอกาสโต</th><th>Dime</th><th>คะแนน</th><th>สัญญาณ</th><th></th></tr></thead>
+            <thead><tr><th>หุ้น</th><th>วันนี้</th><th>รูปแบบปันผล</th><th>โอกาสโต</th><th>คะแนน</th><th>สัญญาณ</th><th></th></tr></thead>
             <tbody id="rows"></tbody>
           </table>
         </div>
@@ -135,8 +135,8 @@ th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;
         <p class="small">เพิ่มหุ้นได้ 2 วิธี: พิมพ์ Symbol เช่น AAPL, COST, O หรือ SGOV แล้วกด “ค้นหาและเพิ่มหุ้น” หรือกดการ์ดในหัวข้อหุ้นกำลังมาแรง ระบบจะเพิ่มลงตารางทันที</p>
       </section>
       <section class="panel">
-        <h2>แหล่งข้อมูลและ Dime</h2>
-        <p class="small">ระบบค้นหา Symbol จากฐานข้อมูลหุ้นและ TradingView ส่วนราคาและเปอร์เซ็นต์วันนี้จะแสดงในกล่อง TradingView โดยตรง โดยเทียบราคาล่าสุดกับราคาปิดวันก่อนหน้า เพื่อลดปัญหาเบราว์เซอร์บล็อกข้อมูล ก่อนซื้อให้ค้นหา Symbol เดียวกันในแอป Dime อีกครั้ง เพราะรายการที่เปิดให้ซื้ออาจเปลี่ยนแปลงได้</p>
+        <h2>แหล่งข้อมูล</h2>
+        <p class="small">ระบบค้นหา Symbol จากฐานข้อมูลหุ้นและ TradingView ส่วนราคาและเปอร์เซ็นต์วันนี้จะแสดงในกล่อง TradingView โดยตรง โดยเทียบราคาล่าสุดกับราคาปิดวันก่อนหน้า เพื่อลดปัญหาเบราว์เซอร์บล็อกข้อมูล</p>
       </section>
     </aside>
   </div>
@@ -149,24 +149,29 @@ th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;
 <script>
 const HOT_STOCKS=[
   {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
+  {symbol:"AMD",name:"Advanced Micro Devices",exchange:"NASDAQ",upside:31,dividend:"ไม่จ่ายปันผล",reason:"ชิปประมวลผลและตัวเร่ง AI"},
   {symbol:"AMZN",name:"Amazon",exchange:"NASDAQ",upside:28,dividend:"ไม่จ่ายปันผล",reason:"AWS คลาวด์ โฆษณา และ AI"},
-  {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
-  {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"},
-  {symbol:"NOW",name:"ServiceNow",exchange:"NYSE",upside:45,dividend:"ไม่จ่ายปันผล",reason:"ซอฟต์แวร์องค์กรและ AI Workflow"}
+  {symbol:"GOOGL",name:"Alphabet",exchange:"NASDAQ",upside:25,dividend:"รายไตรมาส",reason:"โฆษณา คลาวด์ และ Gemini AI"},
+  {symbol:"META",name:"Meta Platforms",exchange:"NASDAQ",upside:24,dividend:"รายไตรมาส",reason:"โฆษณาดิจิทัลและโครงสร้างพื้นฐาน AI"},
+  {symbol:"AVGO",name:"Broadcom",exchange:"NASDAQ",upside:26,dividend:"รายไตรมาส",reason:"ชิปเครือข่าย AI และซอฟต์แวร์องค์กร"},
+  {symbol:"TTD",name:"The Trade Desk",exchange:"NASDAQ",upside:30,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มโฆษณาดิจิทัล"},
+  {symbol:"CRWD",name:"CrowdStrike",exchange:"NASDAQ",upside:29,dividend:"ไม่จ่ายปันผล",reason:"ความปลอดภัยไซเบอร์บนคลาวด์"},
+  {symbol:"PLTR",name:"Palantir Technologies",exchange:"NASDAQ",upside:24,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มข้อมูลและปัญญาประดิษฐ์"},
+  {symbol:"UBER",name:"Uber Technologies",exchange:"NYSE",upside:27,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มเดินทางและจัดส่งระดับโลก"}
 ];
 
 const DEFAULTS=[
   {symbol:"NVDA",name:"NVIDIA",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:44,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"AMZN",name:"Amazon",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:28,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"MSFT",name:"Microsoft",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:45,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"ASML",name:"ASML Holding",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:49,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"NOW",name:"ServiceNow",dividend:"ไม่จ่ายปันผล",tvExchange:"NYSE",expectedUpside:45,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
   {symbol:"AMD",name:"Advanced Micro Devices",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:31,watchReason:"นักวิเคราะห์บางสำนักประเมินมากกว่า 20%"},
+  {symbol:"AMZN",name:"Amazon",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:28,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"GOOGL",name:"Alphabet",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:25,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"META",name:"Meta Platforms",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:24,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
   {symbol:"AVGO",name:"Broadcom",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:26,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"TTD",name:"The Trade Desk",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:30,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
+  {symbol:"CRWD",name:"CrowdStrike",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:29,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
   {symbol:"PLTR",name:"Palantir Technologies",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:24,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"GEN",name:"Gen Digital",dividend:"รายไตรมาส",tvExchange:"NASDAQ",expectedUpside:48,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"},
-  {symbol:"TSEM",name:"Tower Semiconductor",dividend:"ไม่จ่ายปันผล",tvExchange:"NASDAQ",expectedUpside:40,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"}
-].map(x=>({...x,price:null,prev:null,sma20:null,sma50:null,dividendSource:"รูปแบบการจ่ายปกติ",dimeStatus:"ตรวจในแอป"}));
+  {symbol:"UBER",name:"Uber Technologies",dividend:"ไม่จ่ายปันผล",tvExchange:"NYSE",expectedUpside:27,watchReason:"ราคาเป้าหมายนักวิเคราะห์มากกว่า 20%"}
+].map(x=>({...x,price:null,prev:null,sma20:null,sma50:null,dividendSource:"รูปแบบการจ่ายปกติ"}));
 
 const DIVIDEND_FREQUENCY={
   COST:"รายไตรมาส",SGOV:"รายเดือน",JEPI:"รายเดือน",JEPQ:"รายเดือน",O:"รายเดือน",MAIN:"รายเดือน",
@@ -179,10 +184,10 @@ const DIVIDEND_FREQUENCY={
   V:"รายไตรมาส",MA:"รายไตรมาส",ASML:"รายไตรมาส",MSFT:"รายไตรมาส",AVGO:"รายไตรมาส",GEN:"รายไตรมาส"
 };
 
-let stocks=JSON.parse(localStorage.getItem("stockDashboardV22")||"null")||DEFAULTS;
+let stocks=JSON.parse(localStorage.getItem("stockDashboardV23")||"null")||DEFAULTS;
 let busy=false,secondsToRefresh=60;
 
-function save(){localStorage.setItem("stockDashboardV22",JSON.stringify(stocks))}
+function save(){localStorage.setItem("stockDashboardV23",JSON.stringify(stocks))}
 function avg(a){return a.length?a.reduce((x,y)=>x+y,0)/a.length:null}
 function fmt(n,d=2){return Number.isFinite(Number(n))?Number(n).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d}):"—"}
 
@@ -204,31 +209,51 @@ function signal(s){const n=score(s);return n>=70?["เข้าซื้อ","bu
 const HOT_STOCK_POOLS={
   "ทั้งหมด":[
     {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
+    {symbol:"AMD",name:"Advanced Micro Devices",exchange:"NASDAQ",upside:31,dividend:"ไม่จ่ายปันผล",reason:"ชิปประมวลผลและตัวเร่ง AI"},
     {symbol:"AMZN",name:"Amazon",exchange:"NASDAQ",upside:28,dividend:"ไม่จ่ายปันผล",reason:"AWS คลาวด์ โฆษณา และ AI"},
-    {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
-    {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"},
-    {symbol:"NOW",name:"ServiceNow",exchange:"NYSE",upside:45,dividend:"ไม่จ่ายปันผล",reason:"ซอฟต์แวร์องค์กรและ AI Workflow"}
+    {symbol:"GOOGL",name:"Alphabet",exchange:"NASDAQ",upside:25,dividend:"รายไตรมาส",reason:"โฆษณา คลาวด์ และ Gemini AI"},
+    {symbol:"META",name:"Meta Platforms",exchange:"NASDAQ",upside:24,dividend:"รายไตรมาส",reason:"โฆษณาดิจิทัลและโครงสร้างพื้นฐาน AI"},
+    {symbol:"AVGO",name:"Broadcom",exchange:"NASDAQ",upside:26,dividend:"รายไตรมาส",reason:"ชิปเครือข่าย AI และซอฟต์แวร์องค์กร"},
+    {symbol:"TTD",name:"The Trade Desk",exchange:"NASDAQ",upside:30,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มโฆษณาดิจิทัล"},
+    {symbol:"CRWD",name:"CrowdStrike",exchange:"NASDAQ",upside:29,dividend:"ไม่จ่ายปันผล",reason:"ความปลอดภัยไซเบอร์บนคลาวด์"},
+    {symbol:"PLTR",name:"Palantir Technologies",exchange:"NASDAQ",upside:24,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มข้อมูลและปัญญาประดิษฐ์"},
+    {symbol:"UBER",name:"Uber Technologies",exchange:"NYSE",upside:27,dividend:"ไม่จ่ายปันผล",reason:"แพลตฟอร์มเดินทางและจัดส่งระดับโลก"}
   ],
   "รายเดือน":[
     {symbol:"O",name:"Realty Income",exchange:"NYSE",upside:20,dividend:"รายเดือน",reason:"REIT รายได้ค่าเช่าและจ่ายรายเดือน"},
     {symbol:"MAIN",name:"Main Street Capital",exchange:"NYSE",upside:20,dividend:"รายเดือน",reason:"BDC และกระแสเงินสดรายเดือน"},
     {symbol:"JEPI",name:"JPMorgan Equity Premium Income ETF",exchange:"AMEX",upside:20,dividend:"รายเดือน",reason:"ETF เน้นรายได้รายเดือน"},
     {symbol:"JEPQ",name:"JPMorgan Nasdaq Equity Premium Income ETF",exchange:"NASDAQ",upside:20,dividend:"รายเดือน",reason:"ETF Nasdaq เน้นรายได้รายเดือน"},
-    {symbol:"SGOV",name:"iShares 0-3 Month Treasury Bond ETF",exchange:"AMEX",upside:0,dividend:"รายเดือน",reason:"พักเงินระยะสั้นและจ่ายรายเดือน"}
+    {symbol:"SGOV",name:"iShares 0-3 Month Treasury Bond ETF",exchange:"AMEX",upside:0,dividend:"รายเดือน",reason:"พักเงินระยะสั้นและจ่ายรายเดือน"},
+    {symbol:"AGNC",name:"AGNC Investment",exchange:"NASDAQ",upside:18,dividend:"รายเดือน",reason:"REIT สินเชื่อที่อยู่อาศัยและรายได้รายเดือน"},
+    {symbol:"STAG",name:"STAG Industrial",exchange:"NYSE",upside:18,dividend:"รายเดือน",reason:"REIT อสังหาริมทรัพย์อุตสาหกรรม"},
+    {symbol:"ADC",name:"Agree Realty",exchange:"NYSE",upside:18,dividend:"รายเดือน",reason:"REIT ร้านค้าปลีกสัญญาเช่าระยะยาว"},
+    {symbol:"EPR",name:"EPR Properties",exchange:"NYSE",upside:18,dividend:"รายเดือน",reason:"REIT กลุ่มสถานบันเทิงและประสบการณ์"},
+    {symbol:"LTC",name:"LTC Properties",exchange:"NYSE",upside:18,dividend:"รายเดือน",reason:"REIT ที่อยู่อาศัยและดูแลผู้สูงอายุ"}
   ],
   "รายไตรมาส":[
     {symbol:"NVDA",name:"NVIDIA",exchange:"NASDAQ",upside:44,dividend:"รายไตรมาส",reason:"ชิป AI และศูนย์ข้อมูล"},
     {symbol:"MSFT",name:"Microsoft",exchange:"NASDAQ",upside:45,dividend:"รายไตรมาส",reason:"Azure, Copilot และซอฟต์แวร์องค์กร"},
     {symbol:"AVGO",name:"Broadcom",exchange:"NASDAQ",upside:26,dividend:"รายไตรมาส",reason:"ชิปเครือข่าย AI และซอฟต์แวร์"},
     {symbol:"META",name:"Meta Platforms",exchange:"NASDAQ",upside:23,dividend:"รายไตรมาส",reason:"โฆษณาดิจิทัลและ AI"},
-    {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"}
+    {symbol:"ASML",name:"ASML Holding",exchange:"NASDAQ",upside:49,dividend:"รายไตรมาส",reason:"เครื่องจักรผลิตชิปขั้นสูง"},
+    {symbol:"AAPL",name:"Apple",exchange:"NASDAQ",upside:22,dividend:"รายไตรมาส",reason:"ระบบนิเวศอุปกรณ์และบริการ"},
+    {symbol:"GOOGL",name:"Alphabet",exchange:"NASDAQ",upside:25,dividend:"รายไตรมาส",reason:"โฆษณา คลาวด์ และ AI"},
+    {symbol:"JPM",name:"JPMorgan Chase",exchange:"NYSE",upside:20,dividend:"รายไตรมาส",reason:"ธนาคารขนาดใหญ่และฐานรายได้หลากหลาย"},
+    {symbol:"COST",name:"Costco Wholesale",exchange:"NASDAQ",upside:20,dividend:"รายไตรมาส",reason:"สมาชิกค้าปลีกและกระแสเงินสดแข็งแรง"},
+    {symbol:"V",name:"Visa",exchange:"NYSE",upside:22,dividend:"รายไตรมาส",reason:"เครือข่ายการชำระเงินระดับโลก"}
   ],
   "รายปี":[
     {symbol:"BABA",name:"Alibaba Group",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"อีคอมเมิร์ซและคลาวด์"},
     {symbol:"NVO",name:"Novo Nordisk",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"ยารักษาเบาหวานและโรคอ้วน"},
     {symbol:"SONY",name:"Sony Group",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"เกม เซนเซอร์ และคอนเทนต์"},
     {symbol:"TM",name:"Toyota Motor",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"รถยนต์ไฮบริดและกระแสเงินสด"},
-    {symbol:"SNY",name:"Sanofi",exchange:"NASDAQ",upside:20,dividend:"รายปี",reason:"ยาและวัคซีน"}
+    {symbol:"SNY",name:"Sanofi",exchange:"NASDAQ",upside:20,dividend:"รายปี",reason:"ยาและวัคซีน"},
+    {symbol:"UBS",name:"UBS Group",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"บริหารความมั่งคั่งและบริการการเงิน"},
+    {symbol:"SAP",name:"SAP",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"ซอฟต์แวร์องค์กรและคลาวด์"},
+    {symbol:"DEO",name:"Diageo",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"สินค้าอุปโภคบริโภคและแบรนด์เครื่องดื่ม"},
+    {symbol:"HMC",name:"Honda Motor",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"รถยนต์ รถจักรยานยนต์ และเทคโนโลยีการเดินทาง"},
+    {symbol:"PKX",name:"POSCO Holdings",exchange:"NYSE",upside:20,dividend:"รายปี",reason:"เหล็ก วัสดุอุตสาหกรรม และแบตเตอรี่"}
   ]
 };
 
@@ -272,7 +297,6 @@ function addHotStockObject(symbol,name,exchange,upside,dividend,reason){
     name:name||symbol,
     dividend:dividend||DIVIDEND_FREQUENCY[symbol]||"ต้องตรวจสอบล่าสุด",
     dividendSource:"รูปแบบการจ่ายปกติ",
-    dimeStatus:"ตรวจในแอป",
     expectedUpside:Number(upside)||0,
     watchReason:reason||"หุ้นที่เพิ่มจากรายการแนะนำ",
     price:null,prev:null,sma20:null,sma50:null,
@@ -416,10 +440,6 @@ function render(){
           <div class="name">คาดการณ์ 3–6 เดือน: ${growthTrendLabel(future)}</div>
           <div class="name">ย้อนหลัง 6 เดือน: ${hist===null?'—':(hist>=0?'+':'')+fmt(hist,1)+'%'}</div>`;
         })()}
-      </td>
-      <td>
-        <b>${s.dimeStatus||"ตรวจในแอป"}</b>
-        <div class="name">ค้นหา ${s.symbol} ใน Dime ก่อนซื้อ</div>
       </td>
       <td>
         ${s.price&&s.sma20&&s.sma50?`<b>${sc}/100</b><div class="scorebar"><i style="width:${sc}%"></i></div>`:`<b>—</b><div class="name">ดูกราฟประกอบ</div>`}
@@ -586,7 +606,6 @@ async function refreshOne(i){
   s.tvExchange=tradingViewExchange(meta,s.exchangeHint);
   s.dividend=inferDividendFrequency(s.symbol,meta.instrumentType||meta.quoteType||"");
   s.dividendSource=DIVIDEND_FREQUENCY[s.symbol]?"รูปแบบการจ่ายปกติ":"ควรตรวจสอบประกาศล่าสุด";
-  s.dimeStatus="ตรวจในแอป";
   s.dataSource=result.source;
   s.updated=new Date().toISOString();
 }
@@ -984,7 +1003,6 @@ async function addSelectedResult(index){
     name:confirmedName,
     dividend:DIVIDEND_FREQUENCY[symbol]||inferDividendFrequency(symbol,meta.instrumentType||meta.quoteType||q.quoteType||""),
     dividendSource:DIVIDEND_FREQUENCY[symbol]?"รูปแบบการจ่ายปกติ":"ควรตรวจสอบประกาศล่าสุด",
-    dimeStatus:"ตรวจในแอป",
     expectedUpside:0,
     watchReason:`เพิ่มจากผลค้นหา: ${searchedName}`,
     price:meta.regularMarketPrice??closes.at(-1)??null,
