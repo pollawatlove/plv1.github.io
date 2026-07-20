@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>จัดอันดับเลขที่มี</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap');
+    :root{
+      --bg:#07111f;--panel:#0e1b2d;--panel2:#13243a;--line:#243956;
+      --text:#f4f7fb;--muted:#91a4bc;--green:#32d583;--blue:#4da3ff;
+      --violet:#9b8cff;--orange:#ffb24d;--red:#ff667d;--shadow:0 20px 60px rgba(0,0,0,.28)
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;color:var(--text);font-family:"Prompt",sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%,rgba(77,163,255,.16),transparent 35%),
+        radial-gradient(circle at 90% 5%,rgba(155,140,255,.15),transparent 30%),
+        var(--bg)
+    }
+    button,input,select{font:inherit}
+    .wrap{width:min(1440px,calc(100% - 28px));margin:auto;padding:22px 0 44px}
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .brand{display:flex;align-items:center;gap:13px}
+    .logo{
+      width:48px;height:48px;border-radius:15px;display:grid;place-items:center;font-size:25px;
+      background:linear-gradient(135deg,var(--blue),var(--violet));box-shadow:0 12px 30px rgba(77,163,255,.3)
+    }
+    h1{font-size:clamp(20px,3vw,31px);line-height:1.2;margin:0;font-weight:800}
+    .subtitle{font-size:13px;color:var(--muted);margin-top:4px}
+    .status{
+      display:flex;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);
+      border-radius:999px;background:rgba(14,27,45,.82);font-size:12px;color:var(--muted)
+    }
+    .dot{width:9px;height:9px;border-radius:50%;background:var(--orange);box-shadow:0 0 0 4px rgba(255,178,77,.1)}
+    .dot.ok{background:var(--green);box-shadow:0 0 0 4px rgba(50,213,131,.1)}
+    .hero{
+      display:grid;grid-template-columns:1.4fr .8fr;gap:16px;
+      background:linear-gradient(120deg,rgba(20,42,69,.97),rgba(13,29,50,.96));
+      border:1px solid var(--line);border-radius:24px;padding:24px;box-shadow:var(--shadow);overflow:hidden;position:relative
+    }
+    .hero:after{
+      content:"";position:absolute;width:320px;height:320px;border-radius:50%;right:-130px;top:-170px;
+      background:linear-gradient(135deg,rgba(77,163,255,.2),rgba(155,140,255,.12))
+    }
+    .hero h2{font-size:clamp(23px,4vw,40px);line-height:1.2;margin:0 0 9px}
+    .hero p{color:var(--muted);font-size:14px;max-width:680px;margin:0}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+    .btn{
+      border:0;border-radius:12px;padding:11px 16px;color:#fff;font-weight:600;cursor:pointer;
+      transition:.2s transform,.2s filter;display:inline-flex;align-items:center;gap:8px
+    }
+    .btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+    .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+    .primary{background:linear-gradient(135deg,#237eea,#7657ef)}
+    .success{background:linear-gradient(135deg,#16a66a,#28c786)}
+    .ghost{background:#192d47;border:1px solid #2d4667}
+    .heroStats{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:1}
+    .mini{padding:16px;background:rgba(7,17,31,.48);border:1px solid rgba(255,255,255,.08);border-radius:16px}
+    .mini b{display:block;font-size:25px}.mini span{color:var(--muted);font-size:12px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+    .card{background:rgba(14,27,45,.94);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow)}
+    .cardHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .card h3{font-size:16px;margin:0}.tag{font-size:11px;padding:5px 9px;border-radius:999px;background:#17314f;color:#91c6ff}
+    .prediction{display:flex;align-items:center;gap:12px;padding:13px;border-radius:15px;background:#101f33;margin-top:9px}
+    .rank{width:27px;height:27px;border-radius:8px;display:grid;place-items:center;background:#203954;color:#b8cee8;font-weight:700;font-size:12px}
+    .number{font-size:27px;font-weight:800;letter-spacing:3px;min-width:86px}
+    .scorebox{flex:1}
+    .scoreline{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-bottom:6px}
+    .bar{height:7px;border-radius:999px;background:#203047;overflow:hidden}.fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue),var(--violet))}
+    .section{margin-top:16px;display:grid;grid-template-columns:1.25fr .75fr;gap:16px}
+    .tableWrap{overflow:auto;max-height:500px;border-radius:13px;border:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;min-width:730px;background:#0d1a2b}
+    th,td{text-align:center;padding:11px 12px;border-bottom:1px solid #1d304a;font-size:12px;white-space:nowrap}
+    th{position:sticky;top:0;background:#14263d;color:#a9bed5;z-index:2}
+    td:first-child{text-align:left}.pill{display:inline-block;padding:4px 8px;border-radius:8px;background:#183451;margin:2px;font-weight:600}
+    .log{height:260px;overflow:auto;background:#081421;border:1px solid #1d304a;border-radius:13px;padding:13px;font:12px/1.75 ui-monospace,monospace;color:#9fb7ce}
+    .log .good{color:#57dfa1}.log .bad{color:#ff8295}.log .info{color:#70b9ff}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:13px}
+    label{font-size:12px;color:var(--muted)}
+    select,input{width:100%;margin-top:6px;background:#101f33;border:1px solid #29415f;color:#fff;border-radius:10px;padding:9px}
+    .notice{margin-top:16px;padding:14px 16px;border-radius:14px;background:rgba(255,178,77,.08);border:1px solid rgba(255,178,77,.23);font-size:12px;color:#d6c4a7}
+    .loading{animation:pulse 1s infinite alternate}@keyframes pulse{to{opacity:.5}}
+    .empty{color:var(--muted);font-size:12px;text-align:center;padding:22px}
+    @media(max-width:950px){.hero,.section{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.heroStats{margin-top:8px}}
+    @media(max-width:560px){.topbar{align-items:flex-start;flex-direction:column}.hero{padding:18px}.heroStats{grid-template-columns:1fr 1fr}.controls .btn{flex:1;justify-content:center}.wrap{width:min(100% - 18px,1440px)}}
+.page-switcher{position:fixed;top:14px;right:14px;z-index:9999;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;padding:8px;background:rgba(8,17,31,.92);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:0 10px 30px #0008;backdrop-filter:blur(10px)}
+.page-switcher a{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:9px;background:#17304d;color:#f4f7fb;font-size:13px;font-weight:800;text-decoration:none;transition:.2s}
+.page-switcher a:hover{transform:translateY(-1px);border-color:#7c5cff}.page-switcher a[aria-current="page"]{background:#7c5cff;border-color:#7c5cff;color:#fff}
+@media(max-width:700px){.page-switcher{top:auto;right:10px;bottom:10px;left:10px;justify-content:center}.page-switcher a{flex:1;padding:9px 6px;font-size:12px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo">◉</div>
+      <div><h1>Sanook Lotto AI Dashboard</h1><div class="subtitle">วิเคราะห์เลขหน้า 3 ตัว เลขท้าย 3 ตัว และเลขท้าย 2 ตัว จากสถิติย้อนหลัง</div></div>
+    </div>
+    <div class="status"><i class="dot" id="statusDot"></i><span id="statusText">พร้อมใช้งาน</span></div>
+  </div>
+
+  <section class="hero">
+    <div>
+      <h2>จัดอันดับเลขที่มี<br>แนวโน้มทางสถิติ</h2>
+      <p>ดึงข้อมูลย้อนหลังจากหน้า Sanook อย่างรวดเร็ว วิเคราะห์ความถี่ ความสดของข้อมูล ระยะห่าง และแนวโน้มรายหลัก แล้วจัดอันดับด้วย AI Score</p>
+      <div class="controls">
+        <button class="btn primary" id="fetchBtn" onclick="fetchAll()">↻ ดึงข้อมูลจาก Sanook</button>
+        <button class="btn success" id="analyzeBtn" onclick="analyze()">✦ วิเคราะห์เลข</button>
+        <button class="btn ghost" onclick="exportCSV()">⇩ ส่งออก CSV</button>
+        <button class="btn ghost" onclick="clearCache()">⌫ ล้างข้อมูล</button>
+      </div>
+    </div>
+    <div class="heroStats">
+      <div class="mini"><b id="drawCount">0</b><span>งวดที่ใช้วิเคราะห์</span></div>
+      <div class="mini"><b id="lastDate">–</b><span>ข้อมูลงวดล่าสุด</span></div>
+      <div class="mini"><b id="sourceMode">รอ</b><span>แหล่งข้อมูล</span></div>
+      <div class="mini"><b id="updatedAt">–</b><span>อัปเดตล่าสุด</span></div>
+    </div>
+  </section>
+
+  <div class="grid">
+    <div class="card"><div class="cardHead"><h3>เลขหน้า 3 ตัว</h3><span class="tag">TOP 5</span></div><div id="frontPred"><div class="empty">กด “วิเคราะห์เลข”</div></div></div>
+    <div class="card"><div class="cardHead"><h3>เลขท้าย 3 ตัว</h3><span class="tag">TOP 5</span></div><div id="backPred"><div class="empty">กด “วิเคราะห์เลข”</div></div></div>
+    <div class="card"><div class="cardHead"><h3>เลขท้าย 2 ตัว</h3><span class="tag">TOP 5</span></div><div id="twoPred"><div class="empty">กด “วิเคราะห์เลข”</div></div></div>
+  </div>
+
+  <section class="section">
+    <div class="card">
+      <div class="cardHead"><h3>ตารางผลสลากย้อนหลัง</h3><span class="tag" id="tableBadge">0 รายการ</span></div>
+      <div class="tableWrap">
+        <table>
+          <thead><tr><th>งวดวันที่</th><th>รางวัลที่ 1</th><th>เลขหน้า 3 ตัว</th><th>เลขท้าย 3 ตัว</th><th>เลขท้าย 2 ตัว</th></tr></thead>
+          <tbody id="historyBody"><tr><td colspan="5" class="empty">ยังไม่มีข้อมูล</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="cardHead"><h3>ตั้งค่าและสถานะ</h3><span class="tag">LIVE</span></div>
+      <div class="options">
+        <label>จำนวนหน้าที่ดึง
+          <select id="pageCount"><option value="3">3 หน้า (เร็ว)</option><option value="6" selected>6 หน้า</option><option value="10">10 หน้า (ละเอียด)</option></select>
+        </label>
+        <label>เดือนที่ต้องการวิเคราะห์
+          <select id="monthSelect">
+            <option value="1">มกราคม</option><option value="2">กุมภาพันธ์</option>
+            <option value="3">มีนาคม</option><option value="4">เมษายน</option>
+            <option value="5">พฤษภาคม</option><option value="6">มิถุนายน</option>
+            <option value="7">กรกฎาคม</option><option value="8">สิงหาคม</option>
+            <option value="9">กันยายน</option><option value="10">ตุลาคม</option>
+            <option value="11">พฤศจิกายน</option><option value="12">ธันวาคม</option>
+          </select>
+        </label>
+        <label>จำนวนงวดวิเคราะห์
+          <select id="windowSize"><option value="24">24 งวด</option><option value="50" selected>50 งวด</option><option value="100">100 งวด</option><option value="9999">ทั้งหมด</option></select>
+        </label>
+      </div>
+      <div class="log" id="log"><div class="info">ระบบพร้อมทำงาน</div></div>
+      <div class="notice">หมายเหตุ: AI Score เป็นคะแนนจัดอันดับจากสถิติย้อนหลัง ไม่ใช่ความน่าจะเป็นถูกรางวัล และไม่สามารถรับประกันผลสลากได้</div>
+    </div>
+  </section>
+</div>
+
+<script>
+const SANOOK = 'https://news.sanook.com/lotto/archive/';
+let draws = [];
+const fallback = [
+['16 กรกฎาคม 2569','639214',['683','709'],['746','427'],'71'],
+['1 กรกฎาคม 2569','751495',['001','980'],['304','531'],'62'],
+['16 มิถุนายน 2569','287184',['758','434'],['007','721'],'48'],
+['1 มิถุนายน 2569','173770',['848','415'],['410','938'],'95'],
+['16 พฤษภาคม 2569','107387',['091','298'],['602','716'],'08'],
+['2 พฤษภาคม 2569','536077',['267','318'],['065','153'],'43'],
+['16 เมษายน 2569','309612',['355','108'],['868','424'],'77'],
+['1 เมษายน 2569','292514',['406','113'],['851','098'],'47'],
+['16 มีนาคม 2569','833009',['510','983'],['439','954'],'64'],
+['1 มีนาคม 2569','820866',['479','054'],['068','837'],'06'],
+['16 กุมภาพันธ์ 2569','340563',['527','241'],['578','169'],'07'],
+['1 กุมภาพันธ์ 2569','174629',['917','195'],['408','041'],'48'],
+['17 มกราคม 2569','878972',['299','815'],['662','363'],'02'],
+['2 มกราคม 2569','837706',['347','694'],['288','765'],'16'],
+['16 ธันวาคม 2568','763895',['431','176'],['014','449'],'52'],
+['1 ธันวาคม 2568','461252',['655','389'],['137','995'],'22'],
+['16 พฤศจิกายน 2568','458145',['242','602'],['239','389'],'37'],
+['1 พฤศจิกายน 2568','345898',['449','328'],['111','690'],'87'],
+['16 ตุลาคม 2568','059696',['531','955'],['476','889'],'61']].map(x=>({date:x[0],first:x[1],front:x[2],back:x[3],two:x[4]}));
+
+function log(msg,type='info'){
+  const el=document.getElementById('log'), d=document.createElement('div');
+  d.className=type; d.textContent='['+new Date().toLocaleTimeString('th-TH')+'] '+msg;
+  el.prepend(d);
+}
+function status(text,ok=false){
+  document.getElementById('statusText').textContent=text;
+  document.getElementById('statusDot').className='dot'+(ok?' ok':'');
+}
+function normalizeDigits(s){
+  const th='๐๑๒๓๔๕๖๗๘๙'; return String(s||'').replace(/[๐-๙]/g,c=>th.indexOf(c));
+}
+function cleanText(raw){
+  const value=String(raw||'');
+  if(!/[<>][a-z!/]/i.test(value)){
+    return normalizeDigits(value.replace(/[#*_`>|\[\]()]/g,' ').replace(/\s+/g,' ').trim());
+  }
+  const doc=new DOMParser().parseFromString(value,'text/html');
+  doc.querySelectorAll('script,style,noscript,svg').forEach(x=>x.remove());
+  return normalizeDigits(doc.body.innerText.replace(/\s+/g,' ').trim());
+}
+function parseSanook(html){
+  const text=cleanText(html), out=[];
+  const re=/(?:ตรวจสลากกินแบ่งรัฐบาล|ตรวจหวย)[^]{0,120}?งวด(?:วันที่|ประจำวันที่)?\s*([0-9]{1,2}\s*[^\d\s]{2,15}\s*(?:25)?[0-9]{2,4})[^]{0,260}?รางวัลที่\s*1\s*([0-9]{6})[^]{0,180}?เลขหน้า\s*3\s*ตัว\s*([0-9]{3})\s*([0-9]{3})[^]{0,180}?เลขท้าย\s*3\s*ตัว\s*([0-9]{3})\s*([0-9]{3})[^]{0,120}?เลขท้าย\s*2\s*ตัว\s*([0-9]{2})/g;
+  let m;
+  while((m=re.exec(text))!==null) out.push({date:m[1].trim(),first:m[2],front:[m[3],m[4]],back:[m[5],m[6]],two:m[7]});
+  return out;
+}
+function parseCurrentDraw(raw){
+  const text=cleanText(raw);
+  const dateMatch=text.match(/(?:งวดวันที่|งวดประจำวันที่)\s*([0-9]{1,2}\s*(?:มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม)\s*25[0-9]{2})/);
+  const firstMatch=text.match(/รางวัลที่\s*1(?:\s*รางวัลละ[\s\S]{0,40}?)?\s*([0-9]{6})(?![0-9])/);
+  const frontMatch=text.match(/เลขหน้า\s*3\s*ตัว(?:\s*2\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{3})\s+([0-9]{3})(?![0-9])/);
+  const backMatch=text.match(/เลขท้าย\s*3\s*ตัว(?:\s*2\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{3})\s+([0-9]{3})(?![0-9])/);
+  const twoMatch=text.match(/เลขท้าย\s*2\s*ตัว(?:\s*1\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{2})(?![0-9])/);
+  if(!dateMatch||!firstMatch||!frontMatch||!backMatch||!twoMatch) return [];
+  const result={date:dateMatch[1].trim(),first:firstMatch[1],front:[frontMatch[1],frontMatch[2]],back:[backMatch[1],backMatch[2]],two:twoMatch[1]};
+  if(/x{2,6}/i.test([result.first,...result.front,...result.back,result.two].join(''))) return [];
+  return [result];
+}
+function latestCompletedDrawUrls(){
+  const now=new Date(), y=now.getFullYear()+543, m=now.getMonth()+1, d=now.getDate();
+  const dates=[];
+  const add=(dd,mm,yy)=>{const k=`${dd}-${mm}-${yy}`;if(!dates.some(x=>x.join('-')===k))dates.push([dd,mm,yy])};
+  add(d,m,y);
+  if(d>=16) add(16,m,y);
+  add(1,m,y);
+  let pm=m-1, py=y;if(pm===0){pm=12;py--}
+  add(16,pm,py);add(1,pm,py);
+  return dates.map(([dd,mm,yy]) => 'https://news.sanook.com/lotto/check/'+String(dd).padStart(2,'0')+String(mm).padStart(2,'0')+String(yy)+'/');
+}
+async function fetchText(url){
+  const stamp=(url.includes('?')?'&':'?')+'_='+Date.now();
+  const direct=url+stamp;
+  const candidates=[direct,'https://r.jina.ai/'+url,'https://api.allorigins.win/raw?url='+encodeURIComponent(direct),'https://corsproxy.io/?url='+encodeURIComponent(direct)];
+  let last;
+  for(const u of candidates){
+    try{
+      const ctl=new AbortController(); const timer=setTimeout(()=>ctl.abort(),15000);
+      const r=await fetch(u,{cache:'no-store',signal:ctl.signal,headers:{'Accept':'text/html,text/plain,*/*'}});
+      clearTimeout(timer);
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const t=await r.text();
+      if(t.length<300) throw new Error('ข้อมูลสั้นผิดปกติ');
+      return t;
+    }catch(e){last=e}
+  }
+  throw last||new Error('ดึงข้อมูลไม่สำเร็จ');
+}
+async function fetchAll(){
+  const btn=document.getElementById('fetchBtn'); btn.disabled=true; btn.classList.add('loading');
+  status('กำลังดึงข้อมูล…'); log('เริ่มเชื่อมต่อ Sanook');
+  const pages=+document.getElementById('pageCount').value;
+  let all=[];
+  const archiveJobs=Array.from({length:pages},(_,i)=>{
+    const url=i===0?SANOOK:SANOOK+'page/'+(i+1)+'/';
+    return fetchText(url).then(t=>{
+      const p=parseSanook(t); log('หน้าคลัง '+(i+1)+' พบ '+p.length+' งวด',p.length?'good':'bad'); return p;
+    }).catch(e=>{log('หน้าคลัง '+(i+1)+' ดึงไม่ได้: '+e.message,'bad');return[]})
+  });
+  const currentJobs=latestCompletedDrawUrls().map((url,i)=>
+    fetchText(url).then(t=>{
+      const p=parseCurrentDraw(t);
+      log('ตรวจงวดล่าสุด '+(i+1)+' พบ '+p.length+' งวด',p.length?'good':'bad');
+      return p;
+    }).catch(e=>{log('ตรวจงวดล่าสุด '+(i+1)+' ดึงไม่ได้: '+e.message,'bad');return[]})
+  );
+  const result=await Promise.all([...currentJobs,...archiveJobs]); all=result.flat();
+  const unique=new Map(all.map(x=>[x.date+'-'+x.first,x]));
+  const monthMap={มกราคม:1,กุมภาพันธ์:2,มีนาคม:3,เมษายน:4,พฤษภาคม:5,มิถุนายน:6,กรกฎาคม:7,สิงหาคม:8,กันยายน:9,ตุลาคม:10,พฤศจิกายน:11,ธันวาคม:12};
+  const dateValue=d=>{
+    const m=String(d.date).match(/(\d{1,2})\s*([^\d\s]+)\s*(25\d{2})/);
+    return m ? (+m[3]-543)*10000+(monthMap[m[2]]||0)*100+(+m[1]) : 0;
+  };
+  draws=[...unique.values()].sort((a,b)=>dateValue(b)-dateValue(a));
+  const saved=JSON.parse(localStorage.getItem('lottoDraws')||'null')||[];
+  const freshCount=draws.length;
+  const merged=new Map([...draws,...saved,...fallback].map(x=>[x.date+'-'+x.first,x]));
+  draws=[...merged.values()].sort((a,b)=>dateValue(b)-dateValue(a));
+  localStorage.setItem('lottoDraws',JSON.stringify(draws));
+  if(freshCount){
+    document.getElementById('sourceMode').textContent='Sanook + สำรอง';
+    log('พบข้อมูลใหม่จาก Sanook '+freshCount+' งวด และรวมกับประวัติเดิมแล้ว','good');
+  }else{
+    document.getElementById('sourceMode').textContent='สำรอง';
+    log('เบราว์เซอร์เชื่อมต่อ Sanook ไม่สำเร็จ จึงใช้ข้อมูลสำรองล่าสุด','bad');
+  }
+  render(); analyze();
+  btn.disabled=false;btn.classList.remove('loading');status('อัปเดตสำเร็จ',true);
+}
+function render(){
+  document.getElementById('drawCount').textContent=draws.length;
+  document.getElementById('lastDate').textContent=draws[0]?.date?.replace(/\s*25/,'/')||'–';
+  document.getElementById('updatedAt').textContent=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('tableBadge').textContent=draws.length+' รายการ';
+  const b=document.getElementById('historyBody');
+  b.innerHTML=draws.length?draws.map(d=>`<tr><td>${d.date}</td><td><span class="pill">${d.first}</span></td><td>${d.front.map(n=>`<span class="pill">${n}</span>`).join('')}</td><td>${d.back.map(n=>`<span class="pill">${n}</span>`).join('')}</td><td><span class="pill">${d.two}</span></td></tr>`).join(''):'<tr><td colspan="5">ไม่มีข้อมูล</td></tr>';
+}
+const monthNames=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+function drawMonth(d){
+  const i=monthNames.findIndex(m=>String(d.date).includes(m));
+  return i+1;
+}
+function scoreNumbers(values,len){
+  const n=values.length, exact=new Map(), digits=Array.from({length:len},()=>Array(10).fill(0)), lastSeen=new Map();
+  values.forEach((v,i)=>{
+    v=String(v).padStart(len,'0'); const recency=Math.exp(-i/18);
+    exact.set(v,(exact.get(v)||0)+1.1+recency*1.7);
+    if(!lastSeen.has(v))lastSeen.set(v,i);
+    [...v].forEach((ch,p)=>digits[p][+ch]+=1+recency*1.25);
+  });
+  const pool=new Set(values.map(v=>String(v).padStart(len,'0')));
+  // สร้างเลขผู้สมัครจากตัวเลขเด่นรายหลัก
+  const tops=digits.map(a=>a.map((v,d)=>[d,v]).sort((a,b)=>b[1]-a[1]).slice(0,len===2?7:5).map(x=>x[0]));
+  const build=(p,s='')=>{if(p===len){pool.add(s);return} tops[p].forEach(d=>build(p+1,s+d))}; build(0);
+  const arr=[...pool].map(v=>{
+    let pos=[...v].reduce((sum,ch,p)=>sum+digits[p][+ch]/Math.max(1,n),0)/len;
+    let freq=(exact.get(v)||0)/Math.max(1,n);
+    let gap=lastSeen.has(v)?Math.min(lastSeen.get(v)/Math.max(1,n),1):.55;
+    let pair=0;
+    for(let i=0;i<len-1;i++) pair += values.slice(0,Math.min(30,n)).filter(x=>String(x).padStart(len,'0').slice(i,i+2)===v.slice(i,i+2)).length/Math.max(1,Math.min(30,n));
+    pair/=Math.max(1,len-1);
+    const raw=.48*pos+.18*freq+.18*gap+.16*pair;
+    return {number:v,raw};
+  }).sort((a,b)=>b.raw-a.raw).slice(0,5);
+  const min=Math.min(...arr.map(x=>x.raw)), max=Math.max(...arr.map(x=>x.raw));
+  return arr.map((x,i)=>({...x,score:Math.round(72+(max===min?0:(x.raw-min)/(max-min))*22-i*.7)}));
+}
+function predHTML(items){
+  return items.map((x,i)=>`<div class="prediction"><div class="rank">${i+1}</div><div class="number">${x.number}</div><div class="scorebox"><div class="scoreline"><span>AI Score</span><b>${x.score}%</b></div><div class="bar"><div class="fill" style="width:${x.score}%"></div></div></div></div>`).join('');
+}
+function analyze(){
+  if(!draws.length){draws=JSON.parse(localStorage.getItem('lottoDraws')||'null')||fallback;document.getElementById('sourceMode').textContent='สำรอง';render()}
+  const w=+document.getElementById('windowSize').value;
+  const selectedMonth=+document.getElementById('monthSelect').value;
+  const monthly=draws.filter(d=>drawMonth(d)===selectedMonth);
+  const data=monthly.slice(0,w);
+  const front=data.flatMap(x=>x.front), back=data.flatMap(x=>x.back), two=data.map(x=>x.two);
+  document.getElementById('frontPred').innerHTML=predHTML(scoreNumbers(front,3));
+  document.getElementById('backPred').innerHTML=predHTML(scoreNumbers(back,3));
+  document.getElementById('twoPred').innerHTML=predHTML(scoreNumbers(two,2));
+  document.getElementById('drawCount').textContent=data.length;
+  log('วิเคราะห์เดือน '+monthNames[selectedMonth-1]+' จาก '+data.length+' งวด','good');status('วิเคราะห์เดือน '+monthNames[selectedMonth-1]+' เสร็จแล้ว',true);
+}
+function exportCSV(){
+  if(!draws.length)return;
+  const rows=[['วันที่','รางวัลที่ 1','หน้า 3-1','หน้า 3-2','ท้าย 3-1','ท้าย 3-2','ท้าย 2'],...draws.map(d=>[d.date,d.first,...d.front,...d.back,d.two])];
+  const blob=new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sanook-lotto-history.csv';a.click();URL.revokeObjectURL(a.href);
+}
+function clearCache(){localStorage.removeItem('lottoDraws');draws=[];render();log('ล้างข้อมูลที่บันทึกแล้ว','info');status('พร้อมใช้งาน')}
+window.addEventListener('DOMContentLoaded',()=>{document.getElementById('monthSelect').value=new Date().getMonth()+1;
+  const saved=localStorage.getItem('lottoDraws');draws=saved?JSON.parse(saved):fallback;
+  document.getElementById('sourceMode').textContent=saved?'แคช':'สำรอง';render();analyze();
+});
+</script>
+</body>
+</html>
