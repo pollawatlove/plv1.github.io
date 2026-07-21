@@ -3,136 +3,170 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gold Entry & Exit System</title>
+<title>GOLD Trading Dashboard V2</title>
 <style>
 :root{
-  --bg:#06101a;--panel:#0b1928;--panel2:#102238;--line:#24415f;
-  --text:#eff7ff;--muted:#8ca3ba;--green:#20d788;--red:#ff5f70;
-  --yellow:#ffbe3f;--blue:#4aa7ff;--cyan:#45d7e8;
+  --bg:#060b12;--panel:#0d1622;--panel2:#111f30;--line:#26384b;
+  --text:#eef5fb;--muted:#91a4b8;--gold:#f5c451;--green:#27d48a;
+  --red:#ff6577;--yellow:#ffbf47;--blue:#59a9ff;--cyan:#53d6e8;
 }
 *{box-sizing:border-box}
 body{
-  margin:0;
-  font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
-  background:radial-gradient(circle at top,#0d2440 0,#06101a 40%,#02070d 100%);
+  margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
   color:var(--text);
+  background:
+    radial-gradient(circle at top left,rgba(245,196,81,.12),transparent 27%),
+    radial-gradient(circle at top right,rgba(83,214,232,.08),transparent 24%),
+    linear-gradient(180deg,#08111c,#03070c);
 }
-.container{max-width:1540px;margin:auto;padding:14px}
+.container{max-width:1600px;margin:auto;padding:14px}
 .header{
   display:grid;grid-template-columns:1fr auto auto;gap:12px;align-items:center;
-  padding-bottom:12px;border-bottom:1px solid var(--line)
+  border-bottom:1px solid var(--line);padding:4px 0 14px
 }
-.brand h1{margin:0;font-size:30px;color:#ffc34a}
-.brand p{margin:4px 0 0;color:var(--muted)}
+.brand h1{margin:0;color:var(--gold);font-size:31px}
+.brand p{margin:5px 0 0;color:var(--muted)}
 .headbox{
-  min-width:180px;background:rgba(12,28,46,.95);border:1px solid var(--line);
-  border-radius:12px;padding:10px 14px
+  min-width:175px;background:rgba(13,22,34,.96);border:1px solid var(--line);
+  border-radius:13px;padding:10px 14px
 }
-.headbox small{color:var(--muted)}
+.headbox small{display:block;color:var(--muted)}
 .headbox strong{display:block;font-size:20px;margin-top:3px}
 .live{color:var(--green)}
-.layout{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
-.left,.right{display:grid;gap:12px}
-.topgrid{display:grid;grid-template-columns:1.1fr 1fr;gap:12px}
+.grid{display:grid;grid-template-columns:2fr 1fr;gap:12px;margin-top:12px}
+.left,.right{display:grid;gap:12px;align-content:start}
+.topgrid{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}
 .card{
-  background:linear-gradient(180deg,rgba(14,31,50,.98),rgba(7,19,32,.98));
-  border:1px solid var(--line);border-radius:14px;padding:14px;
-  box-shadow:0 15px 35px rgba(0,0,0,.22)
+  background:linear-gradient(180deg,rgba(17,31,48,.98),rgba(8,17,28,.98));
+  border:1px solid var(--line);border-radius:15px;padding:14px;
+  box-shadow:0 16px 35px rgba(0,0,0,.24)
 }
-.card-title{font-weight:900;font-size:16px;margin-bottom:10px}
-.price-row{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
-.symbol{font-size:21px;font-weight:900}
-.price{font-size:50px;font-weight:950;color:var(--green);letter-spacing:-2px;margin:8px 0 0}
-.change{font-size:22px;font-weight:900;color:var(--green)}
-.stat{display:flex;justify-content:space-between;gap:10px;padding:6px 0;color:var(--muted)}
-.stat b{color:var(--text)}
-.signal-wrap{display:grid;grid-template-columns:1fr 145px;align-items:center;gap:10px}
-.signal-main{font-size:42px;font-weight:950;color:var(--yellow)}
-.signal-sub{font-size:28px;color:var(--green);font-weight:900}
+.card-title{font-size:16px;font-weight:900;margin-bottom:10px}
+.symbol{font-size:23px;font-weight:950}
+.badge{font-size:12px;background:#203349;padding:4px 8px;border-radius:999px;color:#dbe9f4}
+.price{font-size:52px;font-weight:950;color:var(--gold);letter-spacing:-2px;margin-top:8px}
+.subrow{display:flex;gap:16px;flex-wrap:wrap;color:var(--muted);margin-top:9px}
+.subrow b{color:var(--text)}
+.signalbox{display:grid;grid-template-columns:1fr 150px;gap:12px;align-items:center}
+.signal{font-size:42px;font-weight:950;color:var(--yellow);line-height:1.05}
+.signal-th{color:var(--muted);margin-bottom:7px}
 .donut{
-  width:132px;height:132px;border-radius:50%;display:grid;place-items:center;
-  background:conic-gradient(var(--green) 0 70%,var(--yellow) 70% 84%,var(--red) 84% 100%);
-  position:relative
+  width:138px;height:138px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:conic-gradient(var(--green) 0 50%,var(--red) 50% 100%)
 }
-.donut:before{content:"";position:absolute;inset:14px;border-radius:50%;background:#0b1928}
-.donut-content{position:relative;text-align:center}
-.donut-content strong{font-size:32px}.donut-content span{font-size:12px;color:var(--muted)}
-.chartbox{height:640px;padding:7px}
+.donut:before{content:"";position:absolute;inset:15px;border-radius:50%;background:#0d1622}
+.donut > div{position:relative;text-align:center}
+.donut strong{font-size:30px}
+.donut span{font-size:12px;color:var(--muted)}
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+.metric{padding:11px;border:1px solid var(--line);border-radius:11px;background:rgba(255,255,255,.02)}
+.metric small{display:block;color:var(--muted)}
+.metric strong{display:block;font-size:22px;margin-top:5px}
+.chart{height:650px;padding:7px}
 .tv{height:100%;overflow:hidden;border-radius:11px}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+select,input{
+  width:100%;padding:10px;background:#07131f;color:#fff;border:1px solid var(--line);border-radius:9px
+}
 .flow{display:grid;gap:8px}
 .flow-item{
-  border:1px solid var(--line);border-radius:11px;padding:11px 12px;
-  display:grid;grid-template-columns:35px 120px 1fr;gap:9px;align-items:center
+  display:grid;grid-template-columns:36px 105px 1fr;gap:10px;align-items:center;
+  border:1px solid var(--line);border-radius:11px;padding:11px
 }
-.num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:900;background:#29425e}
-.flow-item strong{font-size:16px}
-.flow-item.active{border-color:var(--green);background:rgba(32,215,136,.11);box-shadow:inset 4px 0 0 var(--green)}
-.flow-item.warn{border-color:var(--yellow);background:rgba(255,190,63,.07)}
-.flow-item.exit{border-color:var(--red);background:rgba(255,95,112,.07)}
-.signal-table{width:100%;border-collapse:collapse}
-.signal-table th,.signal-table td{padding:9px 5px;border-bottom:1px solid rgba(140,163,186,.16);text-align:left}
-.signal-table th{color:var(--muted);font-size:12px}
-.good{color:var(--green);font-weight:900}.bad{color:var(--red);font-weight:900}.wait{color:var(--yellow);font-weight:900}
-.scoreline{display:flex;justify-content:space-between;align-items:center;margin-top:12px;font-size:20px}
-.score{font-size:30px;color:var(--green);font-weight:950}
+.flow-item.active{border-color:var(--green);background:rgba(39,212,138,.1);box-shadow:inset 4px 0 0 var(--green)}
+.flow-item.sell.active{border-color:var(--red);background:rgba(255,101,119,.1);box-shadow:inset 4px 0 0 var(--red)}
+.num{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:#29425b;font-weight:900}
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{padding:9px 5px;border-bottom:1px solid rgba(145,164,184,.16);text-align:left}
+.table th{font-size:12px;color:var(--muted)}
+.good{color:var(--green);font-weight:900}
+.bad{color:var(--red);font-weight:900}
+.wait{color:var(--yellow);font-weight:900}
+.bar{height:10px;background:#1a2a3c;border-radius:99px;overflow:hidden}
+.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--green))}
 .rules{display:grid;gap:8px}
-.rule{display:grid;grid-template-columns:1fr auto;gap:10px;padding:9px;border-bottom:1px solid rgba(140,163,186,.14)}
-.rule b{color:#ff727f}
-.ok{color:var(--green);font-weight:900}
-.bottom{display:grid;grid-template-columns:1.3fr 1.1fr .8fr;gap:12px}
-.log{max-height:190px;overflow:auto;font-size:13px}
-.log div{padding:8px 0;border-bottom:1px dashed rgba(140,163,186,.2)}
-.setting-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-select{width:100%;padding:10px;background:#071522;color:white;border:1px solid var(--line);border-radius:9px}
-.note{margin-top:12px;color:#e8c571;font-size:12px}
-@media(max-width:1100px){.layout{grid-template-columns:1fr}.bottom{grid-template-columns:1fr}.chartbox{height:520px}}
-@media(max-width:700px){.header{grid-template-columns:1fr}.topgrid,.price-row,.signal-wrap{grid-template-columns:1fr}.flow-item{grid-template-columns:35px 100px 1fr}.price{font-size:40px}}
+.rule{padding:10px;border-bottom:1px solid rgba(145,164,184,.14);display:flex;justify-content:space-between;gap:10px}
+.rule b{color:var(--gold)}
+.bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:12px}
+.log{max-height:220px;overflow:auto;font-size:13px}
+.log div{padding:8px 0;border-bottom:1px dashed rgba(145,164,184,.2)}
+.btn{
+  width:100%;padding:11px;border:0;border-radius:10px;font-weight:900;cursor:pointer;
+  background:linear-gradient(90deg,#d9a62d,#ffd86f);color:#201500
+}
+.note{font-size:12px;color:#e2c879;margin-top:10px}
+@media(max-width:1100px){.grid{grid-template-columns:1fr}.chart{height:530px}}
+@media(max-width:760px){
+  .header,.topgrid,.signalbox,.bottom{grid-template-columns:1fr}
+  .metrics,.controls{grid-template-columns:1fr 1fr}
+  .price{font-size:41px}.signal{font-size:34px}
+}
 </style>
 </head>
 <body>
 <div class="container">
   <header class="header">
     <div class="brand">
-      <h1>🚀 GOLD ENTRY & EXIT SYSTEM</h1>
-      <p>ระบบตัดสินใจซื้อขายทองคำ XAU/USD แบบเข้าไว–ออกไว</p>
+      <h1>🏆 GOLD TRADING DASHBOARD V2</h1>
+      <p>ระบบวิเคราะห์ XAU/USD สำหรับเข้าไว–ออกไว โดยใช้สัญญาณจาก TradingView</p>
     </div>
-    <div class="headbox"><small>เวลาเซิร์ฟเวอร์</small><strong id="serverTime">--:--:--</strong></div>
-    <div class="headbox"><small>อัปเดตล่าสุด</small><strong><span id="lastUpdate">--:--:--</span> <span class="live">● LIVE</span></strong></div>
+    <div class="headbox"><small>เวลาไทย</small><strong id="clock">--:--:--</strong></div>
+    <div class="headbox"><small>สถานะระบบ</small><strong class="live">● LIVE CHART</strong></div>
   </header>
 
-  <main class="layout">
+  <main class="grid">
     <section class="left">
       <div class="topgrid">
         <div class="card">
-          <div class="price-row">
-            <div>
-              <div class="symbol">XAU/USD <span style="font-size:12px;background:#203650;padding:4px 8px;border-radius:999px">OANDA</span></div>
-              <div class="price" id="price">--</div>
-              <div class="change" id="change">--</div>
-            </div>
-            <div>
-              <div class="stat"><span>ราคาเปิดก่อนหน้า</span><b id="openPrice">--</b></div>
-              <div class="stat"><span>ราคาสูงสุดวันนี้</span><b id="highPrice">--</b></div>
-              <div class="stat"><span>ราคาต่ำสุดวันนี้</span><b id="lowPrice">--</b></div>
-            </div>
+          <div class="symbol">XAU/USD <span class="badge">OANDA</span></div>
+          <div class="price">GOLD</div>
+          <div class="subrow">
+            <span>ตลาด: <b>Spot Gold</b></span>
+            <span>โหมด: <b id="modeText">Scalp</b></span>
+            <span>กรอบหลัก: <b id="tfText">5 นาที</b></span>
+          </div>
+          <div class="metrics">
+            <div class="metric"><small>BUY</small><strong class="good" id="buyPct">50%</strong></div>
+            <div class="metric"><small>SELL</small><strong class="bad" id="sellPct">50%</strong></div>
+            <div class="metric"><small>Confidence</small><strong id="confidence">50%</strong></div>
+            <div class="metric"><small>Risk</small><strong class="wait" id="riskText">ปานกลาง</strong></div>
           </div>
         </div>
 
         <div class="card">
-          <div class="signal-wrap">
+          <div class="signalbox">
             <div>
-              <div class="card-title">สถานะปัจจุบัน</div>
-              <div class="signal-main" id="signal">รอจังหวะ</div>
-              <div style="margin-top:14px">โอกาสสำเร็จ <span class="signal-sub" id="chanceText">--%</span></div>
+              <div class="signal-th">สัญญาณปัจจุบัน</div>
+              <div class="signal" id="mainSignal">WAIT</div>
+              <div style="margin-top:12px;color:var(--muted)" id="signalReason">
+                รอข้อมูลจากตัวชี้วัดแล้วกดประเมินสัญญาณ
+              </div>
             </div>
             <div class="donut" id="donut">
-              <div class="donut-content"><strong id="donutText">--%</strong><br><span>โอกาสสำเร็จ</span></div>
+              <div><strong id="donutText">50%</strong><br><span>BUY SCORE</span></div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="card chartbox">
+      <div class="card controls">
+        <div><small>รูปแบบเทรด</small><select id="tradeMode">
+          <option value="scalp">Scalp</option><option value="swing">Swing</option>
+        </select></div>
+        <div><small>กรอบเวลา</small><select id="timeframe">
+          <option value="1">1 นาที</option><option value="3">3 นาที</option>
+          <option value="5" selected>5 นาที</option><option value="15">15 นาที</option>
+          <option value="30">30 นาที</option><option value="60">1 ชั่วโมง</option>
+        </select></div>
+        <div><small>TradingView Summary</small><select id="tvSummary">
+          <option value="-2">Strong Sell</option><option value="-1">Sell</option>
+          <option value="0" selected>Neutral</option><option value="1">Buy</option>
+          <option value="2">Strong Buy</option>
+        </select></div>
+        <div><small>RSI ปัจจุบัน</small><input id="rsi" type="number" min="0" max="100" value="50"></div>
+      </div>
+
+      <div class="card chart">
         <div class="tv">
           <div class="tradingview-widget-container" style="height:100%;width:100%">
             <div class="tradingview-widget-container__widget" style="height:100%;width:100%"></div>
@@ -140,15 +174,15 @@ select{width:100%;padding:10px;background:#071522;color:white;border:1px solid v
             {
               "autosize": true,
               "symbol": "OANDA:XAUUSD",
-              "interval": "1",
+              "interval": "5",
               "timezone": "Asia/Bangkok",
               "theme": "dark",
               "style": "1",
               "locale": "th_TH",
-              "allow_symbol_change": true,
+              "allow_symbol_change": false,
               "studies": ["STD;EMA","STD;RSI","STD;MACD"],
-              "backgroundColor": "rgba(6,16,26,1)",
-              "gridColor": "rgba(80,110,140,0.16)"
+              "backgroundColor": "rgba(6,11,18,1)",
+              "gridColor": "rgba(95,120,145,0.14)"
             }
             </script>
           </div>
@@ -157,57 +191,66 @@ select{width:100%;padding:10px;background:#071522;color:white;border:1px solid v
 
       <div class="bottom">
         <div class="card">
-          <div class="card-title">บันทึกการเทรดวันนี้</div>
-          <div id="log" class="log"></div>
+          <div class="card-title">คะแนนวิเคราะห์</div>
+          <table class="table">
+            <tbody>
+              <tr><td>Trend</td><td><div class="bar"><span id="trendBar" style="width:50%"></span></div></td><td id="trendScore">50</td></tr>
+              <tr><td>Momentum</td><td><div class="bar"><span id="momentumBar" style="width:50%"></span></div></td><td id="momentumScore">50</td></tr>
+              <tr><td>RSI</td><td><div class="bar"><span id="rsiBar" style="width:50%"></span></div></td><td id="rsiScore">50</td></tr>
+              <tr><td>Risk Control</td><td><div class="bar"><span id="riskBar" style="width:50%"></span></div></td><td id="riskScore">50</td></tr>
+            </tbody>
+          </table>
+          <button class="btn" id="analyzeBtn">ประเมินสัญญาณ GOLD</button>
+          <div class="note">กรอกค่า TradingView Summary และ RSI ตามที่เห็นบนกราฟ แล้วกดประเมิน</div>
         </div>
+
         <div class="card">
-          <div class="card-title">สรุปสัญญาณ</div>
-          <div class="stat"><span>คะแนนซื้อ</span><b id="buyScore">--</b></div>
-          <div class="stat"><span>คะแนนขาย</span><b id="sellScore">--</b></div>
-          <div class="stat"><span>ความผันผวน</span><b id="volatility">--</b></div>
-          <div class="stat"><span>คำแนะนำ</span><b id="summaryAdvice">--</b></div>
-        </div>
-        <div class="card">
-          <div class="card-title">การตั้งค่า</div>
-          <div class="setting-row">
-            <div><small>โหมด</small><select id="mode"><option value="fast">ออกไว (เร็ว)</option><option value="normal">สมดุล</option></select></div>
-            <div><small>ระดับความเสี่ยง</small><select id="risk"><option value="low">ต่ำ</option><option value="normal" selected>ปกติ</option><option value="high">สูง</option></select></div>
-          </div>
-          <div class="note">เป้าหมายคะแนนแนะนำ 60%–80% ไม่ใช่การรับประกันผลกำไร</div>
+          <div class="card-title">บันทึกสัญญาณวันนี้</div>
+          <div class="log" id="log"></div>
         </div>
       </div>
     </section>
 
     <aside class="right">
       <div class="card">
-        <div class="card-title">ลำดับการตัดสินใจ (เข้าไว–ออกไว)</div>
+        <div class="card-title">ลำดับการตัดสินใจ</div>
         <div class="flow">
-          <div class="flow-item" data-step="0"><span class="num">1</span><strong>รอจังหวะ</strong><span>แนวโน้มยังไม่ชัด หรือราคาอยู่กลางทาง</span></div>
-          <div class="flow-item" data-step="1"><span class="num">2</span><strong>เตรียมซื้อ</strong><span>กรอบ 5 นาทีเริ่มขึ้นและราคาไม่สูงเกิน</span></div>
-          <div class="flow-item" data-step="2"><span class="num">3</span><strong>ซื้อ</strong><span>โมเมนตัมกลับขึ้นและคะแนนตั้งแต่ 60%</span></div>
-          <div class="flow-item" data-step="3"><span class="num">4</span><strong>ถือสั้น</strong><span>แนวโน้มยังบวก แต่เน้นกำไรระยะสั้น</span></div>
-          <div class="flow-item warn" data-step="4"><span class="num">5</span><strong>เตรียมออก</strong><span>โมเมนตัมเริ่มอ่อน หรือคะแนนลดต่ำกว่า 55%</span></div>
-          <div class="flow-item exit" data-step="5"><span class="num">6</span><strong>ออกทันที</strong><span>แนวโน้มเสีย MACD ตัดลง หรือราคาหลุด EMA21</span></div>
+          <div class="flow-item" data-state="WAIT"><span class="num">1</span><strong>WAIT</strong><span>แนวโน้มยังไม่ชัด</span></div>
+          <div class="flow-item" data-state="BUY SOON"><span class="num">2</span><strong>BUY SOON</strong><span>แรงซื้อเริ่มมากขึ้น</span></div>
+          <div class="flow-item" data-state="BUY NOW"><span class="num">3</span><strong>BUY NOW</strong><span>สัญญาณซื้อชัด</span></div>
+          <div class="flow-item sell" data-state="SELL SOON"><span class="num">4</span><strong>SELL SOON</strong><span>แรงขายเริ่มมากขึ้น</span></div>
+          <div class="flow-item sell" data-state="SELL NOW"><span class="num">5</span><strong>SELL NOW</strong><span>สัญญาณขายชัด</span></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">ตัวชี้วัดสัญญาณ (เร็ว)</div>
-        <table class="signal-table">
-          <thead><tr><th>ตัวชี้วัด</th><th>ค่า</th><th>คะแนน</th></tr></thead>
-          <tbody id="indicatorRows"></tbody>
-        </table>
-        <div class="scoreline"><span>คะแนนรวม</span><span class="score" id="scoreTotal">-- / 100</span></div>
+        <div class="card-title">TradingView Technical Analysis</div>
+        <div class="tradingview-widget-container">
+          <div class="tradingview-widget-container__widget"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
+          {
+            "interval": "5m",
+            "width": "100%",
+            "isTransparent": true,
+            "height": "420",
+            "symbol": "OANDA:XAUUSD",
+            "showIntervalTabs": true,
+            "displayMode": "single",
+            "locale": "th_TH",
+            "colorTheme": "dark"
+          }
+          </script>
+        </div>
       </div>
 
       <div class="card">
-        <div class="card-title">กฎออกไว</div>
+        <div class="card-title">กฎเข้า–ออก GOLD</div>
         <div class="rules">
-          <div class="rule"><span><b>ทำกำไร</b> +0.25% ถึง +0.60%</span><span class="ok">✓ ออกได้</span></div>
-          <div class="rule"><span><b>แนวโน้มอ่อน</b> RSI ต่ำกว่า 50 หรือตัดลง EMA21</span><span class="ok">✓ ออกทันที</span></div>
-          <div class="rule"><span><b>MACD ตัดลง</b> จากบวกเป็นลบ</span><span class="ok">✓ ออกทันที</span></div>
-          <div class="rule"><span><b>ราคาหลุด EMA21</b> ปิดต่ำกว่าเส้น</span><span class="ok">✓ ออกทันที</span></div>
-          <div class="rule"><span><b>Stop loss</b> -0.20% ถึง -0.35%</span><span class="ok">✓ ออกทันที</span></div>
+          <div class="rule"><span><b>BUY NOW</b> Summary Buy + RSI 52–68</span><span class="good">เข้าได้</span></div>
+          <div class="rule"><span><b>SELL NOW</b> Summary Sell + RSI 32–48</span><span class="bad">ขายได้</span></div>
+          <div class="rule"><span><b>ทำกำไร</b> ตามแผนที่ตั้งไว้</span><span class="good">แบ่งปิด</span></div>
+          <div class="rule"><span><b>Stop loss</b> ต้องกำหนดก่อนเข้า</span><span class="bad">ห้ามขยับหนี</span></div>
+          <div class="rule"><span><b>ข่าวแรง</b> ลดขนาดสัญญา</span><span class="wait">ระวัง</span></div>
         </div>
       </div>
     </aside>
@@ -215,126 +258,85 @@ select{width:100%;padding:10px;background:#071522;color:white;border:1px solid v
 </div>
 
 <script>
-const state={candles:[],current:null,lastSignal:"",lastPrice:0};
 const $=id=>document.getElementById(id);
-const fmt=n=>Number.isFinite(n)?n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2}):"--";
+let lastSignal="";
 
-function ema(values,p){
-  if(values.length<p)return null;
-  const k=2/(p+1);let e=values.slice(0,p).reduce((a,b)=>a+b,0)/p;
-  for(let i=p;i<values.length;i++)e=values[i]*k+e*(1-k);
-  return e;
+function setBar(id,value){
+  value=Math.max(0,Math.min(100,Math.round(value)));
+  $(id+"Bar").style.width=value+"%";
+  $(id+"Score").textContent=value;
 }
-function rsi(v,p=14){
-  if(v.length<=p)return null;let g=0,l=0;
-  for(let i=v.length-p;i<v.length;i++){let d=v[i]-v[i-1];if(d>=0)g+=d;else l-=d}
-  if(l===0)return 100;let rs=(g/p)/(l/p);return 100-(100/(1+rs));
-}
-function macd(v){
-  const e12=ema(v,12),e26=ema(v,26);
-  if(e12==null||e26==null)return null;
-  return e12-e26;
-}
-function aggregate(candles,m){
-  const mp=new Map();
-  candles.forEach(x=>{
-    const t=Math.floor(x.t/(m*60000))*m*60000;
-    if(!mp.has(t))mp.set(t,{t,o:x.o,h:x.h,l:x.l,c:x.c});
-    else{const g=mp.get(t);g.h=Math.max(g.h,x.h);g.l=Math.min(g.l,x.l);g.c=x.c}
-  });
-  return [...mp.values()].sort((a,b)=>a.t-b.t);
-}
-function trend(c){
-  const cl=c.map(x=>x.c),e9=ema(cl,9),e21=ema(cl,21),last=cl.at(-1);
-  if(!e9||!e21)return {name:"กลาง",e9,e21,last};
-  const gap=(e9-e21)/last*100;
-  return {name:gap>.01?"ขึ้น":gap<-.01?"ลง":"กลาง",e9,e21,last,gap};
-}
-function analyze(){
-  if(state.candles.length<40)return;
-  const all=state.current?[...state.candles.slice(0,-1),state.current]:state.candles;
-  const c1=aggregate(all,1),c5=aggregate(all,5),c15=aggregate(all,15),c30=aggregate(all,30);
-  const t1=trend(c1),t5=trend(c5),t15=trend(c15),t30=trend(c30);
-  const closes=c1.map(x=>x.c),price=closes.at(-1),prev=closes.at(-2);
-  const rr=rsi(closes),mm=macd(closes),e9=t1.e9,e21=t1.e21;
-  const dist=e9?(price-e9)/price*100:0;
-  let score=50,rows=[];
+function evaluate(){
+  const summary=Number($("tvSummary").value);
+  const rsi=Math.max(0,Math.min(100,Number($("rsi").value)||50));
+  const mode=$("tradeMode").value;
+  const tf=Number($("timeframe").value);
 
-  function add(label,value,pts,type){
-    score+=pts;rows.push([label,value,(pts>=0?"+":"")+pts,type]);
+  let trend=50+summary*20;
+  let momentum=50+summary*15;
+  let rsiScore=50;
+  if(summary>0){
+    if(rsi>=52&&rsi<=68) rsiScore=85;
+    else if(rsi>68&&rsi<=74) rsiScore=62;
+    else if(rsi>74) rsiScore=30;
+    else rsiScore=45;
+  }else if(summary<0){
+    if(rsi>=32&&rsi<=48) rsiScore=85;
+    else if(rsi<32) rsiScore=55;
+    else if(rsi>48&&rsi<58) rsiScore=45;
+    else rsiScore=30;
   }
-  add("เทรนด์ 5 นาที",t5.name,t5.name==="ขึ้น"?12:t5.name==="ลง"?-12:0,t5.name==="ขึ้น"?"good":t5.name==="ลง"?"bad":"wait");
-  add("เทรนด์ 15 นาที",t15.name,t15.name==="ขึ้น"?10:t15.name==="ลง"?-10:0,t15.name==="ขึ้น"?"good":t15.name==="ลง"?"bad":"wait");
-  add("เทรนด์ 30 นาที",t30.name,t30.name==="ขึ้น"?6:t30.name==="ลง"?-6:0,t30.name==="ขึ้น"?"good":t30.name==="ลง"?"bad":"wait");
-  add("EMA9 > EMA21",e9>e21?"ใช่":"ไม่ใช่",e9>e21?8:-8,e9>e21?"good":"bad");
-  add("RSI 14",rr?rr.toFixed(1):"--",rr>48&&rr<68?8:rr>75?-8:0,rr>48&&rr<68?"good":rr>75?"bad":"wait");
-  add("MACD",mm>0?"บวก":"ลบ",mm>0?8:-8,mm>0?"good":"bad");
-  add("ราคาใกล้ EMA9",Math.abs(dist)<.18?"ใกล้":"ไกล",Math.abs(dist)<.18?6:-6,Math.abs(dist)<.18?"good":"bad");
-  score=Math.max(0,Math.min(100,Math.round(score)));
+  let risk=mode==="scalp"?60:70;
+  if(tf<=3) risk-=10;
+  if(Math.abs(summary)===2) risk+=10;
+  if(rsi>75||rsi<25) risk-=15;
 
-  const mode=$("mode").value;
-  let signal="รอจังหวะ",step=0;
-  const fastUp=t5.name==="ขึ้น"&&t15.name!=="ลง";
-  if(fastUp&&score>=55){signal="เตรียมซื้อ";step=1}
-  if(fastUp&&score>=60&&mm>0&&rr>45&&rr<72&&dist<.22){signal="ซื้อ";step=2}
-  if(score>=68&&signal==="ซื้อ"){signal="ถือสั้น";step=3}
-  if(score<55&&t5.name!=="ขึ้น"){signal="เตรียมออก";step=4}
-  if((price<e21&&mm<0)||score<42){signal="ออกทันที";step=5}
+  setBar("trend",trend);setBar("momentum",momentum);setBar("rsi",rsiScore);setBar("risk",risk);
 
-  const colors={"รอจังหวะ":"var(--yellow)","เตรียมซื้อ":"var(--cyan)","ซื้อ":"var(--green)","ถือสั้น":"var(--green)","เตรียมออก":"var(--yellow)","ออกทันที":"var(--red)"};
-  $("signal").textContent=signal;$("signal").style.color=colors[signal];
-  $("chanceText").textContent=score+"%";$("donutText").textContent=score+"%";
-  $("donut").style.background=`conic-gradient(var(--green) 0 ${score}%,var(--yellow) ${score}% ${Math.min(score+12,100)}%,var(--red) ${Math.min(score+12,100)}% 100%)`;
-  document.querySelectorAll(".flow-item").forEach((e,i)=>e.classList.toggle("active",i===step));
+  let buy=50+summary*18;
+  if(summary>0 && rsi>=52 && rsi<=68) buy+=12;
+  if(summary>0 && rsi>74) buy-=18;
+  if(summary<0) buy-=8;
+  buy=Math.max(5,Math.min(95,Math.round(buy)));
+  const sell=100-buy;
+  const confidence=Math.round((Math.abs(buy-50)*1.25)+(Math.abs(summary)*12)+35);
+  const conf=Math.max(35,Math.min(95,confidence));
 
-  $("price").textContent=fmt(price);
-  const ch=prev?((price-prev)/prev*100):0;
-  $("change").textContent=(ch>=0?"+":"")+ch.toFixed(3)+"%";
-  $("change").style.color=ch>=0?"var(--green)":"var(--red)";
-  $("openPrice").textContent=fmt(c1.at(-1).o);
-  $("highPrice").textContent=fmt(Math.max(...c1.slice(-120).map(x=>x.h)));
-  $("lowPrice").textContent=fmt(Math.min(...c1.slice(-120).map(x=>x.l)));
-  $("lastUpdate").textContent=new Date().toLocaleTimeString("th-TH");
-  $("indicatorRows").innerHTML=rows.map(r=>`<tr><td>${r[0]}</td><td class="${r[3]}">${r[1]}</td><td class="${r[3]}">${r[2]}</td></tr>`).join("");
-  $("scoreTotal").textContent=score+" / 100";
-  $("buyScore").textContent=score+"%";$("sellScore").textContent=(100-score)+"%";
-  $("volatility").textContent=Math.abs(ch)>.08?"สูง":"ปกติ";
-  $("summaryAdvice").textContent=signal;
+  let signal="WAIT",reason="แนวโน้มยังไม่ชัด ควรรอ";
+  if(buy>=78){signal="BUY NOW";reason="แรงซื้อและ RSI อยู่ในช่วงเหมาะสม";}
+  else if(buy>=62){signal="BUY SOON";reason="แรงซื้อเริ่มได้เปรียบ แต่ควรรอแท่งยืนยัน";}
+  else if(sell>=78){signal="SELL NOW";reason="แรงขายชัดและคะแนนขายได้เปรียบ";}
+  else if(sell>=62){signal="SELL SOON";reason="แรงขายเริ่มได้เปรียบ แต่ควรรอแท่งยืนยัน";}
 
-  if(signal!==state.lastSignal){
-    state.lastSignal=signal;
-    const d=document.createElement("div");
-    d.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${signal} (${score}/100)`;
-    $("log").prepend(d);
+  $("buyPct").textContent=buy+"%";
+  $("sellPct").textContent=sell+"%";
+  $("confidence").textContent=conf+"%";
+  $("donutText").textContent=buy+"%";
+  $("donut").style.background=`conic-gradient(var(--green) 0 ${buy}%,var(--red) ${buy}% 100%)`;
+  $("mainSignal").textContent=signal;
+  $("signalReason").textContent=reason;
+  $("mainSignal").style.color=signal.includes("BUY")?"var(--green)":signal.includes("SELL")?"var(--red)":"var(--yellow)";
+  $("riskText").textContent=risk>=70?"ต่ำ":risk>=50?"ปานกลาง":"สูง";
+  $("riskText").className=risk>=70?"good":risk>=50?"wait":"bad";
+
+  document.querySelectorAll(".flow-item").forEach(x=>x.classList.toggle("active",x.dataset.state===signal));
+
+  if(signal!==lastSignal){
+    lastSignal=signal;
+    const row=document.createElement("div");
+    row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${signal} | BUY ${buy}% / SELL ${sell}%`;
+    $("log").prepend(row);
   }
 }
-async function start(){
-  try{
-    const r=await fetch("https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=1m&limit=500");
-    const data=await r.json();
-    state.candles=data.map(x=>({t:+x[0],o:+x[1],h:+x[2],l:+x[3],c:+x[4]}));
-  }catch(e){}
-  connect();
+function updateMode(){
+  $("modeText").textContent=$("tradeMode").value==="scalp"?"Scalp":"Swing";
+  $("tfText").textContent=$("timeframe").selectedOptions[0].textContent;
 }
-function connect(){
-  const ws=new WebSocket("wss://stream.binance.com:9443/ws/paxgusdt@kline_1m");
-  ws.onmessage=e=>{
-    const k=JSON.parse(e.data).k;
-    const c={t:+k.t,o:+k.o,h:+k.h,l:+k.l,c:+k.c};
-    state.current=c;
-    if(k.x){
-      const i=state.candles.findIndex(x=>x.t===c.t);
-      if(i>=0)state.candles[i]=c;else state.candles.push(c);
-      state.candles=state.candles.slice(-600);
-    }
-    analyze();
-  };
-  ws.onclose=()=>setTimeout(connect,3000);
-}
-setInterval(()=>$("serverTime").textContent=new Date().toLocaleTimeString("th-TH"),1000);
-$("mode").addEventListener("change",analyze);
-$("risk").addEventListener("change",analyze);
-start();
+setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString("th-TH"),1000);
+$("tradeMode").addEventListener("change",()=>{updateMode();evaluate()});
+$("timeframe").addEventListener("change",()=>{updateMode();evaluate()});
+$("analyzeBtn").addEventListener("click",evaluate);
+updateMode();evaluate();
 </script>
 </body>
 </html>
