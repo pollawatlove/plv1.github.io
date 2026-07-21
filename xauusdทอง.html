@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ประเมินหุ้นและทอง XAUUSD</title>
+<style>
+:root{
+  --bg:#07101d;--panel:#101c2e;--panel2:#15243a;--line:#263955;
+  --text:#f6f8fc;--muted:#94a6c0;--green:#27d17f;--red:#ff6171;
+  --yellow:#ffc857;--blue:#4da3ff;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:radial-gradient(circle at 15% 0,#173660 0,transparent 34%),var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,"Segoe UI","Noto Sans Thai",sans-serif;
+}
+.container{max-width:1450px;margin:auto;padding:22px}
+.header{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;align-items:flex-start}
+h1{margin:0;font-size:clamp(25px,4vw,40px)}
+.sub{color:var(--muted);margin-top:6px}
+.section-title{margin:24px 0 10px;font-size:21px}
+.muted{color:var(--muted)}
+.gold-grid{display:grid;grid-template-columns:1.35fr 1fr 1fr;gap:13px}
+.gold-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:17px;
+  overflow:hidden;
+  min-height:430px
+}
+.card-head{padding:13px 15px;border-bottom:1px solid var(--line);font-weight:900}
+.card-note{padding:10px 14px;color:var(--muted);font-size:13px;line-height:1.55}
+.tv-box{height:355px}
+.legend{
+  margin-top:13px;
+  padding:13px 15px;
+  background:#0d192a;
+  border:1px solid var(--line);
+  border-radius:13px;
+  color:var(--muted);
+  line-height:1.6
+}
+.legend b{color:var(--text)}
+.analysis-card{padding:20px}
+.signal-card{
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  text-align:center
+}
+.time-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:20px}
+.time-box,.signal-box{padding:15px;border:1px solid var(--line);border-radius:14px}
+.signal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.live-price{font-size:42px;font-weight:900;margin:8px 0}
+.auto-signal{font-size:38px;font-weight:900;margin:10px 0;color:var(--yellow)}
+.quality-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.quality-box{padding:16px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
+.quality-value{display:block;font-size:27px;margin-top:6px}.quality-note{margin-top:12px;padding:12px 14px;border-left:4px solid var(--yellow);background:#0d192a;color:var(--muted);line-height:1.6}
+iframe{display:block;width:100%;height:100%;border:0}
+@media(max-width:1000px){
+  .gold-grid{grid-template-columns:1fr!important}
+  .gold-card{min-height:390px}
+}
+@media(max-width:600px){
+  .container{padding:14px}
+  .time-grid,.signal-grid{grid-template-columns:1fr}
+  .live-price{font-size:32px}
+  .auto-signal{font-size:31px}
+  .quality-grid{grid-template-columns:1fr 1fr}
+}
+.page-switcher{position:fixed;top:14px;right:14px;z-index:9999;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;padding:8px;background:rgba(8,17,31,.92);border:1px solid rgba(255,255,255,.18);border-radius:14px;box-shadow:0 10px 30px #0008;backdrop-filter:blur(10px)}
+.page-switcher a{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:9px;background:#17304d;color:#f4f7fb;font-size:13px;font-weight:800;text-decoration:none;transition:.2s}
+.page-switcher a:hover{transform:translateY(-1px);border-color:#f0b90b}.page-switcher a[aria-current="page"]{background:#f0b90b;border-color:#f0b90b;color:#171006}
+@media(max-width:700px){.page-switcher{top:auto;right:10px;bottom:10px;left:10px;justify-content:center}.page-switcher a{flex:1;padding:9px 6px;font-size:12px}}
+
+/* Professional dashboard refinements */
+body{background:
+  radial-gradient(circle at 12% -10%,rgba(77,163,255,.20),transparent 32%),
+  radial-gradient(circle at 90% 5%,rgba(255,200,87,.10),transparent 24%),#07101d;
+  min-height:100vh;letter-spacing:.01em}
+.container{max-width:1380px;padding:34px 28px 60px}
+.header{align-items:center;padding:4px 0 12px;border-bottom:1px solid rgba(148,166,192,.16);margin-bottom:28px}
+h1{font-size:clamp(28px,3vw,42px);letter-spacing:-.035em;line-height:1.15}
+.sub{font-size:14px;line-height:1.7}
+.market-badge{display:inline-flex;align-items:center;gap:9px;padding:10px 14px;border:1px solid rgba(39,209,127,.28);border-radius:999px;background:rgba(39,209,127,.08);color:#bdf7d7;font-size:12px;font-weight:900;letter-spacing:.08em}
+.market-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px rgba(39,209,127,.12)}
+.section-title{display:flex;align-items:center;gap:12px;margin:36px 0 14px;font-size:18px;letter-spacing:-.01em}
+.section-title::before{content:"";width:4px;height:22px;border-radius:10px;background:linear-gradient(var(--yellow),#e89d20)}
+.gold-grid{gap:16px}
+.gold-card{background:linear-gradient(145deg,rgba(21,36,58,.96),rgba(12,24,41,.98));border:1px solid rgba(148,166,192,.17);border-radius:18px;box-shadow:0 18px 45px rgba(0,0,0,.22);transition:border-color .2s,transform .2s}
+.gold-card:hover{border-color:rgba(77,163,255,.32)}
+.analysis-card,.signal-card{padding:24px}
+.card-head{padding:16px 18px;font-size:15px;background:rgba(255,255,255,.018);letter-spacing:.015em}
+.card-note{font-size:12px;background:rgba(7,16,29,.35);border-radius:10px;margin:12px 14px 14px;padding:11px 13px}
+.analysis-card>.card-note,.signal-card>.card-note{margin-left:0;margin-right:0}
+.live-price{font-size:clamp(40px,5vw,58px);line-height:1.1;letter-spacing:-.045em;background:linear-gradient(135deg,#fff 30%,#ffc857);-webkit-background-clip:text;background-clip:text;color:transparent}
+.auto-signal{letter-spacing:-.035em}
+.time-grid,.signal-grid{gap:10px}
+.time-box,.signal-box{background:rgba(7,16,29,.38);border-color:rgba(148,166,192,.15);border-radius:12px}
+.turn-box{grid-column:1/-1;border-color:rgba(77,163,255,.25);background:linear-gradient(135deg,rgba(77,163,255,.10),rgba(7,16,29,.42))}
+.time-box strong,.signal-box strong,.quality-value{font-variant-numeric:tabular-nums}
+.trend-update{margin-top:10px;padding-top:9px;border-top:1px solid rgba(148,166,192,.12);color:#7187a5;font-size:11px}
+.position-control{display:flex;align-items:center;gap:10px;margin-top:14px;flex-wrap:wrap}.position-control input{width:110px;padding:10px 12px;border:1px solid rgba(148,166,192,.25);border-radius:9px;background:#091525;color:var(--text);font:inherit;outline:none}.position-control input:focus{border-color:var(--blue)}
+.quality-grid{gap:10px}
+.quality-box{background:rgba(7,16,29,.38);border-color:rgba(148,166,192,.14);border-radius:12px}
+.quality-value{font-size:24px}
+.quality-note{border-radius:0 10px 10px 0}
+.tv-box{height:390px;background:#0b1524}
+iframe{border-radius:0 0 12px 12px}
+@media(max-width:700px){.container{padding:22px 14px 45px}.header{align-items:flex-start}.analysis-card,.signal-card{padding:18px}.section-title{margin-top:28px}.quality-grid{grid-template-columns:1fr 1fr}.tv-box{height:350px}}
+@media(max-width:430px){.quality-grid{grid-template-columns:1fr}.market-badge{width:100%;justify-content:center}}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="header">
+    <div>
+      <h1>ประเมินหุ้นและทองคำ XAU/USD</h1>
+      <div class="sub">ทองคำจาก TradingView • วิเคราะห์กรอบ 1 นาทีและ 5 นาที</div>
+    </div>
+    <div class="market-badge">XAU/USD&nbsp;&nbsp; LIVE MARKET</div>
+  </div>
+<h2 class="section-title">ผลประเมินอัตโนมัติจากราคาทองสด</h2>
+  <div class="gold-grid" style="grid-template-columns:1.15fr 1fr">
+
+    <div class="gold-card analysis-card">
+      <div class="muted">ราคาทอง XAU/USD ล่าสุด</div>
+      <div id="liveGoldPrice" class="live-price">$3,988.70</div>
+      <div id="liveTime" class="muted">อัปเดตอัตโนมัติ 11:23:31</div>
+
+      <div class="time-grid">
+        <div class="time-box">
+          <div class="muted">แนวโน้ม 1 นาที</div>
+          <strong id="trend1m" style="font-size:24px;color:var(--yellow)">ทรงตัว</strong>
+          <div id="change1m" class="muted" style="margin-top:5px">+0.003%</div>
+          <div class="trend-update">แท่งถัดไปอีก <span class="trendCountdown" data-interval="1">01:00 นาที</span></div>
+        </div>
+        <div class="time-box">
+          <div class="muted">แนวโน้ม 5 นาที</div>
+          <strong id="trend5m" style="font-size:24px;color:var(--yellow)">ทรงตัว</strong>
+          <div id="change5m" class="muted" style="margin-top:5px">+0.000%</div>
+          <div class="trend-update">แท่งถัดไปอีก <span class="trendCountdown" data-interval="5">05:00 นาที</span></div>
+        </div>
+        <div class="time-box">
+          <div class="muted">แนวโน้ม 15 นาที</div>
+          <strong id="trend15m" style="font-size:24px;color:var(--red)">กำลังลง</strong>
+          <div id="change15m" class="muted" style="margin-top:5px">-0.068%</div>
+          <div class="trend-update">แท่งถัดไปอีก <span class="trendCountdown" data-interval="15">15:00 นาที</span></div>
+        </div>
+        <div class="time-box">
+          <div class="muted">แนวโน้ม 30 นาที</div>
+          <strong id="trend30m" style="font-size:24px;color:var(--red)">กำลังลง</strong>
+          <div id="change30m" class="muted" style="margin-top:5px">-0.143%</div>
+          <div class="trend-update">แท่งถัดไปอีก <span class="trendCountdown" data-interval="30">30:00 นาที</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gold-card signal-card">
+      <div class="muted">ผลประเมิน</div>
+      <div id="autoSignal" class="auto-signal">รอจังหวะ</div>
+
+      <div class="signal-grid">
+        <div class="signal-box">
+          <div class="muted">คะแนนแรงซื้อ</div>
+          <strong id="autoBuy" style="font-size:30px;color:var(--green)">47%</strong>
+        </div>
+        <div class="signal-box">
+          <div class="muted">คะแนนแรงขาย</div>
+          <strong id="autoSell" style="font-size:30px;color:var(--red)">53%</strong>
+        </div>
+      </div>
+
+
+      <div id="autoReason" class="card-note" style="margin-top:15px">
+        1 นาที ทรงตัว • 5 นาที ทรงตัว • 15 นาที กำลังลง • 30 นาที กำลังลง • แนวโน้มหลายช่วงสอดคล้องกัน
+      </div>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">ประเมินแนวโน้มล่วงหน้า 1 นาที</h2>
+  <div class="gold-grid" style="grid-template-columns:1.15fr 1fr;margin-bottom:20px">
+    <div class="gold-card analysis-card" style="min-height:auto">
+      <div class="muted">สัญญาณคาดการณ์ 1 นาทีถัดไป</div>
+      <div id="forecast1m" class="auto-signal" style="text-align:left;color:var(--muted)">กำลังเก็บข้อมูล</div>
+      <div class="time-grid">
+        <div class="time-box"><div class="muted">ความเชื่อมั่น</div><strong id="forecastConfidence" style="font-size:26px;color:var(--yellow)">0%</strong></div>
+        <div class="time-box"><div class="muted">ผลตอบแทนคาดการณ์</div><strong id="forecastReturn" style="font-size:26px;color:var(--yellow)">0.000%</strong></div>
+        <div class="time-box"><div class="muted">RSI ระยะสั้น</div><strong id="rsiValue" style="font-size:26px">—</strong></div>
+        <div class="time-box"><div class="muted">MACD Momentum</div><strong id="macdValue" style="font-size:26px">—</strong></div>
+        <div class="time-box turn-box"><div class="muted">คาดการณ์การเปลี่ยนทิศ</div><strong id="turnForecast" style="font-size:24px;color:var(--blue)">กำลังวิเคราะห์</strong><div id="turnEta" class="muted" style="margin-top:6px">ต้องมีข้อมูลอย่างน้อย 5 นาที</div></div>
+      </div>
+      <div id="forecastReason" class="card-note" style="padding-left:0;margin-top:10px">สัญญาณเบื้องต้นเมื่อครบ 5 นาที และยืนยันด้วยแนวโน้ม 10 นาที</div>
+    </div>
+    <div class="gold-card signal-card" style="min-height:auto">
+      <div class="muted">สถานะอัปเดต</div>
+      <div id="connectionStatus" class="auto-signal" style="font-size:30px;color:var(--green)">ออนไลน์</div>
+      <div class="signal-grid">
+        <div class="signal-box"><div class="muted">อัปเดตครั้งถัดไป</div><strong id="nextUpdate" style="font-size:26px">5 วินาที</strong></div>
+        <div class="signal-box"><div class="muted">ข้อมูลสะสม</div><strong id="sampleCount" style="font-size:26px">0</strong></div>
+      </div>
+      <div class="card-note">อัปเดตต่อเนื่องเมื่อหน้าเว็บเปิดอยู่และเชื่อมต่ออินเทอร์เน็ต</div>
+    </div>
+  </div>
+
+  <h2 class="section-title">ประมาณการผลลัพธ์ 15 นาทีข้างหน้า</h2>
+  <div class="gold-card analysis-card" style="min-height:auto;margin-bottom:20px">
+    <div class="quality-grid">
+      <div class="quality-box"><span class="muted">ทิศทางคาดการณ์</span><strong id="backtestWinRate" class="quality-value">รอข้อมูล</strong></div>
+      <div class="quality-box"><span class="muted">ราคาเป้าหมายประมาณการ</span><strong id="backtestTrades" class="quality-value">—</strong></div>
+      <div class="quality-box"><span class="muted">การเปลี่ยนแปลง 15 นาที</span><strong id="backtestReturn" class="quality-value">—</strong></div>
+      <div class="quality-box"><span class="muted">กำไรคาดการณ์ตามทิศทาง</span><strong id="qualityStatus" class="quality-value">—</strong></div>
+    </div>
+    <div class="position-control"><label class="muted" for="positionOz">ขนาดสถานะ (ออนซ์)</label><input id="positionOz" type="number" min="0.01" step="0.01" value="1"><span class="muted">ปรับให้ตรงกับขนาดสัญญาของโบรกเกอร์</span></div>
+    <div id="qualityReason" class="quality-note">กำลังเก็บข้อมูลเพื่อคำนวณราคาเป้าหมายและกรอบความเสี่ยง 15 นาที</div>
+  </div>
+
+
+  <h2 class="section-title">แนวโน้มทองคำ XAU/USD</h2>
+  <div class="gold-grid" style="grid-template-columns:1fr 1fr">
+
+    <div class="gold-card">
+      <div class="card-head">แนวโน้มอีก 1 นาที</div>
+      <div class="tv-box tradingview-widget-container">
+        <iframe
+          scrolling="no"
+          allowtransparency="true"
+          src="https://www.tradingview-widget.com/embed-widget/technical-analysis/?locale=th_TH#%7B%22interval%22%3A%221m%22%2C%22width%22%3A%22100%25%22%2C%22isTransparent%22%3Atrue%2C%22height%22%3A%22100%25%22%2C%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22showIntervalTabs%22%3Afalse%2C%22displayMode%22%3A%22single%22%2C%22colorTheme%22%3A%22dark%22%7D"
+          title="วิเคราะห์ทองกรอบ 1 นาที">
+        </iframe>
+      </div>
+      <div class="card-note">ซื้อหรือซื้อทันที = มีแรงขึ้น • ขายหรือขายทันที = มีแรงลง • เป็นกลาง = ยังไม่ชัดเจน</div>
+    </div>
+
+    <div class="gold-card">
+      <div class="card-head">แนวโน้มอีก 5 นาที</div>
+      <div class="tv-box tradingview-widget-container">
+        <iframe
+          scrolling="no"
+          allowtransparency="true"
+          src="https://www.tradingview-widget.com/embed-widget/technical-analysis/?locale=th_TH#%7B%22interval%22%3A%225m%22%2C%22width%22%3A%22100%25%22%2C%22isTransparent%22%3Atrue%2C%22height%22%3A%22100%25%22%2C%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22showIntervalTabs%22%3Afalse%2C%22displayMode%22%3A%22single%22%2C%22colorTheme%22%3A%22dark%22%7D"
+          title="วิเคราะห์ทองกรอบ 5 นาที">
+        </iframe>
+      </div>
+      <div class="card-note">ซื้อหรือซื้อทันที = มีแรงขึ้น • ขายหรือขายทันที = มีแรงลง • เป็นกลาง = ยังไม่ชัดเจน</div>
+    </div>
+
+  </div>
+
+
+
+
+
+  <h2 class="section-title">กราฟราคาทอง XAU/USD แบบเรียลไทม์</h2>
+  <div class="gold-grid" style="grid-template-columns:1fr;margin-bottom:20px">
+    <div class="gold-card">
+      <div class="card-head">กราฟราคาทองแบบเรียลไทม์</div>
+      <div class="tv-box tradingview-widget-container">
+        <iframe
+          scrolling="no"
+          allowtransparency="true"
+          src="https://www.tradingview-widget.com/embed-widget/advanced-chart/?locale=th_TH#%7B%22autosize%22%3Atrue%2C%22symbol%22%3A%22OANDA%3AXAUUSD%22%2C%22interval%22%3A%221%22%2C%22timezone%22%3A%22Asia%2FBangkok%22%2C%22theme%22%3A%22dark%22%2C%22style%22%3A%221%22%2C%22allow_symbol_change%22%3Afalse%2C%22hide_side_toolbar%22%3Afalse%2C%22support_host%22%3A%22https%3A%2F%2Fwww.tradingview.com%22%2C%22width%22%3A%22100%25%22%2C%22height%22%3A%22100%25%22%7D"
+          title="กราฟราคาทอง XAUUSD">
+        </iframe>
+      </div>
+    </div>
+
+</div>
+
+</div>
+
+<script>
+const GOLD_API="https://api.gold-api.com/price/XAU";
+const POLL_MS=5000,FETCH_TIMEOUT_MS=4000,MAX_AGE=12*60*60*1000,MIN_POINTS=60,MIN_AGE=5*60*1000,BACKTEST_HORIZON=12,MIN_BACKTEST_TRADES=5;
+let samples=JSON.parse(localStorage.getItem("goldPriceSamples")||"[]"),nextUpdateAt=Date.now();
+let updateInProgress=false;
+let activePosition=JSON.parse(localStorage.getItem("goldActivePosition")||"null"),lastExitAt=0;
+if(activePosition&&(!activePosition.time||Date.now()-activePosition.time>60*60*1000)){activePosition=null;localStorage.removeItem("goldActivePosition")}
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const avg=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+function saveSamples(){const c=Date.now()-MAX_AGE;samples=samples.filter(x=>x&&Number.isFinite(x.t)&&Number.isFinite(x.p)&&x.t>=c);localStorage.setItem("goldPriceSamples",JSON.stringify(samples));document.getElementById("sampleCount").textContent=samples.length}
+function nearestSample(age,tol){const target=Date.now()-age,c=samples.filter(x=>Math.abs(x.t-target)<=tol);return c.length?c.reduce((a,b)=>Math.abs(b.t-target)<Math.abs(a.t-target)?b:a):null}
+function pct(p,o){return !o||!o.p?null:(p-o.p)/o.p*100}
+function trend(c){return c===null?["รอข้อมูล","var(--muted)"]:c>.015?["กำลังขึ้น","var(--green)"]:c<-.015?["กำลังลง","var(--red)"]:["ทรงตัว","var(--yellow)"]}
+function fmt(c){return c===null?"กำลังเก็บข้อมูล":`${c>=0?"+":""}${c.toFixed(3)}%`}
+function setT(id,t,col){const e=document.getElementById(id);e.textContent=t;e.style.color=col}
+function ema(v,p){if(!v.length)return null;const k=2/(p+1);let e=v[0];for(let i=1;i<v.length;i++)e=v[i]*k+e*(1-k);return e}
+function rsi(v,p=14){if(v.length<p+1)return null;let g=0,l=0;for(let i=v.length-p;i<v.length;i++){const d=v[i]-v[i-1];d>0?g+=d:l-=d}if(l===0)return 100;const rs=(g/p)/(l/p);return 100-100/(1+rs)}
+function returns(v){const r=[];for(let i=1;i<v.length;i++)if(v[i-1]>0)r.push((v[i]-v[i-1])/v[i-1]);return r}
+function sd(v){if(v.length<2)return 0;const m=avg(v);return Math.sqrt(avg(v.map(x=>(x-m)**2)))}
+function technicalDecision(values){
+  if(values.length<140)return null;
+  const price=values.at(-1),rs=returns(values),fast=ema(values.slice(-36),9),slow=ema(values.slice(-84),21),base=ema(values.slice(-140),50),R=rsi(values),macd=ema(values.slice(-100),12)-ema(values.slice(-140),26),sm=avg(rs.slice(-12)),mm=avg(rs.slice(-36)),vol=sd(rs.slice(-60));
+  const raw=clamp((fast-slow)/(price*.00015),-1,1)*.24+clamp((price-base)/(price*.00025),-1,1)*.18+clamp((R-50)/20,-1,1)*.14+clamp(macd/(price*.00012),-1,1)*.20+clamp(sm/.00008,-1,1)*.16+clamp((sm-mm)/.00006,-1,1)*.08;
+  const noise=clamp(vol/.00020,0,1),score=raw*(1-noise*.35);
+  return {direction:score>=.52&&fast>slow&&price>base&&R>=52&&R<=70&&macd>0?1:score<=-.52&&fast<slow&&price<base&&R>=30&&R<=48&&macd<0?-1:0};
+}
+function evaluateSystem(){
+  const wr=document.getElementById("backtestWinRate"),tr=document.getElementById("backtestTrades"),rr=document.getElementById("backtestReturn"),qs=document.getElementById("qualityStatus"),why=document.getElementById("qualityReason");
+  let wins=0,trades=0,total=0;
+  for(let i=140;i<samples.length-1;i+=12){
+    const start=samples[i],target=start.t+60000;let j=i+1;
+    while(j<samples.length&&samples[j].t<target)j++;
+    if(j>=samples.length||Math.abs(samples[j].t-target)>20000)continue;
+    const d=technicalDecision(samples.slice(Math.max(0,i-179),i+1).map(x=>x.p));if(!d||!d.direction)continue;
+    const net=(samples[j].p-start.p)/start.p*100*d.direction-.01;trades++;total+=net;if(net>0)wins++;
+  }
+  tr.textContent=trades;rr.textContent=trades?(total>=0?"+":"")+total.toFixed(3)+"%":"—";rr.style.color=total>0?"var(--green)":total<0?"var(--red)":"var(--text)";
+  if(!trades){wr.textContent="รอข้อมูล";qs.textContent="กำลังเก็บข้อมูล";qs.style.color="var(--yellow)";return}
+  const rate=wins/trades*100;wr.textContent=rate.toFixed(1)+"%";wr.style.color=rate>=65?"var(--green)":rate>=55?"var(--yellow)":"var(--red)";
+  if(trades<MIN_BACKTEST_TRADES){qs.textContent="ตัวอย่างยังน้อย";qs.style.color="var(--yellow)";why.textContent=`มีผลทดสอบ ${trades}/${MIN_BACKTEST_TRADES} ครั้ง กรุณาเปิดระบบต่อเนื่องก่อนใช้ Win rate ประกอบการตัดสินใจ`}
+  else if(rate>=80){qs.textContent="ผ่านเป้าหมาย 80%";qs.style.color="var(--green)";why.textContent="ผลย้อนหลังของข้อมูลชุดนี้ผ่านเป้าหมาย 80% แต่ไม่รับประกันว่าการซื้อขายครั้งถัดไปจะชนะ"}
+  else if(rate>=60){qs.textContent="พอใช้—รอสัญญาณชัด";qs.style.color="var(--yellow)";why.textContent="ควรเข้าเฉพาะเมื่อหลายกรอบเวลาสอดคล้องและใช้ Stop Loss ทุกครั้ง"}
+  else{qs.textContent="งดใช้สัญญาณ";qs.style.color="var(--red)";why.textContent="ผลย้อนหลังยังต่ำ ควรงดเปิดสถานะจากสัญญาณอัตโนมัติ"}
+}
+function risk(price,signal,vol){const s=document.getElementById("stopLoss"),t=document.getElementById("takeProfit");if(!vol||!["พิจารณาซื้อ","พิจารณาขาย"].includes(signal)){s.textContent=t.textContent="—";return}const d=Math.max(price*vol*5,1.5),r=d*1.8,buy=signal==="พิจารณาซื้อ";s.textContent="$"+(buy?price-d:price+d).toFixed(2);t.textContent="$"+(buy?price+r:price-r).toFixed(2)}
+function forecast(price){const f=document.getElementById("forecast1m"),c=document.getElementById("forecastConfidence"),ret=document.getElementById("forecastReturn"),rv=document.getElementById("rsiValue"),mv=document.getElementById("macdValue"),reason=document.getElementById("forecastReason"),age=samples.length?Date.now()-samples[0].t:0;if(samples.length<MIN_POINTS||age<MIN_AGE){const p=Math.round(clamp(Math.min(samples.length/MIN_POINTS,age/MIN_AGE)*100,0,100));f.textContent="กำลังเก็บข้อมูล";f.style.color="var(--muted)";c.textContent=p+"%";ret.textContent="0.000%";rv.textContent=mv.textContent="—";reason.textContent="เริ่มประเมินได้หลังเก็บข้อมูลต่อเนื่องประมาณ 90 วินาที";return}
+const prices=samples.slice(-180).map(x=>x.p),rs=returns(prices),fast=ema(prices.slice(-36),9),slow=ema(prices.slice(-84),21),base=ema(prices.slice(-140),50),R=rsi(prices),macd=ema(prices.slice(-100),12)-ema(prices.slice(-140),26),sm=avg(rs.slice(-12)),mm=avg(rs.slice(-36)),vol=sd(rs.slice(-60));
+const score=clamp((fast-slow)/(price*.00015),-1,1)*.24+clamp((price-base)/(price*.00025),-1,1)*.18+clamp((R-50)/20,-1,1)*.14+clamp(macd/(price*.00012),-1,1)*.20+clamp(sm/.00008,-1,1)*.16+clamp((sm-mm)/.00006,-1,1)*.08,noise=clamp(vol/.00020,0,1),adj=score*(1-noise*.35),pred=adj*.045,conf=Math.round(clamp(Math.abs(adj)*75+(1-noise)*20,5,95));
+const buy=adj>=.42&&fast>slow&&price>base&&R>=52&&R<=72&&macd>0,sell=adj<=-.42&&fast<slow&&price<base&&R>=28&&R<=48&&macd<0;let sig="รอจังหวะ",col="var(--yellow)";if(buy){sig="พิจารณาเข้าซื้อ";col="var(--green)"}else if(sell){sig="พิจารณาขาย";col="var(--red)"}f.textContent=sig;f.style.color=col;c.textContent=conf+"%";c.style.color=conf>=70?"var(--green)":"var(--yellow)";ret.textContent=`${pred>=0?"+":""}${pred.toFixed(3)}%`;ret.style.color=pred>0?"var(--green)":pred<0?"var(--red)":"var(--yellow)";rv.textContent=R.toFixed(1);mv.textContent=macd>=0?"บวก":"ลบ";mv.style.color=macd>=0?"var(--green)":"var(--red)";reason.textContent=`EMA9 ${fast>slow?"เหนือ":"ต่ำกว่า"} EMA21 • ราคา ${price>base?"เหนือ":"ต่ำกว่า"} EMA50 • RSI ${R.toFixed(1)} • MACD ${macd>=0?"บวก":"ลบ"} • ความผันผวน ${noise>.7?"สูง":"ปกติ"}`}
+function analyse(price){const cs=[pct(price,nearestSample(60000,30000)),pct(price,nearestSample(300000,60000)),pct(price,nearestSample(900000,90000)),pct(price,nearestSample(1800000,120000))],ids=["1m","5m","15m","30m"],ts=cs.map(trend);ids.forEach((id,i)=>{setT("trend"+id,ts[i][0],ts[i][1]);document.getElementById("change"+id).textContent=fmt(cs[i])});let buy=50,sell=50,signal="ข้อมูลยังไม่ครบ",col="var(--muted)",reason="ระบบกำลังเก็บข้อมูลย้อนหลังให้ครบ 30 นาที";if(cs.every(x=>x!==null)&&(Date.now()-samples[0].t)>=1800000){const n=[clamp(cs[0]/.12,-1,1),clamp(cs[1]/.35,-1,1),clamp(cs[2]/.70,-1,1),clamp(cs[3]/1.10,-1,1)],m=n[0]*.20+n[1]*.35+n[2]*.30+n[3]*.15;buy=Math.round(clamp(50+m*45,5,95));sell=100-buy;const dirs=ts.map(x=>x[0]).filter(x=>x!=="ทรงตัว"),conflict=new Set(dirs).size>1,vol=sd(returns(samples.slice(-40).map(x=>x.p)));if(conflict){signal="งดเข้า";col="var(--yellow)";reason="สัญญาณหลายกรอบเวลาขัดแย้งกัน"}else if(buy>=75){signal="พิจารณาซื้อ";col="var(--green)";reason="แรงซื้อหลายกรอบเวลาสอดคล้องกัน"}else if(sell>=75){signal="พิจารณาขาย";col="var(--red)";reason="แรงขายหลายกรอบเวลาสอดคล้องกัน"}else{signal="งดเข้า";col="var(--yellow)";reason="คะแนนยังไม่ถึงเกณฑ์ 75%"}risk(price,signal,vol)}else risk(price,signal,null);document.getElementById("autoBuy").textContent=buy+"%";document.getElementById("autoSell").textContent=sell+"%";document.getElementById("autoSignal").textContent=signal;document.getElementById("autoSignal").style.color=col;document.getElementById("autoReason").textContent=reason;forecast(price);evaluateSystem()}
+function forecastMomentum(price){
+  const f=document.getElementById("forecast1m"),c=document.getElementById("forecastConfidence"),ret=document.getElementById("forecastReturn"),rv=document.getElementById("rsiValue"),mv=document.getElementById("macdValue"),turn=document.getElementById("turnForecast"),eta=document.getElementById("turnEta"),reason=document.getElementById("forecastReason");
+  const age=samples.length?Date.now()-samples[0].t:0,p5=nearestSample(5*60000,45000),p10=nearestSample(10*60000,45000);
+  if(!p5||age<5*60000){const progress=Math.round(clamp(age/(5*60000)*100,0,100));f.textContent="กำลังเก็บข้อมูล 5 นาที";f.style.color="var(--muted)";c.textContent=progress+"%";ret.textContent="0.000%";rv.textContent=mv.textContent="—";turn.textContent="กำลังวิเคราะห์";eta.textContent="ต้องมีข้อมูลอย่างน้อย 5 นาที";reason.textContent="เหลือประมาณ "+Math.ceil(Math.max(0,5*60000-age)/60000)+" นาที ก่อนเริ่มประเมิน";return}
+  const p1=nearestSample(60000,30000),p30=nearestSample(30000,20000),m1=pct(price,p1),m30=pct(price,p30),m5=pct(price,p5),m10=p10?pct(price,p10):null,oneMinute=[];
+  for(let minute=1;minute<=10;minute++){const old=nearestSample(minute*60000,45000);if(old)oneMinute.push(pct(price,old)/minute)}
+  const up=oneMinute.filter(v=>v>.003).length,down=oneMinute.filter(v=>v<-.003).length,agreement=Math.max(up,down)/Math.max(1,oneMinute.length);
+  const momentum=m10===null?m5/5:(m5/5)*.6+(m10/10)*.4,pred=clamp(momentum*.35,-.12,.12),strength=Math.abs(momentum);
+  const confidence=Math.round(clamp(45+agreement*30+strength/.02*15-(m10===null?10:0),35,90));
+  let turnText="ยังไม่พบสัญญาณกลับทิศ",turnTime="แนวโน้มเดิมอาจต่ออีกประมาณ 2–5 นาที",turnColor="var(--blue)";
+  if(m5<-.01&&m1!==null&&m30!==null&&m1>.006&&m30>.004){turnText="แรงลงกำลังชะลอ → มีโอกาสกลับขึ้น";turnTime=Math.abs(m1)>.02?"คาดการณ์ประมาณ 1–2 นาที":"คาดการณ์ประมาณ 2–4 นาที";turnColor="var(--green)"}
+  else if(m5>.01&&m1!==null&&m30!==null&&m1<-.006&&m30<-.004){turnText="แรงขึ้นกำลังชะลอ → มีโอกาสกลับลง";turnTime=Math.abs(m1)>.02?"คาดการณ์ประมาณ 1–2 นาที":"คาดการณ์ประมาณ 2–4 นาที";turnColor="var(--red)"}
+  else if(m5>0&&m1!==null&&m1>0){turnText="แนวโน้มขึ้นยังดำเนินต่อ";turnTime="ประเมินว่าขึ้นต่อได้ประมาณ 2–5 นาที";turnColor="var(--green)"}
+  else if(m5<0&&m1!==null&&m1<0){turnText="แนวโน้มลงยังดำเนินต่อ";turnTime="ประเมินว่าลงต่อได้ประมาณ 2–5 นาที";turnColor="var(--red)"}
+  else{turnText="ราคาแกว่งตัว — ทิศทางยังไม่ชัด";turnTime="รอแรง 30 วินาทีและ 1 นาทีไปทางเดียวกัน";turnColor="var(--yellow)"}
+  turn.textContent=turnText;turn.style.color=turnColor;eta.textContent=turnTime+" (ไม่ใช่เวลารับประกัน)";
+  let signal="รอจังหวะ — ยังไม่เข้า",color="var(--yellow)",detail="";
+  if(activePosition){
+    const pnl=(price-activePosition.price)/activePosition.price*100*activePosition.direction,held=Math.max(0,Date.now()-activePosition.time),reversed=activePosition.direction===1?(m1!==null&&m1<-.012)||(m30!==null&&m30<-.008):(m1!==null&&m1>.012)||(m30!==null&&m30>.008),hardExit=pnl<=-.04;
+    if(reversed||hardExit){signal="ออก / ปิดสถานะทันที";color="var(--red)";detail=hardExit?"ขาดทุนถึงเกณฑ์ป้องกัน":"โมเมนตัม 30–60 วินาทีพลิกทิศ";activePosition=null;lastExitAt=Date.now();localStorage.removeItem("goldActivePosition")}
+    else{signal=activePosition.direction===1?"ถือฝั่งซื้อ — เฝ้าระวัง":"ถือฝั่งขาย — เฝ้าระวัง";color=pnl>=0?"var(--green)":"var(--yellow)";detail="ผลตั้งแต่แจ้งเข้า "+(pnl>=0?"+":"")+pnl.toFixed(3)+"% • ถือมา "+Math.floor(held/60000)+" นาที"}
+  }else if(Date.now()-lastExitAt<30000){signal="ออกแล้ว — ห้ามเข้าใหม่";color="var(--red)";detail="คงคำเตือนออกไว้ 30 วินาทีเพื่อไม่ให้พลาดสัญญาณ"}
+  else if(Date.now()-lastExitAt<60000){signal="พัก 1 นาทีหลังออก";detail="ป้องกันการกลับเข้าเร็วเกินไปในช่วงราคาแกว่ง"}
+  else if(momentum>.008&&m1!==null&&m1>.006&&up>down&&agreement>=.6&&confidence>=60){signal="เข้าได้: ฝั่งซื้อ";color="var(--green)";activePosition={direction:1,price,time:Date.now()};localStorage.setItem("goldActivePosition",JSON.stringify(activePosition))}
+  else if(momentum<-.008&&m1!==null&&m1<-.006&&down>up&&agreement>=.6&&confidence>=60){signal="เข้าได้: ฝั่งขาย";color="var(--red)";activePosition={direction:-1,price,time:Date.now()};localStorage.setItem("goldActivePosition",JSON.stringify(activePosition))}
+  const prices=samples.slice(-180).map(x=>x.p),R=rsi(prices),macd=prices.length>26?ema(prices,12)-ema(prices,26):null;
+  f.textContent=signal;f.style.color=color;c.textContent=confidence+"%";c.style.color=confidence>=70?"var(--green)":"var(--yellow)";ret.textContent=(pred>=0?"+":"")+pred.toFixed(3)+"%";ret.style.color=pred>0?"var(--green)":pred<0?"var(--red)":"var(--yellow)";rv.textContent=R===null?"—":R.toFixed(1);mv.textContent=macd===null?"—":macd>=0?"บวก":"ลบ";mv.style.color=macd===null?"var(--text)":macd>=0?"var(--green)":"var(--red)";
+  const m1Text=m1===null?"—":(m1>=0?"+":"")+m1.toFixed(3)+"%";
+  reason.textContent=(detail?detail+" • ":"")+"1 นาที "+m1Text+" • 5 นาที "+(m5>=0?"+":"")+m5.toFixed(3)+"%"+(m10===null?" • รอยืนยัน 10 นาที":" • 10 นาที "+(m10>=0?"+":"")+m10.toFixed(3)+"%")+" • สอดคล้อง "+Math.round(agreement*100)+"%";
+  document.getElementById("autoSignal").textContent=signal;document.getElementById("autoSignal").style.color=color;document.getElementById("autoReason").textContent=reason.textContent;
+}
+function evaluateMomentumQuality(){
+  const wr=document.getElementById("backtestWinRate"),tr=document.getElementById("backtestTrades"),rr=document.getElementById("backtestReturn"),qs=document.getElementById("qualityStatus"),why=document.getElementById("qualityReason");let wins=0,trades=0,total=0;
+  for(let i=60;i+12<samples.length;i+=12){const before=samples[i-60],start=samples[i],after=samples[i+12];if(after.t-start.t<45000||after.t-start.t>90000)continue;const momentum=(start.p-before.p)/before.p;if(Math.abs(momentum)<.00003)continue;const direction=Math.sign(momentum),result=(after.p-start.p)/start.p*100*direction;trades++;total+=result;if(result>0)wins++}
+  tr.textContent=trades;rr.textContent=trades?(total>=0?"+":"")+total.toFixed(3)+"%":"—";rr.style.color=total>0?"var(--green)":total<0?"var(--red)":"var(--text)";
+  if(!trades){wr.textContent="รอผลรอบแรก";qs.textContent="กำลังเก็บ 5 นาที";qs.style.color="var(--yellow)";why.textContent="เมื่อมีข้อมูลครบ 5 นาที ระบบจะทดสอบว่าโมเมนตัมทำนายราคานาทีถัดไปถูกหรือไม่";return}
+  const rate=wins/trades*100;wr.textContent=rate.toFixed(1)+"%";wr.style.color=rate>=60?"var(--green)":rate>=50?"var(--yellow)":"var(--red)";qs.textContent=trades<MIN_BACKTEST_TRADES?"ข้อมูลเบื้องต้น":rate>=60?"ใช้งานประกอบได้":"ความแม่นยำยังต่ำ";qs.style.color=trades<MIN_BACKTEST_TRADES?"var(--yellow)":rate>=60?"var(--green)":"var(--red)";why.textContent="ทดสอบโมเมนตัม 5 นาที กับผลจริงในนาทีถัดไปแล้ว "+trades+" รอบ";
+}
+function evaluate15mProjection(){
+  const directionEl=document.getElementById("backtestWinRate"),targetEl=document.getElementById("backtestTrades"),returnEl=document.getElementById("backtestReturn"),profitEl=document.getElementById("qualityStatus"),why=document.getElementById("qualityReason"),sizeInput=document.getElementById("positionOz"),last=samples.at(-1),p5=nearestSample(5*60000,45000),p10=nearestSample(10*60000,45000);
+  if(!last||!p5){directionEl.textContent="รอข้อมูล 5 นาที";directionEl.style.color="var(--yellow)";targetEl.textContent=returnEl.textContent=profitEl.textContent="—";why.textContent="ต้องมีข้อมูลต่อเนื่องอย่างน้อย 5 นาที ก่อนประมาณการผลลัพธ์ 15 นาที";return}
+  const price=last.p,m5=pct(price,p5),m10=p10?pct(price,p10):null,perMinute=m10===null?m5/5:(m5/5)*.65+(m10/10)*.35,projected=clamp(perMinute*15*.45,-.60,.60),target=price*(1+projected/100),recentReturns=returns(samples.slice(-120).map(x=>x.p)),range=Math.max(sd(recentReturns)*Math.sqrt(180)*price,price*.0005),oz=Math.max(.01,Number(sizeInput.value)||1),potential=Math.abs(target-price)*oz;
+  let direction="แกว่งตัว / งดเข้า",color="var(--yellow)";if(projected>.025){direction="มีโอกาสขึ้น";color="var(--green)"}else if(projected<-.025){direction="มีโอกาสลง";color="var(--red)"}
+  directionEl.textContent=direction;directionEl.style.color=color;targetEl.textContent="$"+target.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});returnEl.textContent=(projected>=0?"+":"")+projected.toFixed(3)+"%";returnEl.style.color=color;profitEl.textContent=Math.abs(projected)<=.025?"งดคำนวณ":"≈ $"+potential.toFixed(2);profitEl.style.color=Math.abs(projected)<=.025?"var(--yellow)":"var(--green)";
+  why.textContent="ราคาปัจจุบัน $"+price.toFixed(2)+" • กรอบความผันผวนประมาณ ±$"+range.toFixed(2)+" • กำไรคำนวณจากการเข้าตามทิศทางที่ประเมินและขนาด "+oz+" ออนซ์ • ไม่รวม spread, commission และ slippage";
+}
+forecast=forecastMomentum;
+evaluateSystem=evaluate15mProjection;
+risk=()=>{};
+async function updateGold(){if(updateInProgress)return;const st=document.getElementById("connectionStatus");if(!navigator.onLine){st.textContent="ออฟไลน์";st.style.color="var(--red)";return}updateInProgress=true;try{st.textContent="กำลังอัปเดต";st.style.color="var(--yellow)";const r=await fetch(GOLD_API,{cache:"no-store",signal:AbortSignal.timeout(FETCH_TIMEOUT_MS)});if(!r.ok)throw Error(r.status);const d=await r.json(),p=Number(d.price);if(!Number.isFinite(p))throw Error("price");const now=Date.now(),last=samples.at(-1);if(!last||now-last.t>=4000){samples.push({t:now,p});saveSamples()}document.getElementById("liveGoldPrice").textContent="$"+p.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById("liveTime").textContent="อัปเดตอัตโนมัติ "+new Date(now).toLocaleTimeString("th-TH");st.textContent="ออนไลน์";st.style.color="var(--green)";analyse(p)}catch(e){st.textContent="เชื่อมต่อไม่สำเร็จ";st.style.color="var(--red)";document.getElementById("liveTime").textContent="จะลองเชื่อมต่อใหม่อัตโนมัติ"}finally{updateInProgress=false;nextUpdateAt=Date.now()+POLL_MS}}
+function countdown(){const now=Date.now(),seconds=Math.max(0,Math.ceil((nextUpdateAt-now)/1000));document.getElementById("nextUpdate").textContent=seconds+" วินาที";document.querySelectorAll(".trendCountdown").forEach(e=>{const interval=Math.max(1,Number(e.dataset.interval)||1)*60000,remaining=interval-(now%interval),minutes=Math.floor(remaining/60000),secs=Math.floor((remaining%60000)/1000);e.textContent=String(minutes).padStart(2,"0")+":"+String(secs).padStart(2,"0")+" นาที"})}
+document.getElementById("positionOz").addEventListener("input",evaluate15mProjection);
+window.addEventListener("online",updateGold);window.addEventListener("offline",()=>{const e=document.getElementById("connectionStatus");e.textContent="ออฟไลน์";e.style.color="var(--red)"});document.addEventListener("visibilitychange",()=>{if(!document.hidden)updateGold()});saveSamples();updateGold();setInterval(updateGold,POLL_MS);setInterval(countdown,1000);
+</script>
+</body>
+</html>
