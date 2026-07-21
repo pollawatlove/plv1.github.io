@@ -24,6 +24,7 @@ button{cursor:pointer;font-weight:700}.primary{background:var(--green);color:#04
 .sort-btn.active{background:var(--green);border-color:var(--green);color:#04140d}
 .table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:820px}th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
 th{font-size:12px;color:#b6c7dd;text-transform:uppercase}.symbol{font-size:16px;font-weight:900}.name{font-size:12px;margin-top:3px}
+.business{max-width:210px;margin-top:5px;color:#8fa4bf;font-size:11px;line-height:1.45;white-space:normal}
 .signal{display:inline-flex;min-width:92px;justify-content:center;padding:7px 10px;border-radius:999px;font-weight:900}
 .dividend-badge{display:inline-flex;padding:6px 10px;border-radius:999px;font-weight:800;border:1px solid transparent}
 .div-monthly{background:#0f3b32;color:#7ff0ba;border-color:#1e815c}
@@ -275,7 +276,7 @@ function renderHotStocks(){
       <div class="hot-symbol">${s.symbol}</div>
       <div class="name">${s.name}</div>
       <div class="hot-upside">${s.upside>0?'ประมาณ +'+s.upside+'%':'เน้นรายได้'}</div>
-      <div class="hot-reason">${s.reason}</div>
+      <div class="hot-reason">ทำธุรกิจ: ${s.reason}</div>
       <div class="name" style="margin-top:8px">ปันผล: ${s.dividend}</div>
       <div class="name" style="margin-top:10px;color:#71e9ad;font-weight:700">คลิกเพื่อเพิ่มลงตาราง</div>
     </div>
@@ -424,6 +425,8 @@ function render(){
     return `<tr onclick="selectChartSymbol('${s.symbol}','${s.tvExchange||"NASDAQ"}')" style="cursor:pointer">
       <td>
         <div class="symbol">${s.symbol}</div>
+        <div class="name">${s.name||s.symbol}</div>
+        <div class="business">${businessDescription(s)}</div>
       </td>
       <td class="${ch===null?'':ch>=0?'pos':'neg'}">
         <b style="font-size:16px">${ch===null?'—':(ch>=0?'+':'')+fmt(ch)+'%'}</b>
@@ -702,6 +705,14 @@ const POPULAR_US_STOCKS={
   QQQ:{name:"Invesco QQQ Trust",exchange:"NASDAQ",type:"ETF"},
   SPY:{name:"SPDR S&P 500 ETF Trust",exchange:"AMEX",type:"ETF"}
 };
+
+const STOCK_BUSINESS={
+  NVDA:"ชิปประมวลผลกราฟิกและระบบ AI",AMD:"ชิป CPU, GPU และตัวเร่ง AI",AMZN:"อีคอมเมิร์ซ คลาวด์ AWS และโฆษณา",GOOGL:"Google Search, YouTube, Cloud และ AI",META:"Facebook, Instagram, WhatsApp และโฆษณา",AVGO:"ชิปเครือข่ายและซอฟต์แวร์องค์กร",TTD:"แพลตฟอร์มซื้อโฆษณาดิจิทัล",CRWD:"ระบบรักษาความปลอดภัยไซเบอร์",PLTR:"ซอฟต์แวร์วิเคราะห์ข้อมูลและ AI",UBER:"บริการเรียกรถ ส่งอาหาร และขนส่ง",
+  AAPL:"อุปกรณ์อิเล็กทรอนิกส์และบริการดิจิทัล",MSFT:"ซอฟต์แวร์ Azure Cloud และ AI",ASML:"เครื่องจักรผลิตชิปขั้นสูง",COST:"ค้าปลีกคลังสินค้าแบบสมาชิก",V:"เครือข่ายชำระเงิน Visa",JPM:"ธนาคารและบริการทางการเงิน",BABA:"อีคอมเมิร์ซและคลาวด์จีน",SAP:"ซอฟต์แวร์บริหารองค์กร",UBS:"ธนาคารและบริหารความมั่งคั่ง",NVO:"ยาเบาหวานและควบคุมน้ำหนัก",SNY:"ยาและวัคซีน",SONY:"เกม PlayStation เพลง ภาพยนตร์ และเซ็นเซอร์",TM:"ผู้ผลิตรถยนต์ Toyota",HMC:"รถยนต์และรถจักรยานยนต์ Honda",PKX:"ผู้ผลิตเหล็ก POSCO",DEO:"ผู้ผลิตเครื่องดื่มแอลกอฮอล์",
+  O:"กองทรัสต์อสังหาฯ ให้เช่าเชิงพาณิชย์",MAIN:"สินเชื่อและลงทุนในธุรกิจขนาดกลาง",ADC:"กองทรัสต์อสังหาฯ ร้านค้าปลีก",STAG:"กองทรัสต์คลังสินค้าและโรงงาน",EPR:"กองทรัสต์อสังหาฯ ด้านความบันเทิง",LTC:"กองทรัสต์ที่พักผู้สูงอายุและสุขภาพ",AGNC:"กองทรัสต์ลงทุนตราสารจำนอง",
+  SGOV:"ETF พันธบัตรรัฐบาลสหรัฐระยะสั้น",JEPI:"ETF หุ้นสหรัฐเน้นกระแสเงินสดรายเดือน",JEPQ:"ETF หุ้น Nasdaq เน้นกระแสเงินสดรายเดือน",VOO:"ETF ติดตามดัชนี S&P 500",QQQ:"ETF ติดตามหุ้นใหญ่ Nasdaq-100",SPY:"ETF ติดตามดัชนี S&P 500"
+};
+function businessDescription(stock){return STOCK_BUSINESS[stock.symbol]||stock.business||(/ETF/i.test(stock.name||"")?"กองทุน ETF ตามนโยบายที่ระบุ":"บริษัทจดทะเบียนในตลาดหุ้นสหรัฐ")}
 
 const TRADINGVIEW_EXCHANGE_MAP={
   TSLA:"NASDAQ",AAPL:"NASDAQ",NVDA:"NASDAQ",MSFT:"NASDAQ",AMZN:"NASDAQ",META:"NASDAQ",GOOGL:"NASDAQ",GOOG:"NASDAQ",AMD:"NASDAQ",AVGO:"NASDAQ",COST:"NASDAQ",PLTR:"NASDAQ",ASML:"NASDAQ",NOW:"NYSE",GEN:"NASDAQ",TSEM:"NASDAQ",
