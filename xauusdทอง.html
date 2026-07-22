@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOLD Trading Dashboard V2</title>
+<title>GOLD แดชบอร์ดการเทรด รุ่น 2</title>
 <style>
 :root{
   --bg:#060b12;--panel:#0d1622;--panel2:#111f30;--line:#26384b;
@@ -107,11 +107,11 @@ select,input{
 <div class="container">
   <header class="header">
     <div class="brand">
-      <h1>🏆 GOLD TRADING DASHBOARD V2</h1>
+      <h1>🏆 GOLD แดชบอร์ดการเทรด รุ่น 2</h1>
       <p>ระบบวิเคราะห์ XAU/USD สำหรับเข้าไว–ออกไว โดยใช้สัญญาณจาก TradingView</p>
     </div>
     <div class="headbox"><small>เวลาไทย</small><strong id="clock">--:--:--</strong></div>
-    <div class="headbox"><small>สถานะระบบ</small><strong class="live">● LIVE CHART</strong></div>
+    <div class="headbox"><small>สถานะระบบ</small><strong class="live">● กราฟสด</strong></div>
   </header>
 
   <main class="grid">
@@ -121,15 +121,15 @@ select,input{
           <div class="symbol">XAU/USD <span class="badge">OANDA</span></div>
           <div class="price">GOLD</div>
           <div class="subrow">
-            <span>ตลาด: <b>Spot Gold</b></span>
-            <span>โหมด: <b id="modeText">Scalp</b></span>
+            <span>ตลาด: <b>ทองคำสปอต</b></span>
+            <span>โหมด: <b id="modeText">เก็งกำไรระยะสั้น</b></span>
             <span>กรอบหลัก: <b id="tfText">5 นาที</b></span>
           </div>
           <div class="metrics">
-            <div class="metric"><small>BUY</small><strong class="good" id="buyPct">50%</strong></div>
-            <div class="metric"><small>SELL</small><strong class="bad" id="sellPct">50%</strong></div>
-            <div class="metric"><small>Confidence</small><strong id="confidence">50%</strong></div>
-            <div class="metric"><small>Risk</small><strong class="wait" id="riskText">ปานกลาง</strong></div>
+            <div class="metric"><small>ซื้อ</small><strong class="good" id="buyPct">50%</strong></div>
+            <div class="metric"><small>ขาย</small><strong class="bad" id="sellPct">50%</strong></div>
+            <div class="metric"><small>ความมั่นใจ</small><strong id="confidence">50%</strong></div>
+            <div class="metric"><small>ความเสี่ยง</small><strong class="wait" id="riskText">ปานกลาง</strong></div>
           </div>
         </div>
 
@@ -137,13 +137,13 @@ select,input{
           <div class="signalbox">
             <div>
               <div class="signal-th">สัญญาณปัจจุบัน</div>
-              <div class="signal" id="mainSignal">WAIT</div>
+              <div class="signal" id="mainSignal">รอ</div>
               <div style="margin-top:12px;color:var(--muted)" id="signalReason">
                 รอข้อมูลจากตัวชี้วัดแล้วกดประเมินสัญญาณ
               </div>
             </div>
             <div class="donut" id="donut">
-              <div><strong id="donutText">50%</strong><br><span>BUY SCORE</span></div>
+              <div><strong id="donutText">50%</strong><br><span>คะแนนซื้อ</span></div>
             </div>
           </div>
         </div>
@@ -151,17 +151,17 @@ select,input{
 
       <div class="card controls">
         <div><small>รูปแบบเทรด</small><select id="tradeMode">
-          <option value="scalp">Scalp</option><option value="swing">Swing</option>
+          <option value="scalp">เก็งกำไรระยะสั้น</option><option value="swing">เทรดตามรอบ</option>
         </select></div>
         <div><small>กรอบเวลา</small><select id="timeframe">
           <option value="1">1 นาที</option><option value="3">3 นาที</option>
           <option value="5" selected>5 นาที</option><option value="15">15 นาที</option>
           <option value="30">30 นาที</option><option value="60">1 ชั่วโมง</option>
         </select></div>
-        <div><small>TradingView Summary</small><select id="tvSummary">
-          <option value="-2">Strong Sell</option><option value="-1">Sell</option>
-          <option value="0" selected>Neutral</option><option value="1">Buy</option>
-          <option value="2">Strong Buy</option>
+        <div><small>สรุปผลจาก TradingView</small><select id="tvSummary">
+          <option value="-2">ขายมาก</option><option value="-1">ขาย</option>
+          <option value="0" selected>เป็นกลาง</option><option value="1">ซื้อ</option>
+          <option value="2">ซื้อมาก</option>
         </select></div>
         <div><small>RSI ปัจจุบัน</small><input id="rsi" type="number" min="0" max="100" value="50"></div>
       </div>
@@ -194,14 +194,14 @@ select,input{
           <div class="card-title">คะแนนวิเคราะห์</div>
           <table class="table">
             <tbody>
-              <tr><td>Trend</td><td><div class="bar"><span id="trendBar" style="width:50%"></span></div></td><td id="trendScore">50</td></tr>
-              <tr><td>Momentum</td><td><div class="bar"><span id="momentumBar" style="width:50%"></span></div></td><td id="momentumScore">50</td></tr>
+              <tr><td>แนวโน้ม</td><td><div class="bar"><span id="trendBar" style="width:50%"></span></div></td><td id="trendScore">50</td></tr>
+              <tr><td>แรงส่ง</td><td><div class="bar"><span id="momentumBar" style="width:50%"></span></div></td><td id="momentumScore">50</td></tr>
               <tr><td>RSI</td><td><div class="bar"><span id="rsiBar" style="width:50%"></span></div></td><td id="rsiScore">50</td></tr>
-              <tr><td>Risk Control</td><td><div class="bar"><span id="riskBar" style="width:50%"></span></div></td><td id="riskScore">50</td></tr>
+              <tr><td>การควบคุมความเสี่ยง</td><td><div class="bar"><span id="riskBar" style="width:50%"></span></div></td><td id="riskScore">50</td></tr>
             </tbody>
           </table>
           <button class="btn" id="analyzeBtn">ประเมินสัญญาณ GOLD</button>
-          <div class="note">กรอกค่า TradingView Summary และ RSI ตามที่เห็นบนกราฟ แล้วกดประเมิน</div>
+          <div class="note">กรอกค่าสรุปผลจาก TradingView และ RSI ตามที่เห็นบนกราฟ แล้วกดประเมิน</div>
         </div>
 
         <div class="card">
@@ -215,16 +215,16 @@ select,input{
       <div class="card">
         <div class="card-title">ลำดับการตัดสินใจ</div>
         <div class="flow">
-          <div class="flow-item" data-state="WAIT"><span class="num">1</span><strong>WAIT</strong><span>แนวโน้มยังไม่ชัด</span></div>
-          <div class="flow-item" data-state="BUY SOON"><span class="num">2</span><strong>BUY SOON</strong><span>แรงซื้อเริ่มมากขึ้น</span></div>
-          <div class="flow-item" data-state="BUY NOW"><span class="num">3</span><strong>BUY NOW</strong><span>สัญญาณซื้อชัด</span></div>
-          <div class="flow-item sell" data-state="SELL SOON"><span class="num">4</span><strong>SELL SOON</strong><span>แรงขายเริ่มมากขึ้น</span></div>
-          <div class="flow-item sell" data-state="SELL NOW"><span class="num">5</span><strong>SELL NOW</strong><span>สัญญาณขายชัด</span></div>
+          <div class="flow-item" data-state="WAIT"><span class="num">1</span><strong>รอ</strong><span>แนวโน้มยังไม่ชัด</span></div>
+          <div class="flow-item" data-state="BUY SOON"><span class="num">2</span><strong>ใกล้ซื้อ</strong><span>แรงซื้อเริ่มมากขึ้น</span></div>
+          <div class="flow-item" data-state="BUY NOW"><span class="num">3</span><strong>ซื้อทันที</strong><span>สัญญาณซื้อชัด</span></div>
+          <div class="flow-item sell" data-state="SELL SOON"><span class="num">4</span><strong>ใกล้ขาย</strong><span>แรงขายเริ่มมากขึ้น</span></div>
+          <div class="flow-item sell" data-state="SELL NOW"><span class="num">5</span><strong>ขายทันที</strong><span>สัญญาณขายชัด</span></div>
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">TradingView Technical Analysis</div>
+        <div class="card-title">การวิเคราะห์ทางเทคนิคจาก TradingView</div>
         <div class="tradingview-widget-container">
           <div class="tradingview-widget-container__widget"></div>
           <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-technical-analysis.js" async>
@@ -246,10 +246,10 @@ select,input{
       <div class="card">
         <div class="card-title">กฎเข้า–ออก GOLD</div>
         <div class="rules">
-          <div class="rule"><span><b>BUY NOW</b> Summary Buy + RSI 52–68</span><span class="good">เข้าได้</span></div>
-          <div class="rule"><span><b>SELL NOW</b> Summary Sell + RSI 32–48</span><span class="bad">ขายได้</span></div>
+          <div class="rule"><span><b>ซื้อทันที</b> ผลสรุปซื้อ + RSI 52–68</span><span class="good">เข้าได้</span></div>
+          <div class="rule"><span><b>ขายทันที</b> ผลสรุปขาย + RSI 32–48</span><span class="bad">ขายได้</span></div>
           <div class="rule"><span><b>ทำกำไร</b> ตามแผนที่ตั้งไว้</span><span class="good">แบ่งปิด</span></div>
-          <div class="rule"><span><b>Stop loss</b> ต้องกำหนดก่อนเข้า</span><span class="bad">ห้ามขยับหนี</span></div>
+          <div class="rule"><span><b>จุดตัดขาดทุน</b> ต้องกำหนดก่อนเข้า</span><span class="bad">ห้ามขยับหนี</span></div>
           <div class="rule"><span><b>ข่าวแรง</b> ลดขนาดสัญญา</span><span class="wait">ระวัง</span></div>
         </div>
       </div>
@@ -313,7 +313,8 @@ function evaluate(){
   $("confidence").textContent=conf+"%";
   $("donutText").textContent=buy+"%";
   $("donut").style.background=`conic-gradient(var(--green) 0 ${buy}%,var(--red) ${buy}% 100%)`;
-  $("mainSignal").textContent=signal;
+  const signalLabels={WAIT:"รอ","BUY SOON":"ใกล้ซื้อ","BUY NOW":"ซื้อทันที","SELL SOON":"ใกล้ขาย","SELL NOW":"ขายทันที"};
+  $("mainSignal").textContent=signalLabels[signal];
   $("signalReason").textContent=reason;
   $("mainSignal").style.color=signal.includes("BUY")?"var(--green)":signal.includes("SELL")?"var(--red)":"var(--yellow)";
   $("riskText").textContent=risk>=70?"ต่ำ":risk>=50?"ปานกลาง":"สูง";
@@ -324,12 +325,12 @@ function evaluate(){
   if(signal!==lastSignal){
     lastSignal=signal;
     const row=document.createElement("div");
-    row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${signal} | BUY ${buy}% / SELL ${sell}%`;
+    row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${signalLabels[signal]} | ซื้อ ${buy}% / ขาย ${sell}%`;
     $("log").prepend(row);
   }
 }
 function updateMode(){
-  $("modeText").textContent=$("tradeMode").value==="scalp"?"Scalp":"Swing";
+  $("modeText").textContent=$("tradeMode").value==="scalp"?"เก็งกำไรระยะสั้น":"เทรดตามรอบ";
   $("tfText").textContent=$("timeframe").selectedOptions[0].textContent;
 }
 setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString("th-TH"),1000);
