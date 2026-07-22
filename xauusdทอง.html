@@ -101,6 +101,9 @@ select,input{
 .tf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
 .tf-box{border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;background:rgba(255,255,255,.02)}
 .tf-box small{display:block;color:var(--muted)}.tf-box strong{display:block;margin-top:4px}
+.sound-row{display:flex;gap:8px;align-items:center;margin-top:10px;flex-wrap:wrap}
+.sound-btn{padding:9px 12px;border:1px solid var(--line);border-radius:9px;background:#14263a;color:#fff;font-weight:800;cursor:pointer}
+.sound-btn.on{border-color:var(--green);color:var(--green);background:rgba(39,212,138,.1)}
 @media(max-width:760px){.tf-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}.chart{height:530px}}
 @media(max-width:760px){
@@ -142,6 +145,10 @@ select,input{
             <span class="status-dot" id="statusDot"></span>
             <span id="dataStatus">กำลังเชื่อมต่อข้อมูลตลาด...</span>
             <span>• อัปเดต: <b id="lastUpdate">--:--:--</b></span>
+          </div>
+          <div class="sound-row">
+            <button class="sound-btn" id="soundBtn" type="button">🔇 เปิดเสียงแจ้งเตือนซื้อ</button>
+            <small id="soundStatus" style="color:var(--muted)">เสียงจะดังเมื่อสัญญาณเปลี่ยนเป็น “ใกล้ซื้อ” หรือ “ซื้อทันที”</small>
           </div>
           <div class="tf-grid">
             <div class="tf-box"><small>1 นาที</small><strong id="tf1">--</strong></div>
@@ -279,7 +286,45 @@ const $ = id => document.getElementById(id);
 let lastSignal = "";
 let marketData = null;
 let isLoading = false;
+let soundEnabled = localStorage.getItem("goldSoundEnabled") === "true";
+let audioCtx = null;
 const REFRESH_MS = 60000;
+
+function updateSoundButton(){
+  const btn=$("soundBtn");
+  if(!btn) return;
+  btn.textContent=soundEnabled?"🔊 เสียงแจ้งเตือนเปิดอยู่":"🔇 เปิดเสียงแจ้งเตือนซื้อ";
+  btn.classList.toggle("on",soundEnabled);
+}
+function playSignalAlert(type){
+  if(!soundEnabled) return;
+  try{
+    audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+    const now=audioCtx.currentTime;
+    const isNow=type==="BUY NOW";
+    const tones=isNow?[880,1175,1568]:[660,880];
+    const delays=isNow?[0,0.22,0.44]:[0,0.24];
+    tones.forEach((freq,i)=>{
+      const osc=audioCtx.createOscillator();
+      const gain=audioCtx.createGain();
+      osc.type="sine";
+      osc.frequency.value=freq;
+      const t=now+delays[i];
+      gain.gain.setValueAtTime(0.0001,t);
+      gain.gain.exponentialRampToValueAtTime(isNow?0.26:0.18,t+0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001,t+(isNow?0.18:0.15));
+      osc.connect(gain);gain.connect(audioCtx.destination);
+      osc.start(t);osc.stop(t+(isNow?0.2:0.17));
+    });
+    if("speechSynthesis" in window){
+      window.speechSynthesis.cancel();
+      const text=isNow?"เข้าซื้อได้แล้ว":"ใกล้ซื้อ กรุณาเตรียมตัว";
+      const msg=new SpeechSynthesisUtterance(text);
+      msg.lang="th-TH";msg.rate=0.95;msg.volume=1;
+      window.speechSynthesis.speak(msg);
+    }
+  }catch(e){console.warn("เปิดเสียงแจ้งเตือนไม่สำเร็จ",e);}
+}
 
 // ไฟล์ HTML ต้องใช้แหล่งข้อมูลที่อนุญาต CORS จึงอ่านราคาทองคำอ้างอิงจาก PAXG
 // และแจ้งชื่อแหล่งข้อมูลบนหน้าจออย่างชัดเจน
@@ -521,7 +566,10 @@ function evaluate(){
   document.querySelectorAll(".flow-item").forEach(x=>x.classList.toggle("active",x.dataset.state===signal));
 
   if(signal!==lastSignal){
+    const previousSignal=lastSignal;
     lastSignal=signal;
+    if(signal==="BUY SOON" && previousSignal!=="BUY SOON") playSignalAlert("BUY SOON");
+    if(signal==="BUY NOW" && previousSignal!=="BUY NOW") playSignalAlert("BUY NOW");
     const row=document.createElement("div");
     row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${labels[signal]} | ซื้อ ${buy}% / ขาย ${sell}% | คะแนน ${Math.round(score)}`;
     $("log").prepend(row);
@@ -538,6 +586,26 @@ $("timeframe").addEventListener("change",evaluate);
 $("sensitivity").addEventListener("change",evaluate);
 $("refreshBtn").addEventListener("click",loadMarketData);
 $("analyzeBtn").addEventListener("click",evaluate);
+$("soundBtn").addEventListener("click",async()=>{
+  soundEnabled=!soundEnabled;
+  localStorage.setItem("goldSoundEnabled",String(soundEnabled));
+  updateSoundButton();
+  if(soundEnabled){
+    try{
+      audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==="suspended") await audioCtx.resume();
+      const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+      osc.frequency.value=660;gain.gain.value=0.08;osc.connect(gain);gain.connect(audioCtx.destination);
+      osc.start();osc.stop(audioCtx.currentTime+0.08);
+      $("soundStatus").textContent="เปิดเสียงแล้ว — จะแจ้งเตือนทั้ง “ใกล้ซื้อ” และ “ซื้อทันที”";
+    }catch(e){
+      $("soundStatus").textContent="เบราว์เซอร์ไม่อนุญาตเสียง กรุณากดปุ่มอีกครั้ง";
+    }
+  }else{
+    $("soundStatus").textContent="ปิดเสียงแจ้งเตือนแล้ว";
+  }
+});
+updateSoundButton();
 updateMode();
 loadMarketData();
 </script>
