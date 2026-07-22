@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>GOLD แดชบอร์ดการเทรด รุ่น 2</title>
+<title>GOLD แดชบอร์ดการเทรด รุ่น 3</title>
 <style>
 :root{
   --bg:#060b12;--panel:#0d1622;--panel2:#111f30;--line:#26384b;
@@ -95,6 +95,13 @@ select,input{
   background:linear-gradient(90deg,#d9a62d,#ffd86f);color:#201500
 }
 .note{font-size:12px;color:#e2c879;margin-top:10px}
+.data-status{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;color:var(--muted);font-size:13px}
+.status-dot{width:9px;height:9px;border-radius:50%;background:var(--yellow);box-shadow:0 0 10px currentColor}
+.status-dot.ok{background:var(--green)}.status-dot.err{background:var(--red)}
+.tf-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.tf-box{border:1px solid var(--line);border-radius:10px;padding:9px;text-align:center;background:rgba(255,255,255,.02)}
+.tf-box small{display:block;color:var(--muted)}.tf-box strong{display:block;margin-top:4px}
+@media(max-width:760px){.tf-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:1100px){.grid{grid-template-columns:1fr}.chart{height:530px}}
 @media(max-width:760px){
   .header,.topgrid,.signalbox,.bottom{grid-template-columns:1fr}
@@ -107,8 +114,8 @@ select,input{
 <div class="container">
   <header class="header">
     <div class="brand">
-      <h1>🏆 GOLD แดชบอร์ดการเทรด รุ่น 2</h1>
-      <p>ระบบวิเคราะห์ XAU/USD สำหรับเข้าไว–ออกไว โดยใช้สัญญาณจาก TradingView</p>
+      <h1>🏆 GOLD แดชบอร์ดการเทรด รุ่น 3</h1>
+      <p>ระบบวิเคราะห์แนวโน้ม XAU/USD จากข้อมูลตลาดจริงและตัวชี้วัดหลายกรอบเวลา</p>
     </div>
     <div class="headbox"><small>เวลาไทย</small><strong id="clock">--:--:--</strong></div>
     <div class="headbox"><small>สถานะระบบ</small><strong class="live">● กราฟสด</strong></div>
@@ -119,9 +126,9 @@ select,input{
       <div class="topgrid">
         <div class="card">
           <div class="symbol">XAU/USD <span class="badge">OANDA</span></div>
-          <div class="price">GOLD</div>
+          <div class="price" id="livePrice">กำลังโหลด...</div>
           <div class="subrow">
-            <span>ตลาด: <b>ทองคำสปอต</b></span>
+            <span>ตลาด: <b>ทองคำ XAU/USD</b></span>
             <span>โหมด: <b id="modeText">เก็งกำไรระยะสั้น</b></span>
             <span>กรอบหลัก: <b id="tfText">5 นาที</b></span>
           </div>
@@ -130,6 +137,17 @@ select,input{
             <div class="metric"><small>ขาย</small><strong class="bad" id="sellPct">50%</strong></div>
             <div class="metric"><small>ความมั่นใจ</small><strong id="confidence">50%</strong></div>
             <div class="metric"><small>ความเสี่ยง</small><strong class="wait" id="riskText">ปานกลาง</strong></div>
+          </div>
+          <div class="data-status">
+            <span class="status-dot" id="statusDot"></span>
+            <span id="dataStatus">กำลังเชื่อมต่อข้อมูลตลาด...</span>
+            <span>• อัปเดต: <b id="lastUpdate">--:--:--</b></span>
+          </div>
+          <div class="tf-grid">
+            <div class="tf-box"><small>1 นาที</small><strong id="tf1">--</strong></div>
+            <div class="tf-box"><small>5 นาที</small><strong id="tf5">--</strong></div>
+            <div class="tf-box"><small>15 นาที</small><strong id="tf15">--</strong></div>
+            <div class="tf-box"><small>30 นาที</small><strong id="tf30">--</strong></div>
           </div>
         </div>
 
@@ -153,17 +171,15 @@ select,input{
         <div><small>รูปแบบเทรด</small><select id="tradeMode">
           <option value="scalp">เก็งกำไรระยะสั้น</option><option value="swing">เทรดตามรอบ</option>
         </select></div>
-        <div><small>กรอบเวลา</small><select id="timeframe">
-          <option value="1">1 นาที</option><option value="3">3 นาที</option>
-          <option value="5" selected>5 นาที</option><option value="15">15 นาที</option>
-          <option value="30">30 นาที</option><option value="60">1 ชั่วโมง</option>
+        <div><small>กรอบเวลาหลัก</small><select id="timeframe">
+          <option value="1">1 นาที</option><option value="5" selected>5 นาที</option>
+          <option value="15">15 นาที</option><option value="30">30 นาที</option>
         </select></div>
-        <div><small>สรุปผลจาก TradingView</small><select id="tvSummary">
-          <option value="-2">ขายมาก</option><option value="-1">ขาย</option>
-          <option value="0" selected>เป็นกลาง</option><option value="1">ซื้อ</option>
-          <option value="2">ซื้อมาก</option>
+        <div><small>ความไวของสัญญาณ</small><select id="sensitivity">
+          <option value="fast">เร็ว</option><option value="normal" selected>สมดุล</option>
+          <option value="safe">ระมัดระวัง</option>
         </select></div>
-        <div><small>RSI ปัจจุบัน</small><input id="rsi" type="number" min="0" max="100" value="50"></div>
+        <div><small>การทำงาน</small><button class="btn" id="refreshBtn">ดึงข้อมูลตลาดใหม่</button></div>
       </div>
 
       <div class="card chart">
@@ -200,8 +216,8 @@ select,input{
               <tr><td>การควบคุมความเสี่ยง</td><td><div class="bar"><span id="riskBar" style="width:50%"></span></div></td><td id="riskScore">50</td></tr>
             </tbody>
           </table>
-          <button class="btn" id="analyzeBtn">ประเมินสัญญาณ GOLD</button>
-          <div class="note">กรอกค่าสรุปผลจาก TradingView และ RSI ตามที่เห็นบนกราฟ แล้วกดประเมิน</div>
+          <button class="btn" id="analyzeBtn">คำนวณจากข้อมูลตลาดล่าสุด</button>
+          <div class="note">ระบบคำนวณจากราคา XAU/USD ล่าสุด โดยใช้ EMA, MACD, RSI, Momentum และความสอดคล้องหลายกรอบเวลา ไม่ต้องกรอกค่าเอง</div>
         </div>
 
         <div class="card">
@@ -246,86 +262,268 @@ select,input{
       <div class="card">
         <div class="card-title">กฎเข้า–ออก GOLD</div>
         <div class="rules">
-          <div class="rule"><span><b>ซื้อทันที</b> ผลสรุปซื้อ + RSI 52–68</span><span class="good">เข้าได้</span></div>
-          <div class="rule"><span><b>ขายทันที</b> ผลสรุปขาย + RSI 32–48</span><span class="bad">ขายได้</span></div>
-          <div class="rule"><span><b>ทำกำไร</b> ตามแผนที่ตั้งไว้</span><span class="good">แบ่งปิด</span></div>
-          <div class="rule"><span><b>จุดตัดขาดทุน</b> ต้องกำหนดก่อนเข้า</span><span class="bad">ห้ามขยับหนี</span></div>
-          <div class="rule"><span><b>ข่าวแรง</b> ลดขนาดสัญญา</span><span class="wait">ระวัง</span></div>
+          <div class="rule"><span><b>ซื้อทันที</b> คะแนนแนวโน้มสูง + EMA/MACD/RSI สนับสนุน</span><span class="good">ขาขึ้นชัด</span></div>
+          <div class="rule"><span><b>ใกล้ซื้อ</b> แนวโน้มเริ่มขึ้น แต่ยังไม่ครบทุกเงื่อนไข</span><span class="good">รอยืนยัน</span></div>
+          <div class="rule"><span><b>รอ</b> หลายกรอบเวลาขัดแย้งหรือแรงส่งต่ำ</span><span class="wait">ยังไม่ชัด</span></div>
+          <div class="rule"><span><b>ใกล้ขาย</b> แนวโน้มเริ่มลง แต่ยังไม่ครบทุกเงื่อนไข</span><span class="bad">รอยืนยัน</span></div>
+          <div class="rule"><span><b>ขายทันที</b> คะแนนแนวโน้มต่ำ + EMA/MACD/RSI สนับสนุน</span><span class="bad">ขาลงชัด</span></div>
         </div>
+      </div>
       </div>
     </aside>
   </main>
 </div>
 
 <script>
-const $=id=>document.getElementById(id);
-let lastSignal="";
+const $ = id => document.getElementById(id);
+let lastSignal = "";
+let marketData = null;
+let isLoading = false;
+const REFRESH_MS = 60000;
 
+// ไฟล์ HTML ต้องใช้แหล่งข้อมูลที่อนุญาต CORS จึงอ่านราคาทองคำอ้างอิงจาก PAXG
+// และแจ้งชื่อแหล่งข้อมูลบนหน้าจออย่างชัดเจน
+const DATA_SOURCES = [
+  {
+    name:"PAXG/USDT — Binance (อ้างอิงราคาทองคำ)",type:"binance",
+    url:"https://api.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=1m&limit=1000"
+  },
+  {
+    name:"PAXG/USDT — Binance สำรอง",type:"binance",
+    url:"https://api1.binance.com/api/v3/klines?symbol=PAXGUSDT&interval=1m&limit=1000"
+  },
+  {
+    name:"PAX Gold/USD — CoinGecko สำรอง",type:"coingecko",
+    url:"https://api.coingecko.com/api/v3/coins/pax-gold/market_chart?vs_currency=usd&days=1"
+  }
+];
+
+function clamp(v,min=0,max=100){ return Math.max(min,Math.min(max,v)); }
+function avg(a){ return a.length ? a.reduce((s,v)=>s+v,0)/a.length : 0; }
+function last(a){ return a[a.length-1]; }
+
+function ema(values, period){
+  if(!values.length) return [];
+  const k = 2/(period+1);
+  const out = [values[0]];
+  for(let i=1;i<values.length;i++) out.push(values[i]*k + out[i-1]*(1-k));
+  return out;
+}
+function rsi(values, period=14){
+  if(values.length < period+1) return 50;
+  let gains=0, losses=0;
+  for(let i=values.length-period;i<values.length;i++){
+    const d=values[i]-values[i-1];
+    if(d>=0) gains+=d; else losses-=d;
+  }
+  if(losses===0) return 100;
+  const rs=(gains/period)/(losses/period);
+  return 100-(100/(1+rs));
+}
+function macd(values){
+  const e12=ema(values,12), e26=ema(values,26);
+  const line=values.map((_,i)=>e12[i]-e26[i]);
+  const signal=ema(line,9);
+  return {line:last(line)||0, signal:last(signal)||0, histogram:(last(line)||0)-(last(signal)||0)};
+}
+function aggregate(values, minutes, baseMinutes=1){
+  if(minutes<=baseMinutes) return values.slice();
+  const step=Math.max(1,Math.round(minutes/baseMinutes));
+  const out=[];
+  for(let i=step-1;i<values.length;i+=step) out.push(values[i]);
+  return out;
+}
+function momentum(values, lookback=5){
+  if(values.length<=lookback) return 0;
+  const base=values[values.length-1-lookback];
+  return base ? ((last(values)-base)/base)*100 : 0;
+}
+function timeframeAnalysis(oneMinute, minutes, baseMinutes=1){
+  const c=aggregate(oneMinute,minutes,baseMinutes);
+  if(c.length<30) return null;
+  const e9=last(ema(c,9)), e21=last(ema(c,21));
+  const m=macd(c), rv=rsi(c,14), mom=momentum(c,Math.min(5,c.length-2));
+  const price=last(c);
+  let score=50;
+  score += price>e9 ? 7 : -7;
+  score += e9>e21 ? 13 : -13;
+  score += m.line>m.signal ? 12 : -12;
+  score += m.histogram>0 ? 5 : -5;
+  score += clamp(mom*35,-10,10);
+  if(rv>=52 && rv<=68) score+=8;
+  else if(rv>=32 && rv<=48) score-=8;
+  else if(rv>75) score-=6;
+  else if(rv<25) score+=6;
+  return {score:clamp(score), price,e9,e21,rsi:rv,macd:m,momentum:mom};
+}
+function labelTrend(score){
+  if(score>=68) return {text:"▲ ขึ้น",cls:"good"};
+  if(score<=32) return {text:"▼ ลง",cls:"bad"};
+  return {text:"● กลาง",cls:"wait"};
+}
+function setTf(id,analysis){
+  const el=$(id);
+  if(!analysis){el.textContent="ข้อมูลไม่พอ";el.className="wait";return;}
+  const x=labelTrend(analysis.score);
+  el.textContent=`${x.text} ${Math.round(analysis.score)}`;
+  el.className=x.cls;
+}
 function setBar(id,value){
-  value=Math.max(0,Math.min(100,Math.round(value)));
+  value=clamp(Math.round(value));
   $(id+"Bar").style.width=value+"%";
   $(id+"Score").textContent=value;
 }
-function evaluate(){
-  const summary=Number($("tvSummary").value);
-  const rsi=Math.max(0,Math.min(100,Number($("rsi").value)||50));
-  const mode=$("tradeMode").value;
-  const tf=Number($("timeframe").value);
-
-  let trend=50+summary*20;
-  let momentum=50+summary*15;
-  let rsiScore=50;
-  if(summary>0){
-    if(rsi>=52&&rsi<=68) rsiScore=85;
-    else if(rsi>68&&rsi<=74) rsiScore=62;
-    else if(rsi>74) rsiScore=30;
-    else rsiScore=45;
-  }else if(summary<0){
-    if(rsi>=32&&rsi<=48) rsiScore=85;
-    else if(rsi<32) rsiScore=55;
-    else if(rsi>48&&rsi<58) rsiScore=45;
-    else rsiScore=30;
+function setStatus(text,type="loading"){
+  $("dataStatus").textContent=text;
+  $("statusDot").className="status-dot"+(type==="ok"?" ok":type==="err"?" err":"");
+}
+async function fetchJson(url, timeout=12000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const r=await fetch(url,{cache:"no-store",signal:controller.signal});
+    if(!r.ok) throw new Error("HTTP "+r.status);
+    return await r.json();
+  } finally { clearTimeout(timer); }
+}
+function parseMarketResponse(source,json){
+  if(source.type==="binance" && Array.isArray(json)){
+    return {
+      closes:json.map(row=>Number(row?.[4])).filter(Number.isFinite),
+      meta:{symbol:"PAXGUSDT"},baseMinutes:1
+    };
   }
-  let risk=mode==="scalp"?60:70;
-  if(tf<=3) risk-=10;
-  if(Math.abs(summary)===2) risk+=10;
-  if(rsi>75||rsi<25) risk-=15;
+  if(source.type==="coingecko" && Array.isArray(json?.prices)){
+    return {
+      closes:json.prices.map(row=>Number(row?.[1])).filter(Number.isFinite),
+      meta:{symbol:"PAXGUSD"},baseMinutes:5
+    };
+  }
+  return {closes:[],meta:{},baseMinutes:1};
+}
+async function loadMarketData(){
+  if(isLoading) return;
+  isLoading=true;
+  setStatus("กำลังดึงข้อมูลราคาตลาด...");
+  $("refreshBtn").disabled=true;
+  try{
+    let loaded=null, error=null;
+    for(const source of DATA_SOURCES){
+      try{
+        const json=await fetchJson(source.url);
+        const parsed=parseMarketResponse(source,json);
+        if(parsed.closes.length<40) throw new Error("ข้อมูลแท่งราคาไม่เพียงพอ");
+        loaded={...parsed,source};
+        break;
+      }catch(e){ error=e; }
+    }
+    if(!loaded) throw error || new Error("ไม่สามารถอ่านข้อมูลได้");
+    marketData={closes:loaded.closes,meta:loaded.meta,source:loaded.source,baseMinutes:loaded.baseMinutes||1};
+    const price=last(loaded.closes);
+    $("livePrice").textContent=Number(price).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+    $("lastUpdate").textContent=new Date().toLocaleTimeString("th-TH");
+    setStatus("เชื่อมต่อแล้ว: "+loaded.source.name,"ok");
+    evaluate();
+  }catch(err){
+    console.error(err);
+    marketData=null;
+    $("livePrice").textContent="ไม่พบข้อมูล";
+    const detail=err?.name==="AbortError"?"หมดเวลารอข้อมูล":"ผู้ให้บริการปฏิเสธการเชื่อมต่อ";
+    setStatus("ดึงข้อมูลไม่ได้ — "+detail+" กรุณากดดึงข้อมูลใหม่","err");
+    $("mainSignal").textContent="รอ";
+    $("signalReason").textContent="ระบบไม่สร้างสัญญาณเมื่อไม่มีข้อมูลตลาดจริง เพื่อป้องกันผลผิดพลาด";
+    document.querySelectorAll(".flow-item").forEach(x=>x.classList.toggle("active",x.dataset.state==="WAIT"));
+  }finally{
+    isLoading=false;
+    $("refreshBtn").disabled=false;
+  }
+}
+function evaluate(){
+  updateMode();
+  if(!marketData?.closes?.length){
+    setStatus("ยังไม่มีข้อมูลตลาดจริง","err");
+    return;
+  }
+  const baseMinutes=marketData.baseMinutes||1;
+  const a1=timeframeAnalysis(marketData.closes,1,baseMinutes);
+  const a5=timeframeAnalysis(marketData.closes,5,baseMinutes);
+  const a15=timeframeAnalysis(marketData.closes,15,baseMinutes);
+  const a30=timeframeAnalysis(marketData.closes,30,baseMinutes);
+  setTf("tf1",a1);setTf("tf5",a5);setTf("tf15",a15);setTf("tf30",a30);
 
-  setBar("trend",trend);setBar("momentum",momentum);setBar("rsi",rsiScore);setBar("risk",risk);
+  const selected=Number($("timeframe").value);
+  const main={1:a1,5:a5,15:a15,30:a30}[selected] || a5 || a1;
+  const available=[a1,a5,a15,a30].filter(Boolean);
+  if(!main || !available.length){
+    setStatus("ข้อมูลยังไม่พอสำหรับกรอบเวลานี้","err");
+    return;
+  }
 
-  let buy=50+summary*18;
-  if(summary>0 && rsi>=52 && rsi<=68) buy+=12;
-  if(summary>0 && rsi>74) buy-=18;
-  if(summary<0) buy-=8;
-  buy=Math.max(5,Math.min(95,Math.round(buy)));
-  const sell=100-buy;
-  const confidence=Math.round((Math.abs(buy-50)*1.25)+(Math.abs(summary)*12)+35);
-  const conf=Math.max(35,Math.min(95,confidence));
+  // น้ำหนักให้กรอบ 5 และ 15 นาทีมากกว่า เพื่อลดสัญญาณหลอกจากกรอบ 1 นาที
+  const weights={1:.15,5:.35,15:.30,30:.20};
+  let weighted=0, totalW=0;
+  [[a1,1],[a5,5],[a15,15],[a30,30]].forEach(([a,t])=>{
+    if(a){weighted+=a.score*weights[t];totalW+=weights[t];}
+  });
+  let score=weighted/(totalW||1);
 
-  let signal="WAIT",reason="แนวโน้มยังไม่ชัด ควรรอ";
-  if(buy>=78){signal="BUY NOW";reason="แรงซื้อและ RSI อยู่ในช่วงเหมาะสม";}
-  else if(buy>=62){signal="BUY SOON";reason="แรงซื้อเริ่มได้เปรียบ แต่ควรรอแท่งยืนยัน";}
-  else if(sell>=78){signal="SELL NOW";reason="แรงขายชัดและคะแนนขายได้เปรียบ";}
-  else if(sell>=62){signal="SELL SOON";reason="แรงขายเริ่มได้เปรียบ แต่ควรรอแท่งยืนยัน";}
+  const mode=$("tradeMode").value;
+  const sensitivity=$("sensitivity").value;
+  if(mode==="scalp") score=score*.70+main.score*.30;
+  else score=score*.85+(a15||main).score*.15;
+
+  const directionVotes=available.map(a=>a.score>=58?1:a.score<=42?-1:0);
+  const agreement=Math.abs(directionVotes.reduce((s,v)=>s+v,0))/available.length;
+  const volatility=Math.abs(main.momentum);
+  const trendScore=score;
+  const momentumScore=clamp(50+main.momentum*90);
+  const rsiScore=clamp(main.rsi);
+  const riskScore=clamp(72-(volatility*45)+(agreement*15));
+
+  setBar("trend",trendScore);
+  setBar("momentum",momentumScore);
+  setBar("rsi",rsiScore);
+  setBar("risk",riskScore);
+
+  let buy=clamp(Math.round(score));
+  let sell=100-buy;
+  const confidence=clamp(Math.round(40+Math.abs(score-50)*1.05+agreement*25),35,95);
+
+  let buyNow=76,buySoon=61,sellSoon=39,sellNow=24;
+  if(sensitivity==="fast"){buyNow=70;buySoon=57;sellSoon=43;sellNow=30;}
+  if(sensitivity==="safe"){buyNow=82;buySoon=66;sellSoon=34;sellNow=18;}
+
+  let signal="WAIT",reason="แนวโน้มหลายกรอบเวลายังไม่ชัด";
+  if(score>=buyNow && agreement>=0.5){
+    signal="BUY NOW";reason="EMA, MACD, RSI และแนวโน้มหลายกรอบเวลาสนับสนุนขาขึ้น";
+  }else if(score>=buySoon){
+    signal="BUY SOON";reason="แรงซื้อเริ่มมากขึ้น แต่ควรรอแท่งราคายืนยัน";
+  }else if(score<=sellNow && agreement>=0.5){
+    signal="SELL NOW";reason="EMA, MACD, RSI และแนวโน้มหลายกรอบเวลาสนับสนุนขาลง";
+  }else if(score<=sellSoon){
+    signal="SELL SOON";reason="แรงขายเริ่มมากขึ้น แต่ควรรอแท่งราคายืนยัน";
+  }
 
   $("buyPct").textContent=buy+"%";
   $("sellPct").textContent=sell+"%";
-  $("confidence").textContent=conf+"%";
+  $("confidence").textContent=confidence+"%";
   $("donutText").textContent=buy+"%";
   $("donut").style.background=`conic-gradient(var(--green) 0 ${buy}%,var(--red) ${buy}% 100%)`;
-  const signalLabels={WAIT:"รอ","BUY SOON":"ใกล้ซื้อ","BUY NOW":"ซื้อทันที","SELL SOON":"ใกล้ขาย","SELL NOW":"ขายทันที"};
-  $("mainSignal").textContent=signalLabels[signal];
-  $("signalReason").textContent=reason;
-  $("mainSignal").style.color=signal.includes("BUY")?"var(--green)":signal.includes("SELL")?"var(--red)":"var(--yellow)";
-  $("riskText").textContent=risk>=70?"ต่ำ":risk>=50?"ปานกลาง":"สูง";
-  $("riskText").className=risk>=70?"good":risk>=50?"wait":"bad";
 
+  const labels={WAIT:"รอ","BUY SOON":"ใกล้ซื้อ","BUY NOW":"ซื้อทันที","SELL SOON":"ใกล้ขาย","SELL NOW":"ขายทันที"};
+  $("mainSignal").textContent=labels[signal];
+  $("signalReason").textContent=reason+` | คะแนนแนวโน้ม ${Math.round(score)}/100`;
+  $("mainSignal").style.color=signal.includes("BUY")?"var(--green)":signal.includes("SELL")?"var(--red)":"var(--yellow)";
+
+  const riskText=riskScore>=70?"ต่ำ":riskScore>=50?"ปานกลาง":"สูง";
+  $("riskText").textContent=riskText;
+  $("riskText").className=riskScore>=70?"good":riskScore>=50?"wait":"bad";
   document.querySelectorAll(".flow-item").forEach(x=>x.classList.toggle("active",x.dataset.state===signal));
 
   if(signal!==lastSignal){
     lastSignal=signal;
     const row=document.createElement("div");
-    row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${signalLabels[signal]} | ซื้อ ${buy}% / ขาย ${sell}%`;
+    row.textContent=`${new Date().toLocaleTimeString("th-TH")} — ${labels[signal]} | ซื้อ ${buy}% / ขาย ${sell}% | คะแนน ${Math.round(score)}`;
     $("log").prepend(row);
   }
 }
@@ -334,10 +532,14 @@ function updateMode(){
   $("tfText").textContent=$("timeframe").selectedOptions[0].textContent;
 }
 setInterval(()=>$("clock").textContent=new Date().toLocaleTimeString("th-TH"),1000);
-$("tradeMode").addEventListener("change",()=>{updateMode();evaluate()});
-$("timeframe").addEventListener("change",()=>{updateMode();evaluate()});
+setInterval(loadMarketData,REFRESH_MS);
+$("tradeMode").addEventListener("change",evaluate);
+$("timeframe").addEventListener("change",evaluate);
+$("sensitivity").addEventListener("change",evaluate);
+$("refreshBtn").addEventListener("click",loadMarketData);
 $("analyzeBtn").addEventListener("click",evaluate);
-updateMode();evaluate();
+updateMode();
+loadMarketData();
 </script>
 </body>
 </html>
