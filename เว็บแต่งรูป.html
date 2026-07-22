@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>เว็บแต่งรูปหน้าขาวธรรมชาติหลายรูป</title>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <style>
+    :root{--bg:#0b1220;--panel:#111827;--card:#172033;--line:#334155;--text:#f8fafc;--muted:#94a3b8;--primary:#22c55e;--primary2:#16a34a;--danger:#ef4444}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:linear-gradient(135deg,#0b1220,#111827 50%,#172554);color:var(--text);min-height:100vh}
+    .wrap{max-width:1440px;margin:auto;padding:20px}.head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px;flex-wrap:wrap}h1{margin:0;font-size:clamp(24px,4vw,38px)}.sub{color:var(--muted);margin-top:5px}.badge{padding:8px 12px;border:1px solid rgba(34,197,94,.35);background:rgba(34,197,94,.1);color:#bbf7d0;border-radius:999px;font-size:13px}
+    .layout{display:grid;grid-template-columns:350px minmax(0,1fr);gap:18px}.panel,.main{background:rgba(17,24,39,.94);border:1px solid var(--line);border-radius:20px}.panel{padding:16px;height:fit-content;position:sticky;top:14px}.main{padding:16px;min-height:720px}.section{padding:13px 0;border-bottom:1px solid var(--line)}.section:last-child{border-bottom:0}.section h3{margin:0 0 10px;font-size:15px}
+    .drop{display:flex;width:100%;min-height:120px;border:2px dashed #475569;border-radius:16px;padding:18px;text-align:center;cursor:pointer;background:#0b1220;align-items:center;justify-content:center;flex-direction:column;overflow:hidden}.drop:hover,.drop.drag{border-color:var(--primary);background:rgba(34,197,94,.06)}.drop input{display:none}.drop strong,.drop span{display:block;max-width:100%;overflow-wrap:anywhere}.drop span{font-size:12px;color:var(--muted);margin-top:7px}
+    button,select{font:inherit}button{border:0;border-radius:11px;padding:11px 12px;font-weight:700;cursor:pointer;transition:.15s}button:hover{transform:translateY(-1px)}button:disabled{opacity:.42;cursor:not-allowed;transform:none}.primary{width:100%;background:linear-gradient(135deg,var(--primary),var(--primary2));color:#052e16;font-size:15px}.secondary{background:#334155;color:white}.danger{background:#4a1d25;color:#fecaca}.row{display:flex;gap:8px;flex-wrap:wrap}.row>*{flex:1}.preset-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.preset{background:#263247;color:#e2e8f0;border:1px solid #3b4a61;padding:10px 7px}.preset.active{border-color:var(--primary);background:rgba(34,197,94,.14);color:#bbf7d0}.preset:last-child:nth-child(odd){grid-column:1/-1}
+    .range{display:block;margin:10px 0}.range-head{display:flex;justify-content:space-between;font-size:13px;color:#cbd5e1;margin-bottom:5px}input[type=range]{width:100%;accent-color:var(--primary)}select{width:100%;background:#263247;color:white;border:1px solid #475569;border-radius:10px;padding:10px}.small{font-size:12px;color:var(--muted);line-height:1.5}.progress{height:10px;background:#263247;border-radius:999px;overflow:hidden;margin-top:8px}.progress>div{height:100%;width:0;background:var(--primary);transition:width .2s}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.status{font-size:13px;color:var(--muted)}.workspace{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:14px;min-height:630px}.preview{display:grid;place-items:center;min-height:580px;border:1px solid var(--line);border-radius:16px;padding:14px;overflow:auto;background-color:#111827;background-image:linear-gradient(45deg,#1e293b 25%,transparent 25%),linear-gradient(-45deg,#1e293b 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#1e293b 75%),linear-gradient(-45deg,transparent 75%,#1e293b 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.preview canvas{max-width:100%;max-height:72vh;border-radius:9px;box-shadow:0 15px 40px rgba(0,0,0,.35)}.empty{text-align:center;color:var(--muted)}.empty b{display:block;font-size:54px;margin-bottom:8px}
+    .thumbs{border:1px solid var(--line);border-radius:16px;padding:8px;overflow:auto;max-height:630px}.thumb{position:relative;border:2px solid transparent;border-radius:10px;padding:5px;margin-bottom:8px;background:#0b1220;cursor:pointer}.thumb.active{border-color:var(--primary)}.thumb img{width:100%;height:100px;object-fit:cover;border-radius:7px;display:block}.thumb .name{font-size:11px;color:#cbd5e1;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.thumb .remove{position:absolute;right:7px;top:7px;width:25px;height:25px;padding:0;border-radius:50%;background:rgba(15,23,42,.88);color:#fff}.count{font-size:12px;color:var(--muted);margin-bottom:8px}
+    @media(max-width:1000px){.layout{grid-template-columns:1fr}.panel{position:static}.workspace{grid-template-columns:1fr}.thumbs{max-height:none;display:flex;gap:8px;overflow-x:auto}.thumb{min-width:130px;margin:0}.thumb img{height:85px}}
+    @media(max-width:520px){.wrap{padding:10px}.panel,.main{border-radius:15px}.main{padding:10px}.workspace{min-height:460px}.preview{min-height:390px}.preset-grid{grid-template-columns:1fr 1fr}.row.stack>*{flex-basis:100%}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head"><div><h1>เว็บแต่งรูปหน้าขาวธรรมชาติ</h1><div class="sub">เลือกหลายรูป ปรับผิวให้สว่างใสแบบธรรมชาติครั้งเดียว แล้วดาวน์โหลดทั้งหมดเป็น ZIP</div></div><div class="badge">ทำงานบนเครื่อง • ไม่อัปโหลดรูปขึ้นเซิร์ฟเวอร์</div></div>
+  <div class="layout">
+    <aside class="panel">
+      <div class="section"><label class="drop" id="dropZone"><input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp" multiple><strong>📷 เลือกหลายรูปพร้อมกัน</strong><span>ลากไฟล์มาวางได้ รองรับ JPG, PNG, WEBP</span></label></div>
+      <div class="section"><button class="primary" id="autoBtn" disabled>🎨 แต่งรูปทั้งหมด</button><div class="small" style="margin-top:7px">เลือกพรีเซ็ตด้านล่างเพื่อแต่งเฉพาะรูปที่เลือก หากต้องการใช้พรีเซ็ตเดียวกันกับทุกรูป ให้กด “แต่งรูปทั้งหมด”</div></div>
+      <div class="section"><h3>ระดับผิวสวยสำเร็จรูป</h3><div class="preset-grid">
+        <button class="preset" data-preset="original" disabled>📷 ภาพเดิม (ไม่แต่ง)</button><button class="preset" data-preset="natural" disabled>🤍 ขาวธรรมชาติ</button><button class="preset" data-preset="clear" disabled>✨ หน้าใส</button><button class="preset" data-preset="soft" disabled>🌸 ผิวละมุน</button><button class="preset" data-preset="rosy" disabled>🌷 อมชมพู</button><button class="preset" data-preset="bright" disabled>☀️ สว่างพิเศษ</button><button class="preset" data-preset="glass" disabled>💎 ผิวกระจก</button><button class="preset" data-preset="cream" disabled>🥛 ผิวครีมนวล</button><button class="preset" data-preset="peach" disabled>🍑 โทนพีช</button><button class="preset" data-preset="warm" disabled>🌤️ ขาวโทนอุ่น</button><button class="preset" data-preset="cool" disabled>❄️ ขาวโทนเย็น</button><button class="preset" data-preset="studio" disabled>📸 ผิวสตูดิโอ</button><button class="preset" data-preset="fresh" disabled>🍃 สดใสธรรมชาติ</button>
+      </div></div>
+      <div class="section"><h3>ปรับละเอียดรูปที่เลือก</h3>
+        <label class="range"><div class="range-head"><span>ความสว่าง</span><b id="brightnessVal">100</b></div><input id="brightness" type="range" min="50" max="160" value="100"></label>
+        <label class="range"><div class="range-head"><span>คอนทราสต์</span><b id="contrastVal">100</b></div><input id="contrast" type="range" min="50" max="170" value="100"></label>
+        <label class="range"><div class="range-head"><span>ความสดของสี</span><b id="saturationVal">100</b></div><input id="saturation" type="range" min="0" max="200" value="100"></label>
+        <label class="range"><div class="range-head"><span>โทนอุ่น/เย็น</span><b id="warmthVal">0</b></div><input id="warmth" type="range" min="-40" max="40" value="0"></label>
+        <label class="range"><div class="range-head"><span>ความคมชัด</span><b id="sharpenVal">0</b></div><input id="sharpen" type="range" min="0" max="80" value="0"></label>
+        <label class="range"><div class="range-head"><span>ความสว่างเฉพาะผิว</span><b id="skinBrightVal">24</b></div><input id="skinBright" type="range" min="0" max="60" value="24"></label>
+        <label class="range"><div class="range-head"><span>ความเนียนผิว</span><b id="smoothVal">18</b></div><input id="smooth" type="range" min="0" max="50" value="18"></label>
+        <label class="range"><div class="range-head"><span>ผิวอมชมพู</span><b id="rosyVal">4</b></div><input id="rosy" type="range" min="0" max="30" value="4"></label>
+        <div class="small">ค่าผิวจะปรับเฉพาะพิกเซลที่มีโทนใกล้เคียงผิว จึงช่วยลดปัญหาพื้นหลังขาวตาม</div>
+      </div>
+      <div class="section"><h3>ไฟล์ส่งออก</h3><div class="row"><select id="format"><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WEBP</option></select><select id="quality"><option value="0.92">คุณภาพสูง</option><option value="0.82">ไฟล์เล็ก</option><option value="1">สูงสุด</option></select></div></div>
+      <div class="section"><div class="row stack"><button class="secondary" id="resetBtn" disabled>คืนค่าเดิม</button><button class="danger" id="clearBtn" disabled>ล้างรูปทั้งหมด</button></div><button class="primary" id="downloadBtn" disabled style="margin-top:9px">⬇ ดาวน์โหลดทั้งหมดเป็น ZIP</button><div class="progress"><div id="progressBar"></div></div><div id="progressText" class="small" style="margin-top:5px"></div></div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div class="status" id="status">ยังไม่ได้เลือกรูป</div><button class="secondary" id="downloadOneBtn" disabled>ดาวน์โหลดรูปนี้</button></div>
+      <div class="workspace"><div class="preview"><div class="empty" id="empty"><b>🖼️</b>รูปตัวอย่างจะแสดงตรงนี้</div><canvas id="canvas" hidden></canvas></div><div class="thumbs"><div class="count" id="count">0 รูป</div><div id="thumbList"></div></div></div>
+    </main>
+  </div>
+</div>
+<script>
+(()=>{
+  const $=id=>document.getElementById(id), fileInput=$('fileInput'),dropZone=$('dropZone'),canvas=$('canvas');
+  const controls={brightness:$('brightness'),contrast:$('contrast'),saturation:$('saturation'),warmth:$('warmth'),sharpen:$('sharpen'),skinBright:$('skinBright'),smooth:$('smooth'),rosy:$('rosy')};
+  const defaults={brightness:100,contrast:100,saturation:100,warmth:0,sharpen:0,skinBright:0,smooth:0,rosy:0};
+  const presets={
+    original:{brightness:100,contrast:100,saturation:100,warmth:0,sharpen:0,skinBright:0,smooth:0,rosy:0},
+    natural:{brightness:104,contrast:103,saturation:103,warmth:0,sharpen:10,skinBright:24,smooth:18,rosy:4},
+    clear:{brightness:108,contrast:106,saturation:105,warmth:-1,sharpen:16,skinBright:32,smooth:20,rosy:5},
+    soft:{brightness:107,contrast:96,saturation:99,warmth:1,sharpen:5,skinBright:27,smooth:34,rosy:6},
+    rosy:{brightness:105,contrast:101,saturation:104,warmth:1,sharpen:9,skinBright:25,smooth:22,rosy:15},
+    bright:{brightness:113,contrast:104,saturation:102,warmth:-2,sharpen:12,skinBright:42,smooth:20,rosy:5},
+    glass:{brightness:110,contrast:108,saturation:101,warmth:-2,sharpen:20,skinBright:38,smooth:28,rosy:4},
+    cream:{brightness:108,contrast:98,saturation:96,warmth:5,sharpen:7,skinBright:31,smooth:32,rosy:5},
+    peach:{brightness:106,contrast:101,saturation:108,warmth:5,sharpen:9,skinBright:26,smooth:24,rosy:13},
+    warm:{brightness:107,contrast:102,saturation:104,warmth:8,sharpen:10,skinBright:29,smooth:22,rosy:6},
+    cool:{brightness:108,contrast:104,saturation:98,warmth:-8,sharpen:13,skinBright:32,smooth:21,rosy:3},
+    studio:{brightness:106,contrast:112,saturation:100,warmth:0,sharpen:24,skinBright:30,smooth:16,rosy:4},
+    fresh:{brightness:105,contrast:104,saturation:112,warmth:1,sharpen:14,skinBright:23,smooth:15,rosy:6}
+  };
+  let items=[],active=0,renderToken=0,selectedPreset=null;
+  const presetBtns=[...document.querySelectorAll('.preset')];
+  const buttons=[$('autoBtn'),$('resetBtn'),$('clearBtn'),$('downloadBtn'),$('downloadOneBtn')];
+
+  function cloneSettings(o=defaults){return {...o}}
+  function enable(v){buttons.forEach(b=>b.disabled=!v);presetBtns.forEach(b=>b.disabled=!v)}
+  function labels(){Object.keys(controls).forEach(k=>$(k+'Val').textContent=controls[k].value)}
+  function readControls(){return Object.fromEntries(Object.entries(controls).map(([k,v])=>[k,Number(v.value)]))}
+  function writeControls(o){Object.entries(o).forEach(([k,v])=>{if(controls[k])controls[k].value=v});labels()}
+  function saveControlsToActive(){if(items[active])items[active].settings=readControls()}
+  function loadActiveControls(){if(items[active])writeControls(items[active].settings)}
+  function clearPresetActive(){presetBtns.forEach(b=>b.classList.remove('active'))}
+  function safeName(name){return name.replace(/\.[^.]+$/,'').replace(/[\\/:*?"<>|]+/g,'_')}
+
+  async function addFiles(files){
+    const valid=[...files].filter(f=>f.type.startsWith('image/'));if(!valid.length)return;
+    const firstNew=items.length;
+    for(const file of valid){try{const url=URL.createObjectURL(file);const img=await loadImage(url);items.push({file,url,img,name:file.name,settings:cloneSettings(defaults),edited:false})}catch(e){console.error(e)}}
+    active=firstNew;refresh();loadActiveControls();renderPreview();fileInput.value='';
+  }
+  function loadImage(src){return new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src})}
+  function refresh(){
+    enable(items.length>0);$('empty').hidden=items.length>0;canvas.hidden=!items.length;$('count').textContent=`${items.length} รูป`;
+    $('status').textContent=items.length?`รูป ${active+1}/${items.length}${items[active]?.edited?' • ปรับแล้ว':' • ภาพเดิม'}`:'ยังไม่ได้เลือกรูป';
+    const list=$('thumbList');list.innerHTML='';
+    items.forEach((it,i)=>{const d=document.createElement('div');d.className='thumb'+(i===active?' active':'');const im=document.createElement('img');im.src=it.url;im.alt=it.name;const n=document.createElement('div');n.className='name';n.textContent=(it.edited?'✓ ':'')+it.name;const x=document.createElement('button');x.className='remove';x.type='button';x.textContent='×';x.title='ลบรูป';d.append(im,n,x);d.addEventListener('click',()=>{saveControlsToActive();active=i;loadActiveControls();clearPresetActive();selectedPreset=null;refresh();renderPreview()});x.addEventListener('click',e=>{e.stopPropagation();removeItem(i)});list.append(d)})
+  }
+  function removeItem(i){URL.revokeObjectURL(items[i].url);items.splice(i,1);active=Math.min(active,Math.max(0,items.length-1));if(items.length)loadActiveControls();refresh();renderPreview()}
+  function fitSize(img,max=2400){const s=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));return [Math.max(1,Math.round(img.naturalWidth*s)),Math.max(1,Math.round(img.naturalHeight*s))]}
+  function processToCanvas(img,target,opts,max=2400){const [w,h]=fitSize(img,max);target.width=w;target.height=h;const c=target.getContext('2d',{willReadFrequently:true});c.clearRect(0,0,w,h);c.filter=`brightness(${opts.brightness/100}) contrast(${opts.contrast/100}) saturate(${opts.saturation/100})`;c.drawImage(img,0,0,w,h);c.filter='none';if(opts.warmth){const data=c.getImageData(0,0,w,h),d=data.data;for(let i=0;i<d.length;i+=4){d[i]=Math.max(0,Math.min(255,d[i]+opts.warmth));d[i+2]=Math.max(0,Math.min(255,d[i+2]-opts.warmth))}c.putImageData(data,0,0)}if(opts.skinBright>0||opts.smooth>0||opts.rosy>0)beautifySkin(c,w,h,opts);if(opts.sharpen>0)sharpen(c,w,h,opts.sharpen/100);return target}
+  function drawOriginal(img,target,max=1600){const [w,h]=fitSize(img,max);target.width=w;target.height=h;const c=target.getContext('2d');c.clearRect(0,0,w,h);c.drawImage(img,0,0,w,h)}
+  function isSkin(r,g,b){const max=Math.max(r,g,b),min=Math.min(r,g,b),y=.299*r+.587*g+.114*b,cb=128-.168736*r-.331264*g+.5*b,cr=128+.5*r-.418688*g-.081312*b;return r>55&&g>35&&b>20&&(max-min)>12&&r>g&&r>b&&y>35&&cb>75&&cb<135&&cr>130&&cr<180}
+  function beautifySkin(c,w,h,o){const original=c.getImageData(0,0,w,h),od=original.data;let blurred=null;if(o.smooth>0){const tmp=document.createElement('canvas');tmp.width=w;tmp.height=h;tmp.getContext('2d').putImageData(original,0,0);c.save();c.clearRect(0,0,w,h);c.filter=`blur(${Math.max(1,Math.round(o.smooth/10))}px)`;c.drawImage(tmp,0,0);c.filter='none';c.restore();blurred=c.getImageData(0,0,w,h).data;c.putImageData(original,0,0)}const out=c.createImageData(w,h),d=out.data;d.set(od);const white=o.skinBright/60,smooth=o.smooth/50*.55,rosy=o.rosy/30;for(let i=0;i<od.length;i+=4){const r=od[i],g=od[i+1],b=od[i+2];if(!isSkin(r,g,b))continue;let nr=r,ng=g,nb=b;if(blurred&&smooth>0){nr=nr*(1-smooth)+blurred[i]*smooth;ng=ng*(1-smooth)+blurred[i+1]*smooth;nb=nb*(1-smooth)+blurred[i+2]*smooth}const lift=white*(255-(nr+ng+nb)/3)*.34;nr+=lift+rosy*8;ng+=lift+rosy*2;nb+=lift+rosy*5;d[i]=Math.max(0,Math.min(255,nr));d[i+1]=Math.max(0,Math.min(255,ng));d[i+2]=Math.max(0,Math.min(255,nb))}c.putImageData(out,0,0)}
+  function sharpen(c,w,h,a){if(w<3||h<3)return;const src=c.getImageData(0,0,w,h),out=c.createImageData(w,h),sd=src.data,od=out.data;od.set(sd);for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){const i=(y*w+x)*4;for(let ch=0;ch<3;ch++){const v=sd[i+ch]*5-sd[i-4+ch]-sd[i+4+ch]-sd[i-w*4+ch]-sd[i+w*4+ch];od[i+ch]=Math.max(0,Math.min(255,sd[i+ch]*(1-a)+v*a))}od[i+3]=sd[i+3]}c.putImageData(out,0,0)}
+  function renderPreview(){if(!items.length){canvas.hidden=true;return}const token=++renderToken;requestAnimationFrame(()=>{if(token!==renderToken)return;processToCanvas(items[active].img,canvas,items[active].settings,1600)})}
+  function applyPreset(k,b){if(!items.length)return;selectedPreset=k;items[active].settings=cloneSettings(presets[k]);items[active].edited=k!=='original';writeControls(items[active].settings);clearPresetActive();b.classList.add('active');refresh();renderPreview();$('status').textContent=k==='original'?`รูป ${active+1}/${items.length} • ภาพเดิม`:`ปรับเฉพาะรูป ${active+1}/${items.length} แล้ว • กดแต่งรูปทั้งหมดเพื่อใช้กับทุกรูป`}
+  function applyPresetToAll(){
+    if(!items.length)return;
+    if(!selectedPreset){alert('กรุณาเลือกระดับผิวสวยสำเร็จรูปก่อน');return}
+    const cfg=presets[selectedPreset];
+    items.forEach(it=>{it.settings=cloneSettings(cfg);it.edited=selectedPreset!=='original'});
+    loadActiveControls();refresh();renderPreview();
+    $('status').textContent=selectedPreset==='original'?`คืนภาพเดิมทั้งหมด ${items.length} รูปแล้ว`:`แต่งรูปทั้งหมด ${items.length} รูปแล้ว • ยังสามารถเลือกแต่ละรูปเพื่อปรับเพิ่มได้`;
+  }
+  function resetActive(){if(!items.length)return;items[active].settings=cloneSettings(defaults);items[active].edited=false;selectedPreset='original';writeControls(items[active].settings);clearPresetActive();const originalBtn=presetBtns.find(b=>b.dataset.preset==='original');if(originalBtn)originalBtn.classList.add('active');refresh();renderPreview()}
+  function blobFromCanvas(c,type,quality){return new Promise(res=>c.toBlob(res,type,quality))}
+  function ext(type){return type==='image/png'?'png':type==='image/webp'?'webp':'jpg'}
+  async function downloadOne(){if(!items.length)return;saveControlsToActive();const out=document.createElement('canvas');processToCanvas(items[active].img,out,items[active].settings);const type=$('format').value,q=Number($('quality').value),blob=await blobFromCanvas(out,type,q);saveBlob(blob,`${safeName(items[active].name)}_แต่งแล้ว.${ext(type)}`)}
+  function saveBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
+  async function downloadAll(){if(!items.length)return;saveControlsToActive();const btn=$('downloadBtn');btn.disabled=true;const bar=$('progressBar'),text=$('progressText'),type=$('format').value,q=Number($('quality').value),extension=ext(type);try{if(typeof JSZip==='undefined')throw new Error('ไม่สามารถโหลดระบบ ZIP ได้ กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วเปิดไฟล์ใหม่');const zip=new JSZip();for(let i=0;i<items.length;i++){text.textContent=`กำลังประมวลผล ${i+1}/${items.length}`;bar.style.width=`${Math.round(i/items.length*85)}%`;const out=document.createElement('canvas');processToCanvas(items[i].img,out,items[i].settings);const blob=await blobFromCanvas(out,type,q);zip.file(`${String(i+1).padStart(3,'0')}_${safeName(items[i].name)}_แต่งแล้ว.${extension}`,blob);await new Promise(r=>setTimeout(r,0))}text.textContent='กำลังสร้างไฟล์ ZIP...';bar.style.width='90%';const zipBlob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}},m=>bar.style.width=`${90+m.percent*.1}%`);saveBlob(zipBlob,'รูปแต่งแล้วทั้งหมด.zip');bar.style.width='100%';text.textContent=`เสร็จแล้ว ${items.length} รูป`;setTimeout(()=>bar.style.width='0',2500)}catch(e){alert(e.message);text.textContent='เกิดข้อผิดพลาด';bar.style.width='0'}finally{btn.disabled=false}}
+
+  fileInput.addEventListener('change',e=>addFiles(e.target.files));
+  ['dragenter','dragover'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.add('drag')}));
+  ['dragleave','drop'].forEach(ev=>dropZone.addEventListener(ev,e=>{e.preventDefault();dropZone.classList.remove('drag')}));
+  dropZone.addEventListener('drop',e=>addFiles(e.dataTransfer.files));
+  Object.values(controls).forEach(el=>el.addEventListener('input',()=>{if(!items.length)return;items[active].settings=readControls();items[active].edited=true;selectedPreset=null;clearPresetActive();labels();refresh();renderPreview()}));
+  presetBtns.forEach(b=>b.addEventListener('click',()=>applyPreset(b.dataset.preset,b)));
+  $('autoBtn').addEventListener('click',applyPresetToAll);
+  $('resetBtn').addEventListener('click',resetActive);
+  $('clearBtn').addEventListener('click',()=>{items.forEach(i=>URL.revokeObjectURL(i.url));items=[];active=0;selectedPreset=null;writeControls(defaults);clearPresetActive();refresh()});
+  $('downloadBtn').addEventListener('click',downloadAll);$('downloadOneBtn').addEventListener('click',downloadOne);
+  writeControls(defaults);refresh();
+})();
+</script>
+</body>
+</html>
