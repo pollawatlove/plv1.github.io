@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ระบบจัดการสต๊อกสินค้า</title>
+<style>
+:root{--primary:#0f766e;--primary2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18302e;--muted:#6b7f7c;--danger:#c2413b;--warn:#d97706;--ok:#15803d;--line:#dfe9e7}
+*{box-sizing:border-box}body{margin:0;font-family:Tahoma,"Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
+.layout{display:grid;grid-template-columns:250px 1fr;min-height:100vh}
+aside{background:linear-gradient(180deg,var(--primary2),#083b38);color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh}
+.brand{font-size:22px;font-weight:700;margin:4px 10px 26px}.brand small{display:block;font-size:12px;opacity:.7;margin-top:4px}
+.nav button{width:100%;border:0;background:transparent;color:#d8efec;padding:13px 14px;border-radius:10px;text-align:left;font-size:15px;margin:3px 0;cursor:pointer}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.14);color:#fff}
+main{padding:24px;min-width:0}header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}
+h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px}
+.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:700}.btn-primary{background:var(--primary);color:#fff}.btn-light{background:#e8f2f0;color:var(--primary2)}.btn-danger{background:#fee2e2;color:#991b1b}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 5px 18px rgba(15,118,110,.06)}
+.kpi .label{font-size:13px;color:var(--muted)}.kpi .value{font-size:29px;font-weight:800;margin-top:9px}.kpi .hint{font-size:12px;margin-top:7px;color:var(--muted)}
+.two{display:grid;grid-template-columns:1.35fr 1fr;gap:14px;margin-top:14px}.section-title{font-size:17px;font-weight:800;margin-bottom:14px}
+.bar-row{display:grid;grid-template-columns:135px 1fr 75px;gap:10px;align-items:center;margin:11px 0;font-size:13px}.bar{height:10px;background:#e7efee;border-radius:999px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#45b5a9);border-radius:999px}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:13px}table{width:100%;border-collapse:collapse;min-width:760px;background:#fff}th,td{padding:11px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:13px}th{background:#e8f3f1;color:#24423f;position:sticky;top:0}tr:hover td{background:#fafdfc}
+.badge{display:inline-block;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:700}.ok{background:#dcfce7;color:#166534}.low{background:#fee2e2;color:#991b1b}.mid{background:#fef3c7;color:#92400e}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}input,select{border:1px solid #cadbd8;border-radius:9px;padding:10px 11px;background:#fff;font:inherit}input[type=search]{min-width:250px}
+.page{display:none}.page.active{display:block}.modal{position:fixed;inset:0;background:rgba(0,0,0,.38);display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal.show{display:flex}.modal-card{background:#fff;border-radius:16px;padding:20px;width:min(520px,100%);max-height:90vh;overflow:auto}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}label{font-size:12px;color:var(--muted);display:block;margin-bottom:5px}.field-full{grid-column:1/-1}
+.empty{padding:25px;text-align:center;color:var(--muted)}.mobile-menu{display:none}
+@media(max-width:900px){.layout{grid-template-columns:1fr}aside{display:none;position:fixed;z-index:20;width:250px}aside.show{display:block}main{padding:16px}.mobile-menu{display:inline-block}.grid{grid-template-columns:repeat(2,1fr)}.two{grid-template-columns:1fr}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}h1{font-size:22px}header{align-items:flex-start}}
+
+.pos-layout{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,.75fr);gap:15px}
+.pos-main,.pos-summary{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;box-shadow:0 5px 18px rgba(15,118,110,.06)}
+.pos-search{display:grid;grid-template-columns:1fr auto auto;gap:9px;margin-bottom:13px}
+.pos-search input{width:100%;font-size:16px}
+.pos-table table{min-width:820px}
+.qty-box{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:9px;overflow:hidden}
+.qty-box button{border:0;background:#eef7f5;padding:7px 10px;cursor:pointer;font-weight:800}
+.qty-box span{min-width:38px;text-align:center;font-weight:700}
+.sum-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px dashed var(--line)}
+.sum-row.total{font-size:22px;font-weight:900;color:var(--primary2);border-bottom:0;padding-top:17px}
+.pos-summary input,.pos-summary select{width:100%}
+.quick-products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:13px}
+.quick-item{border:1px solid var(--line);background:#f8fcfb;border-radius:11px;padding:11px;text-align:left;cursor:pointer;min-height:78px}
+.quick-item:hover{border-color:var(--primary);background:#edf8f6}
+.quick-item b{display:block;font-size:13px}.quick-item small{color:var(--muted)}
+.receipt{font-family:monospace;background:#fff;color:#111;padding:20px;width:310px;margin:auto}
+.receipt h2,.receipt p{text-align:center;margin:4px}.receipt-line{border-top:1px dashed #444;margin:9px 0}
+@media(max-width:1000px){.pos-layout{grid-template-columns:1fr}.quick-products{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.pos-search{grid-template-columns:1fr}.quick-products{grid-template-columns:repeat(2,1fr)}}
+@media print{body *{visibility:hidden}.receipt,.receipt *{visibility:visible}.receipt{position:absolute;left:0;top:0;width:80mm}.modal{background:#fff}}
+
+
+.purchase-doc{font-family:Tahoma,"Noto Sans Thai",sans-serif;color:#111;background:#fff;padding:28px}
+.purchase-doc h1{text-align:center;font-size:22px;margin:0 0 5px}
+.purchase-doc .meta{display:flex;justify-content:space-between;gap:20px;margin:16px 0;font-size:13px}
+.purchase-doc table{width:100%;border-collapse:collapse;min-width:0}
+.purchase-doc th,.purchase-doc td{border:1px solid #333;padding:7px;font-size:12px}
+.purchase-doc th{background:#eee;position:static}
+.purchase-doc .sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;margin-top:60px;text-align:center}
+@media print{
+  body.print-purchase *{visibility:hidden!important}
+  body.print-purchase #purchasePrintArea,
+  body.print-purchase #purchasePrintArea *{visibility:visible!important}
+  body.print-purchase #purchasePrintArea{position:absolute;left:0;top:0;width:100%}
+  body.print-purchase .modal{display:block!important;position:static;background:#fff;padding:0}
+  body.print-purchase .modal-card{box-shadow:none;width:100%;max-width:none;padding:0}
+  body.print-purchase .no-print{display:none!important}
+  @page{size:A4;margin:12mm}
+}
+
+</style>
+</head>
+<body>
+<div class="layout">
+<aside id="sidebar">
+  <div class="brand">Stock Manager<small>ตัวอย่างจากไฟล์ Excel ที่ส่งมา</small></div>
+  <div class="nav">
+    <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="pos">🛒 หน้าร้าน / คิดเงิน</button>
+    <button data-page="products">▣ สินค้าและสต๊อก</button>
+    <button data-page="sales">฿ ประวัติการขาย</button>
+    <button data-page="lowstock">⚠ รายการจัดซื้อสินค้า</button>
+  </div>
+</aside>
+<main>
+<header>
+  <div><button class="btn btn-light mobile-menu" onclick="toggleMenu()">☰</button>
+  <h1 id="pageTitle">Dashboard</h1><div class="sub">ข้อมูลตัวอย่างนำเข้าจาก “จัดการสต๊อกสินค้า v1.0.0.xlsx”</div></div>
+  <button class="btn btn-primary" onclick="openProductModal()">+ เพิ่มสินค้า</button>
+</header>
+
+<section id="dashboard" class="page active">
+  <div class="grid">
+    <div class="card kpi"><div class="label">ยอดขายทั้งหมด</div><div class="value" id="kpiSales">0</div><div class="hint">จากประวัติรายการขายในไฟล์</div></div>
+    <div class="card kpi"><div class="label">กำไรขั้นต้น</div><div class="value" id="kpiProfit">0</div><div class="hint">คำนวณจากรายการขาย</div></div>
+    <div class="card kpi"><div class="label">มูลค่าสต๊อก</div><div class="value" id="kpiStockValue">0</div><div class="hint">จำนวนคงเหลือ × ต้นทุน</div></div>
+    <div class="card kpi"><div class="label">รายการที่ต้องจัดซื้อ</div><div class="value" id="kpiLow">0</div><div class="hint">อ้างอิงจากจำนวนขั้นต่ำในสินค้าและสต๊อก</div></div>
+  </div>
+  <div class="two">
+    <div class="card"><div class="section-title">สินค้ามูลค่าสต๊อกสูงสุด</div><div id="topStock"></div></div>
+    <div class="card"><div class="section-title">สรุปตามกลุ่มสินค้า</div><div id="categorySummary"></div></div>
+  </div>
+  <div class="card" style="margin-top:14px"><div class="section-title">รายการขายล่าสุด</div><div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
+</section>
+
+
+<section id="pos" class="page">
+  <div class="pos-layout">
+    <div class="pos-main">
+      <div class="section-title">หน้าร้าน / คิดเงิน</div>
+      <div class="pos-search">
+        <input id="posSearch" type="search" placeholder="ค้นหาชื่อสินค้า หรือสแกนบาร์โค้ด แล้วกด Enter">
+        <button class="btn btn-primary" onclick="addBySearch()">เพิ่มสินค้า</button>
+        <button class="btn btn-light" onclick="clearCart()">เคลียร์</button>
+      </div>
+      <div class="table-wrap pos-table">
+        <table>
+          <thead><tr><th>ลำดับ</th><th>สินค้า</th><th>ราคา</th><th>จำนวน</th><th>หน่วย</th><th>รวม</th><th>ลบ</th></tr></thead>
+          <tbody id="cartRows"></tbody>
+        </table>
+      </div>
+      <div class="section-title" style="margin-top:18px">สินค้าเลือกด่วน</div>
+      <div id="quickProducts" class="quick-products"></div>
+    </div>
+
+    <div class="pos-summary">
+      <div class="section-title">สรุปยอดชำระ</div>
+      <div class="sum-row"><span>เลขที่บิล</span><b id="posInvoice">-</b></div>
+      <div class="sum-row"><span>รวม</span><b id="posSubtotal">฿0</b></div>
+      <div style="margin-top:12px"><label>ส่วนลด (บาท)</label><input id="posDiscount" type="number" min="0" value="0" oninput="renderCart()"></div>
+      <div class="sum-row total"><span>ยอดสุทธิ</span><span id="posNet">฿0</span></div>
+      <div style="margin-top:13px"><label>วิธีชำระเงิน</label>
+        <select id="posPayment" onchange="toggleCashInput()"><option>เงินสด</option><option>โอน</option><option>บัตร</option></select>
+      </div>
+      <div id="cashBox" style="margin-top:12px"><label>รับเงิน (บาท)</label><input id="posReceived" type="number" min="0" value="0" oninput="renderCart()"></div>
+      <div class="sum-row"><span>เงินทอน</span><b id="posChange">฿0</b></div>
+      <div style="margin-top:12px"><label>ชื่อลูกค้า (ไม่บังคับ)</label><input id="posCustomer" placeholder="ลูกค้าทั่วไป"></div>
+      <button class="btn btn-primary" style="width:100%;margin-top:16px;padding:14px;font-size:17px" onclick="checkout()">คิดเงินและตัดสต๊อก</button>
+      <button class="btn btn-light" style="width:100%;margin-top:9px" onclick="openReceipt()">ดูตัวอย่างใบเสร็จ</button>
+    </div>
+  </div>
+</section>
+
+<section id="products" class="page">
+  <div class="card">
+    <div class="toolbar"><input id="searchProduct" type="search" placeholder="ค้นหาชื่อสินค้า หรือบาร์โค้ด" oninput="renderProducts()"><select id="categoryFilter" onchange="renderProducts()"><option value="">ทุกกลุ่มสินค้า</option></select><button class="btn btn-light" onclick="resetDemo()">คืนค่าข้อมูลเดิม</button></div>
+    <div class="table-wrap"><table><thead><tr><th>บาร์โค้ด</th><th>สินค้า</th><th>กลุ่ม</th><th>ต้นทุน</th><th>ราคาขาย</th><th>กำไร</th><th>หน่วยนับ</th><th>คงเหลือ</th><th>ขั้นต่ำ</th><th>สถานะ</th><th>จัดการ</th></tr></thead><tbody id="productRows"></tbody></table></div>
+  </div>
+</section>
+
+<section id="sales" class="page">
+  <div class="card"><div class="section-title">ประวัติรายการขาย</div><div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ราคาต่อหน่วย</th><th>ยอดรวม</th><th>กำไร</th><th>ชำระเงิน</th><th>จัดการ</th></tr></thead><tbody id="salesRows"></tbody></table></div></div>
+</section>
+
+
+<section id="lowstock" class="page">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+      <div>
+        <div class="section-title" style="margin-bottom:3px">รายการสินค้าที่ต้องจัดซื้อ</div>
+        <div class="sub">อ้างอิงข้อมูลล่าสุดจากหน้า “สินค้าและสต๊อก” โดยอัตโนมัติ</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn btn-light" onclick="selectAllPurchase()">เลือกทั้งหมด</button>
+        <button class="btn btn-light" onclick="clearPurchaseSelection()">ยกเลิกการเลือก</button>
+        <button class="btn btn-primary" onclick="exportPurchasePDF()">ส่งออก PDF</button>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <label style="margin:0">แสดงสินค้าเมื่อคงเหลือ</label>
+      <select id="purchaseRule" onchange="renderLow()">
+        <option value="min">น้อยกว่าหรือเท่าจำนวนขั้นต่ำ</option>
+        <option value="double">น้อยกว่าหรือเท่า 2 เท่าของขั้นต่ำ</option>
+        <option value="all">สินค้าทั้งหมด</option>
+      </select>
+      <button id="fillSuggestedBtn" class="btn btn-primary" onclick="fillSuggestedPurchaseQty()">ใส่จำนวนที่ควรซื้อ</button>
+      <button class="btn btn-danger" onclick="clearAllSuggestedPurchaseQty()">ลบค่าจำนวนที่ควรซื้อทั้งหมด</button>
+      <button class="btn btn-primary" onclick="addAllPurchaseQtyToStock()">เพิ่มเข้าสต๊อกทั้งหมด</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th><input type="checkbox" id="purchaseCheckAll" onchange="togglePurchaseAll(this.checked)"></th>
+            <th>ลำดับ</th>
+            <th>บาร์โค้ด</th>
+            <th>สินค้า</th>
+            <th>กลุ่ม</th>
+            <th>คงเหลือ</th>
+            <th>ขั้นต่ำ</th>
+            <th>จำนวนที่ควรซื้อ</th>
+            <th>หน่วย</th>
+          </tr>
+        </thead>
+        <tbody id="lowRows"></tbody>
+        
+      </table>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+
+<div class="modal" id="productModal"><div class="modal-card">
+  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="modalTitle">เพิ่มสินค้า</h3><button class="btn btn-light" onclick="closeModal()">✕</button></div>
+  <div class="form-grid">
+    <div><label>บาร์โค้ด</label><input id="fBarcode" style="width:100%"><div class="sub" style="margin-top:4px">สร้างอัตโนมัติ แต่สามารถแก้ไขได้</div></div>
+    <div><label>ชื่อสินค้า</label><input id="fName" style="width:100%"></div>
+    <div><label>กลุ่มสินค้า</label><input id="fCategory" list="categoryOptions" placeholder="เลือกหรือพิมพ์กลุ่มสินค้าใหม่" style="width:100%"><datalist id="categoryOptions"></datalist></div>
+    <div><label>หน่วยนับ</label><input id="fUnit" list="unitOptions" value="ชิ้น" placeholder="เลือกหรือพิมพ์หน่วยใหม่" style="width:100%"><datalist id="unitOptions"></datalist></div>
+    <div><label>ต้นทุน</label><input id="fCost" type="number" min="0" step="0.01" style="width:100%"></div>
+    <div><label>ราคาขาย</label><input id="fPrice" type="number" min="0" step="0.01" style="width:100%"><div class="sub" style="margin-top:4px">คำนวณต้นทุนบวก 40% อัตโนมัติ และแก้ไขได้</div></div>
+    <div><label>จำนวนคงเหลือ</label><input id="fStock" type="number" min="0" style="width:100%"></div>
+    <div><label>จำนวนขั้นต่ำ</label><input id="fMin" type="number" min="0" value="5" style="width:100%"></div>
+  </div>
+  <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px"><button class="btn btn-light" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveProduct()">บันทึก</button></div>
+</div></div>
+
+
+<div class="modal" id="receiptModal"><div class="modal-card" style="width:min(390px,100%)">
+  <div id="receiptContent" class="receipt"></div>
+  <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+    <button class="btn btn-primary" onclick="window.print()">พิมพ์ใบเสร็จ</button>
+    <button class="btn btn-light" onclick="receiptModal.classList.remove('show')">ปิด</button>
+  </div>
+</div></div>
+
+
+<div class="modal" id="purchaseModal">
+  <div class="modal-card" style="width:min(980px,100%);max-height:95vh">
+    <div class="no-print" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <h3 style="margin:0">ตัวอย่างรายการจัดซื้อ</h3>
+      <div>
+        <button class="btn btn-primary" onclick="printPurchaseDocument()">บันทึกเป็น PDF / พิมพ์</button>
+        <button class="btn btn-light" onclick="closePurchaseModal()">ปิด</button>
+      </div>
+    </div>
+    <div id="purchasePrintArea" class="purchase-doc"></div>
+  </div>
+</div>
+
+<script>
+const ORIGINAL_PRODUCTS=[{"barcode": "1111111111111", "name": "ปลานิลเบอร์0", "cost": 250, "price": 270, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 6}, {"barcode": "1111111111112", "name": "ปลานิลเบอร์1", "cost": 220, "price": 240, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 6}, {"barcode": "1111111111113", "name": "ปลานิลเบอร์2", "cost": 190, "price": 210, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 5}, {"barcode": "1111111111114", "name": "ปลานิลเบอร์3", "cost": 180, "price": 200, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 69}, {"barcode": "1111111111115", "name": "ปลานิลเบอร์4", "cost": 170, "price": 190, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111116", "name": "ปลานิลเบอร์5-ญ", "cost": 150, "price": 170, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111117", "name": "ปลานิลเบอร์5", "cost": 120, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111118", "name": "ปลาสลิด1", "cost": 250, "price": 270, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111119", "name": "ปลาสลิด2", "cost": 220, "price": 240, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111120", "name": "ปลาแดดเดียวนิล", "cost": 90, "price": 110, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111121", "name": "ปลาแดดเดียวปลาแดดเดียวช่อง", "cost": 220, "price": 240, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111122", "name": "ปลาแดดเดียวดุก", "cost": 120, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 10}, {"barcode": "1111111111123", "name": "กอไผ่", "cost": 2, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111124", "name": "ต้นกล้วย", "cost": 1, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111125", "name": "ต้นขี้เหล็ก", "cost": 33, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111126", "name": "ต้นตะเคียน", "cost": 1, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111127", "name": "ต้นประดู่", "cost": 3, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111128", "name": "ต้นสะเดา", "cost": 9, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111129", "name": "ต้นสัก", "cost": 2, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111130", "name": "ต้มประดู่", "cost": 2, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111131", "name": "ตะแบก", "cost": 3, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111132", "name": "ประดู่", "cost": 13, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111133", "name": "พยุง", "cost": 6, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111134", "name": "ต้นพิกุล", "cost": 3, "price": 140, "unit": "ตัว", "min": 3, "category": "แปรรูปจากปลา", "stock": 2}, {"barcode": "1111111111135", "name": "มะฮอกกานีใบใหญ่", "cost": 17, "price": 140, "unit": "ตัว", "min": 3, "category": "เครื่องเขียน", "stock": 2}];
+const DEFAULT_SALES=[{"invoice": "QT202502-0001", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์0", "qty": 1, "price": 270, "total": 270, "profit": 18}, {"invoice": "QT202502-0001", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์1", "qty": 1, "price": 240, "total": 240, "profit": 18}, {"invoice": "QT202502-0001", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์2", "qty": 2, "price": 210, "total": 420, "profit": 36}, {"invoice": "QT202502-0001", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์3", "qty": 1, "price": 200, "total": 200, "profit": 19.71428571}, {"invoice": "QT202502-0002", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์0", "qty": 2, "price": 270, "total": 540, "profit": 36}, {"invoice": "QT202502-0002", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์1", "qty": 2, "price": 240, "total": 480, "profit": 36}, {"invoice": "QT202502-0002", "payment": "เงินสด", "date": "2025-02-27", "product": "ปลานิลเบอร์2", "qty": 2, "price": 210, "total": 420, "profit": 36}, {"invoice": "QT202603-0003", "payment": "โอน", "date": "2026-03-04", "product": "ปลานิลเบอร์0", "qty": 1, "price": 270, "total": 270, "profit": 18}, {"invoice": "QT202603-0003", "payment": "โอน", "date": "2026-03-04", "product": "ปลานิลเบอร์1", "qty": 1, "price": 240, "total": 240, "profit": 18}, {"invoice": "QT202603-0003", "payment": "โอน", "date": "2026-03-04", "product": "ปลานิลเบอร์2", "qty": 1, "price": 210, "total": 210, "profit": 18}];
+let SALES=JSON.parse(localStorage.getItem('stock_demo_sales')||'null')||DEFAULT_SALES;
+let products=JSON.parse(localStorage.getItem('stock_demo_products')||'null')||structuredClone(ORIGINAL_PRODUCTS);
+let editingBarcode=null;
+let priceManuallyEdited=false;
+let cart=JSON.parse(localStorage.getItem('stock_demo_cart')||'[]');
+let posInvoice=createInvoiceNo();
+function createInvoiceNo(){
+  const d=new Date(), y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0');
+  const n=String((Number(localStorage.getItem('stock_demo_bill_seq')||0)+1)).padStart(4,'0');
+  return `QT${y}${m}-${n}`;
+}
+const money=n=>new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0}).format(Number(n)||0);
+const num=n=>new Intl.NumberFormat('th-TH').format(Number(n)||0);
+
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page,b.textContent.trim()));
+document.getElementById('posSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addBySearch();}});
+function showPage(id,title){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));document.getElementById('pageTitle').textContent=title.replace(/^[^\s]+\s/,'');document.getElementById('sidebar').classList.remove('show');}
+function toggleMenu(){document.getElementById('sidebar').classList.toggle('show')}
+function statusOf(p){if(p.stock<=p.min)return ['ควรเติมทันที','low']; if(p.stock<=p.min*2)return ['ใกล้หมด','mid']; return ['ปกติ','ok'];}
+function renderDashboard(){
+ const totalSales=SALES.reduce((s,x)=>s+(Number(x.total)||0),0), profit=SALES.reduce((s,x)=>s+(Number(x.profit)||0),0), stockValue=products.reduce((s,p)=>s+p.cost*p.stock,0), lows=products.filter(p=>p.stock<=p.min).length;
+ kpiSales.textContent=money(totalSales);kpiProfit.textContent=money(profit);kpiStockValue.textContent=money(stockValue);kpiLow.textContent=num(lows)+' รายการ';
+ const top=[...products].sort((a,b)=>b.cost*b.stock-a.cost*a.stock).slice(0,7),max=Math.max(...top.map(p=>p.cost*p.stock),1);
+ topStock.innerHTML=top.map(p=>`<div class="bar-row"><span>${p.name}</span><div class="bar"><span style="width:${(p.cost*p.stock/max)*100}%"></span></div><b>${money(p.cost*p.stock)}</b></div>`).join('');
+ const cats={};products.forEach(p=>{cats[p.category]??={count:0,value:0};cats[p.category].count++;cats[p.category].value+=p.cost*p.stock});
+ categorySummary.innerHTML=Object.entries(cats).map(([k,v])=>`<div style="padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between"><span><b>${k}</b><small style="display:block;color:var(--muted)">${v.count} รายการ</small></span><b>${money(v.value)}</b></div>`).join('');
+ recentSales.innerHTML=[...SALES].reverse().slice(0,6).map(s=>`<tr><td>${s.invoice}</td><td>${s.date}</td><td>${s.product}</td><td>${s.qty}</td><td>${s.payment}</td><td>${money(s.total)}</td></tr>`).join('');
+}
+function renderProducts(){
+ const q=(searchProduct.value||'').toLowerCase(),cat=categoryFilter.value;
+ const list=products.filter(p=>(p.name.toLowerCase().includes(q)||p.barcode.includes(q))&&(!cat||p.category===cat));
+ productRows.innerHTML=list.length?list.map(p=>{const st=statusOf(p);return `<tr><td>${p.barcode}</td><td><b>${p.name}</b></td><td>${p.category}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><b>${money((Number(p.price)||0)-(Number(p.cost)||0))}</b></td><td>${p.unit}</td><td>${num(p.stock)} ตัว</td><td>${p.min}</td><td><span class="badge ${st[1]}">${st[0]}</span></td><td><button class="btn btn-light" onclick="editProduct('${p.barcode}')">แก้ไข</button> <button class="btn btn-danger" onclick="deleteProduct('${p.barcode}')">ลบ</button></td></tr>`}).join(''):`<tr><td colspan="10" class="empty">ไม่พบสินค้า</td></tr>`;
+}
+
+function clearSalesHistory(){
+ if(!confirm('ต้องการลบประวัติการขายทั้งหมดใช่หรือไม่?')) return;
+ SALES=[];
+ localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));
+ refreshAll();
+ alert('ลบประวัติการขายเรียบร้อย');
+}
+
+
+function deleteSaleHistoryItem(index){
+ const item=SALES[index];
+ if(!item)return;
+ if(!confirm(`ต้องการลบรายการ ${item.product} เลขที่ ${item.invoice} ใช่หรือไม่?`))return;
+ SALES.splice(index,1);
+ localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));
+ refreshAll();
+}
+
+function renderSales(){
+ const rows=[...SALES].map((sale,index)=>({sale,index})).reverse();
+ salesRows.innerHTML=rows.length?rows.map(({sale:s,index})=>`<tr><td>${s.invoice}</td><td>${s.date}</td><td>${s.product}</td><td>${s.qty}</td><td>${money(s.price)}</td><td>${money(s.total)}</td><td>${money(s.profit)}</td><td>${s.payment}</td><td><button class="btn btn-danger" onclick="deleteSaleHistoryItem(${index})">🗑 ลบ</button></td></tr>`).join(''):`<tr><td colspan="9" class="empty">ยังไม่มีประวัติการขาย</td></tr>`;
+}
+function getPurchaseItems(){
+ const rule=(document.getElementById('purchaseRule')?.value)||'min';
+ return products.filter(p=>{
+   if(rule==='all') return true;
+   if(rule==='double') return p.stock<=p.min*2;
+   return p.stock<=p.min;
+ });
+}
+function suggestedBuyQty(p){
+ return Math.max(p.min*2-p.stock,0);
+}
+function renderLow(){
+ const list=getPurchaseItems();
+ const selectedBefore=new Set([...document.querySelectorAll('.purchase-select:checked')].map(x=>x.value));
+ lowRows.innerHTML=list.length?list.map((p,i)=>{
+   const checked=selectedBefore.size===0||selectedBefore.has(p.barcode);
+   return `<tr>
+     <td><input class="purchase-select" type="checkbox" value="${p.barcode}" ${checked?'checked':''} onchange="updatePurchaseRows()"></td>
+     <td>${i+1}</td>
+     <td>${p.barcode}</td>
+     <td><b>${p.name}</b></td>
+     <td>${p.category}</td>
+     <td>${num(p.stock)}</td>
+     <td>${num(p.min)}</td>
+     <td><input data-buy-code="${p.barcode}" type="number" min="0" value="" placeholder="" style="width:95px" oninput="updatePurchaseRows()"></td>
+     <td>${p.unit}</td>
+   </tr>`;
+ }).join(''):`<tr><td colspan="9" class="empty">ไม่มีสินค้าที่เข้าเงื่อนไขจัดซื้อ</td></tr>`;
+ const btn=document.getElementById('fillSuggestedBtn');
+ if(btn){
+   btn.disabled=false;
+   btn.textContent='ใส่จำนวนที่ควรซื้อ';
+   btn.style.opacity='1';
+ }
+ updatePurchaseRows();
+}
+function updatePurchaseRows(){
+ const checks=[...document.querySelectorAll('.purchase-select')];
+ purchaseCheckAll.checked=checks.length>0&&checks.every(x=>x.checked);
+}
+function fillSuggestedPurchaseQty(){
+ const btn=document.getElementById('fillSuggestedBtn');
+ if(btn.disabled)return;
+ document.querySelectorAll('.purchase-select:checked').forEach(cb=>{
+   const p=products.find(x=>x.barcode===cb.value);
+   const input=document.querySelector(`input[data-buy-code="${cb.value}"]`);
+   if(p&&input&&input.value==='') input.value=suggestedBuyQty(p);
+ });
+ btn.disabled=true;
+ btn.textContent='ใส่จำนวนแล้ว';
+ btn.style.opacity='.6';
+ updatePurchaseRows();
+}
+function clearAllSuggestedPurchaseQty(){
+ document.querySelectorAll('input[data-buy-code]').forEach(input=>input.value='');
+ const btn=document.getElementById('fillSuggestedBtn');
+ if(btn){
+   btn.disabled=false;
+   btn.textContent='ใส่จำนวนที่ควรซื้อ';
+   btn.style.opacity='1';
+ }
+ updatePurchaseRows();
+}
+
+function addAllPurchaseQtyToStock(){
+ const entries=[...document.querySelectorAll('input[data-buy-code]')]
+   .map(input=>({
+     code:input.dataset.buyCode,
+     qty:Math.max(0,Number(input.value)||0),
+     input
+   }))
+   .filter(x=>x.qty>0);
+
+ if(!entries.length){
+   alert('กรุณาใส่จำนวนที่ต้องการเพิ่มอย่างน้อย 1 รายการ');
+   return;
+ }
+
+ const totalItems=entries.length;
+ const totalQty=entries.reduce((s,x)=>s+x.qty,0);
+ if(!confirm(`เพิ่มสินค้า ${totalItems} รายการ รวม ${totalQty} หน่วย เข้าสต๊อกทั้งหมดหรือไม่?`)) return;
+
+ entries.forEach(entry=>{
+   const p=products.find(x=>x.barcode===entry.code);
+   if(p) p.stock+=entry.qty;
+   entry.input.value='';
+ });
+
+ localStorage.setItem('stock_demo_products',JSON.stringify(products));
+ refreshAll();
+
+ const btn=document.getElementById('fillSuggestedBtn');
+ if(btn){
+   btn.disabled=false;
+   btn.textContent='ใส่จำนวนที่ควรซื้อ';
+   btn.style.opacity='1';
+ }
+
+ alert(`เพิ่มสินค้าเข้าสต๊อกเรียบร้อยแล้ว ${totalItems} รายการ`);
+}
+
+function togglePurchaseAll(checked){
+ document.querySelectorAll('.purchase-select').forEach(x=>x.checked=checked);
+ updatePurchaseRows();
+}
+function selectAllPurchase(){togglePurchaseAll(true)}
+function clearPurchaseSelection(){togglePurchaseAll(false)}
+function getSelectedPurchaseData(){
+ return [...document.querySelectorAll('.purchase-select:checked')].map(cb=>{
+   const p=products.find(x=>x.barcode===cb.value);
+   const qty=Number(document.querySelector(`input[data-buy-code="${cb.value}"]`)?.value)||0;
+   return {...p,buyQty:qty,lineTotal:qty*(p?.cost||0)};
+ }).filter(x=>x&&x.buyQty>0);
+}
+function exportPurchasePDF(){
+ const rows=getSelectedPurchaseData();
+ if(!rows.length){alert('กรุณาเลือกรายการและระบุจำนวนที่ต้องการซื้อ');return}
+ const now=new Date();
+ purchasePrintArea.innerHTML=`
+   <h1>รายการสินค้าที่ต้องจัดซื้อ</h1>
+   <div style="text-align:center;font-size:13px">อ้างอิงจากข้อมูลสินค้าและสต๊อกปัจจุบัน</div>
+   <div class="meta">
+     <div>วันที่จัดทำ: ${now.toLocaleDateString('th-TH')}</div>
+     <div>จำนวนรายการ: ${rows.length} รายการ</div>
+   </div>
+   <table>
+     <thead><tr><th>ลำดับ</th><th>รหัสสินค้า</th><th>รายการสินค้า</th><th>จำนวนที่ซื้อ</th><th>หน่วย</th></tr></thead>
+     <tbody>${rows.map((x,i)=>`<tr><td style="text-align:center">${i+1}</td><td>${x.barcode}</td><td>${x.name}</td><td style="text-align:center">${num(x.buyQty)}</td><td style="text-align:center">${x.unit}</td></tr>`).join('')}</tbody>
+   </table>
+   <div style="margin-top:15px;font-size:12px">หมายเหตุ: จำนวนคงเหลือและจำนวนขั้นต่ำอ้างอิงจากข้อมูลหน้า “สินค้าและสต๊อก”</div>
+   <div class="sign-grid">
+     <div>ลงชื่อ ..................................................<br>ผู้จัดทำรายการ</div>
+     <div>ลงชื่อ ..................................................<br>ผู้อนุมัติ</div>
+   </div>`;
+ purchaseModal.classList.add('show');
+}
+function printPurchaseDocument(){
+ document.body.classList.add('print-purchase');
+ window.print();
+ setTimeout(()=>document.body.classList.remove('print-purchase'),500);
+}
+function closePurchaseModal(){
+ purchaseModal.classList.remove('show');
+ document.body.classList.remove('print-purchase');
+}
+
+function addBySearch(){
+ const q=(posSearch.value||'').trim().toLowerCase();
+ if(!q){posSearch.focus();return}
+ const exact=products.find(p=>p.barcode===q)||products.find(p=>p.name.toLowerCase()===q);
+ const partial=products.find(p=>p.name.toLowerCase().includes(q));
+ const p=exact||partial;
+ if(!p){alert('ไม่พบสินค้า');return}
+ addToCart(p.barcode);posSearch.value='';posSearch.focus();
+}
+function addToCart(code){
+ const p=products.find(x=>x.barcode===code);
+ if(!p)return;
+ const found=cart.find(x=>x.barcode===code);
+ const current=found?found.qty:0;
+ if(current>=p.stock){alert('จำนวนสินค้าในสต๊อกไม่เพียงพอ');return}
+ if(found)found.qty++;else cart.push({barcode:p.barcode,name:p.name,price:p.price,unit:p.unit,qty:1});
+ saveCart();renderCart();
+}
+function changeQty(code,delta){
+ const item=cart.find(x=>x.barcode===code),p=products.find(x=>x.barcode===code);
+ if(!item||!p)return;
+ const next=item.qty+delta;
+ if(next<=0){removeCart(code);return}
+ if(next>p.stock){alert('จำนวนสินค้าในสต๊อกไม่เพียงพอ');return}
+ item.qty=next;saveCart();renderCart();
+}
+function removeCart(code){cart=cart.filter(x=>x.barcode!==code);saveCart();renderCart()}
+function clearCart(){if(!cart.length||confirm('ต้องการล้างรายการทั้งหมดหรือไม่?')){cart=[];saveCart();renderCart()}}
+function saveCart(){localStorage.setItem('stock_demo_cart',JSON.stringify(cart))}
+function calcPos(){
+ const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0);
+ const discount=Math.max(0,+posDiscount.value||0);
+ const net=Math.max(0,subtotal-discount);
+ const received=+posReceived.value||0;
+ return {subtotal,discount,net,received,change:Math.max(0,received-net)};
+}
+function renderCart(){
+ cartRows.innerHTML=cart.length?cart.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.name}</b></td><td>${money(x.price)}</td><td><div class="qty-box"><button onclick="changeQty('${x.barcode}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${x.barcode}',1)">+</button></div></td><td>${x.unit}</td><td><b>${money(x.price*x.qty)}</b></td><td><button class="btn btn-danger" onclick="removeCart('${x.barcode}')">ลบ</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีสินค้าในรายการ</td></tr>`;
+ quickProducts.innerHTML=products.slice(0,12).map(p=>`<button class="quick-item" onclick="addToCart('${p.barcode}')"><b>${p.name}</b><small>${money(p.price)} · เหลือ ${p.stock} ${p.unit}</small></button>`).join('');
+ const c=calcPos();document.getElementById('posInvoice').textContent=posInvoice;posSubtotal.textContent=money(c.subtotal);posNet.textContent=money(c.net);posChange.textContent=money(c.change);
+}
+function toggleCashInput(){cashBox.style.display=posPayment.value==='เงินสด'?'block':'none';renderCart()}
+function receiptHtml(){
+ const c=calcPos(), customer=(posCustomer.value||'ลูกค้าทั่วไป').trim();
+ const rows=cart.map(x=>`<div style="display:flex;justify-content:space-between"><span>${x.name} x${x.qty}</span><span>${money(x.price*x.qty)}</span></div>`).join('');
+ return `<h2>ใบเสร็จรับเงิน</h2><p>ระบบจัดการสต๊อกสินค้า</p><div class="receipt-line"></div><div>เลขที่: ${posInvoice}</div><div>วันที่: ${new Date().toLocaleString('th-TH')}</div><div>ลูกค้า: ${customer}</div><div>ชำระ: ${posPayment.value}</div><div class="receipt-line"></div>${rows}<div class="receipt-line"></div><div style="display:flex;justify-content:space-between"><b>รวม</b><b>${money(c.subtotal)}</b></div><div style="display:flex;justify-content:space-between"><span>ส่วนลด</span><span>${money(c.discount)}</span></div><div style="display:flex;justify-content:space-between;font-size:18px"><b>ยอดสุทธิ</b><b>${money(c.net)}</b></div><div style="display:flex;justify-content:space-between"><span>รับเงิน</span><span>${money(c.received)}</span></div><div style="display:flex;justify-content:space-between"><span>เงินทอน</span><span>${money(c.change)}</span></div><div class="receipt-line"></div><p>ขอบคุณที่ใช้บริการ</p>`;
+}
+function openReceipt(){
+ if(!cart.length){alert('ยังไม่มีสินค้าในรายการ');return}
+ receiptContent.innerHTML=receiptHtml();receiptModal.classList.add('show');
+}
+function checkout(){
+ if(!cart.length){alert('กรุณาเพิ่มสินค้า');return}
+ const c=calcPos();
+ if(posPayment.value==='เงินสด'&&c.received<c.net){alert('จำนวนเงินที่รับมายังไม่ครบ');return}
+
+ for(const x of cart){
+   const p=products.find(p=>p.barcode===x.barcode);
+   if(!p||p.stock<x.qty){alert(`สต๊อกสินค้า ${x.name} ไม่เพียงพอ`);return}
+ }
+
+ const invoiceNo=posInvoice;
+ const payment=posPayment.value;
+ const saleDate=new Date().toISOString().slice(0,10);
+ const subtotal=c.subtotal||1;
+
+ // บันทึกประวัติการขายทีละสินค้า และเฉลี่ยส่วนลดตามมูลค่าสินค้า
+ const newSales=cart.map(x=>{
+   const p=products.find(p=>p.barcode===x.barcode);
+   const gross=x.price*x.qty;
+   const allocatedDiscount=c.discount*(gross/subtotal);
+   const netTotal=Math.max(0,gross-allocatedDiscount);
+   const cost=(p?.cost||0)*x.qty;
+   return {
+     invoice:invoiceNo,
+     payment,
+     date:saleDate,
+     product:x.name,
+     qty:x.qty,
+     price:x.price,
+     total:netTotal,
+     profit:netTotal-cost
+   };
+ });
+
+ SALES.push(...newSales);
+ localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));
+
+ products=products.map(p=>{
+   const x=cart.find(c=>c.barcode===p.barcode);
+   return x?{...p,stock:p.stock-x.qty}:p;
+ });
+ localStorage.setItem('stock_demo_products',JSON.stringify(products));
+
+ const seq=Number(localStorage.getItem('stock_demo_bill_seq')||0)+1;
+ localStorage.setItem('stock_demo_bill_seq',String(seq));
+
+ receiptContent.innerHTML=receiptHtml();
+ receiptModal.classList.add('show');
+
+ cart=[];
+ posDiscount.value=0;
+ posReceived.value=0;
+ posCustomer.value='';
+ saveCart();
+
+ posInvoice=createInvoiceNo();
+ refreshAll();
+ renderCart();
+}
+
+
+function generateAutoBarcode(){
+ const base=String(Date.now()).slice(-12);
+ let check=0;
+ for(let i=0;i<base.length;i++) check+=(i%2===0?1:3)*Number(base[i]);
+ const digit=(10-(check%10))%10;
+ let code=base+digit;
+ while(products.some(p=>p.barcode===code)){
+   const next=String(Number(code)+1).padStart(13,'0');
+   code=next.slice(-13);
+ }
+ return code;
+}
+
+function refreshProductFormOptions(){
+ const categories=[...new Set(products.map(p=>(p.category||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));
+ const units=[...new Set(products.map(p=>(p.unit||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th'));
+ const categoryList=document.getElementById('categoryOptions');
+ const unitList=document.getElementById('unitOptions');
+ if(categoryList) categoryList.innerHTML=categories.map(x=>`<option value="${x.replace(/"/g,'&quot;')}"></option>`).join('');
+ if(unitList) unitList.innerHTML=units.map(x=>`<option value="${x.replace(/"/g,'&quot;')}"></option>`).join('');
+}
+
+function autoCalculateSellingPrice(){
+ if(editingBarcode||priceManuallyEdited)return;
+ const cost=Math.max(0,Number(fCost.value)||0);
+ fPrice.value=cost?Math.ceil(cost*1.40):'';
+}
+
+function refreshCategories(){const current=categoryFilter.value;const cats=[...new Set(products.map(p=>p.category))];categoryFilter.innerHTML='<option value="">ทุกกลุ่มสินค้า</option>'+cats.map(c=>`<option>${c}</option>`).join('');categoryFilter.value=current}
+function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart()}
+function openProductModal(){
+ editingBarcode=null;
+ priceManuallyEdited=false;
+ modalTitle.textContent='เพิ่มสินค้า';
+ refreshProductFormOptions();
+ fBarcode.value=generateAutoBarcode();
+ fName.value='';
+ fCategory.value='';
+ fUnit.value='ชิ้น';
+ fCost.value='';
+ fPrice.value='';
+ fStock.value='0';
+ fMin.value='5';
+ productModal.classList.add('show');
+ setTimeout(()=>fName.focus(),50);
+}
+function editProduct(code){
+ const p=products.find(x=>x.barcode===code);
+ editingBarcode=code;
+ priceManuallyEdited=true;
+ modalTitle.textContent='แก้ไขสินค้า';
+ refreshProductFormOptions();
+ fBarcode.value=p.barcode;
+ fName.value=p.name;
+ fCategory.value=p.category;
+ fUnit.value=p.unit;
+ fCost.value=p.cost;
+ fPrice.value=p.price;
+ fStock.value=p.stock;
+ fMin.value=p.min;
+ productModal.classList.add('show');
+}
+function closeModal(){productModal.classList.remove('show')}
+function saveProduct(){
+ const p={barcode:fBarcode.value.trim(),name:fName.value.trim(),category:fCategory.value.trim()||'อื่นๆ',unit:fUnit.value.trim()||'ชิ้น',cost:+fCost.value||0,price:+fPrice.value||0,stock:+fStock.value||0,min:+fMin.value||0};
+ if(!p.barcode||!p.name){alert('กรุณากรอกบาร์โค้ดและชื่อสินค้า');return}
+ if(editingBarcode)products=products.map(x=>x.barcode===editingBarcode?p:x);else{if(products.some(x=>x.barcode===p.barcode)){alert('บาร์โค้ดนี้มีอยู่แล้ว');return}products.push(p)}
+ closeModal();refreshAll();
+}
+function deleteProduct(code){if(confirm('ต้องการลบสินค้านี้หรือไม่?')){products=products.filter(p=>p.barcode!==code);refreshAll()}}
+function resetDemo(){if(confirm('คืนค่าข้อมูลตามไฟล์ Excel เดิมหรือไม่?')){products=structuredClone(ORIGINAL_PRODUCTS);refreshAll()}}
+
+document.getElementById('fCost').addEventListener('input',autoCalculateSellingPrice);
+document.getElementById('fPrice').addEventListener('input',()=>{
+ if(!editingBarcode) priceManuallyEdited=true;
+});
+document.getElementById('fPrice').addEventListener('dblclick',()=>{
+ if(!editingBarcode){
+   priceManuallyEdited=false;
+   autoCalculateSellingPrice();
+ }
+});
+
+refreshAll();
+</script>
+</body></html>
