@@ -527,6 +527,205 @@ main{max-width:1700px;width:100%;margin:0 auto}
 .product-modal-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px 22px;background:#fff;border-top:1px solid #e5efed}.product-modal-actions .btn{min-width:110px;min-height:42px;border-radius:12px}
 @media(max-width:620px){.product-modal-card{border-radius:20px}.product-modal-head{padding:18px}.product-modal-body{padding:16px 16px 4px}.product-form-grid{grid-template-columns:1fr}.product-modal-actions{padding:14px 16px 18px;position:sticky;bottom:0}.product-modal-actions .btn{flex:1;min-width:0}.product-form-section{padding:14px}.product-barcode-wrap{grid-template-columns:1fr auto}.product-scan-btn span{display:none}.product-scan-btn{padding:0 12px}}
 
+
+.payment-tools{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px}.payment-tools .btn{flex:1;min-width:145px;width:100%}.promptpay-settings-card{width:min(430px,100%);border-radius:24px;padding:20px}.promptpay-sheet-handle{width:46px;height:5px;border-radius:999px;background:#cbd5e1;margin:0 auto 16px}.modal-header-modern{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:18px}.modal-header-modern h3{margin:0 0 5px;font-size:20px;color:#0f172a}.modal-header-modern p{margin:0;color:#64748b;font-size:13px;line-height:1.5}.modal-close{width:38px;height:38px;border:0;border-radius:12px;background:#f1f5f9;font-size:24px;cursor:pointer;color:#475569}.promptpay-form{display:grid;gap:14px}.promptpay-step{display:grid;grid-template-columns:36px 1fr;gap:10px;align-items:start}.promptpay-step-number{width:32px;height:32px;border-radius:10px;background:#eff6ff;color:#2563eb;display:grid;place-items:center;font-weight:800}.promptpay-step-content label{display:block;font-weight:700;color:#334155;margin:0 0 7px;font-size:14px}.promptpay-step-content input{width:100%;height:50px;border:1px solid #cbd5e1;border-radius:13px;padding:0 14px;font-size:16px;box-sizing:border-box;background:#fff}.promptpay-step-content input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.12)}.promptpay-note{padding:12px 13px;border-radius:13px;background:#eff6ff;color:#1d4ed8;font-size:12px;line-height:1.55;margin-top:15px}.modal-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.promptpay-info{display:grid;gap:2px;margin-top:10px;text-align:center}.promptpay-info b{font-size:16px}.promptpay-info span{font-size:13px;color:#64748b}@media(max-width:520px){.payment-tools{display:grid;grid-template-columns:1fr 1fr}.payment-tools .btn{min-width:0;padding:10px 8px;font-size:12px}.promptpay-settings-card{border-radius:24px 24px 0 0;align-self:flex-end;width:100%;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}.modal-actions{display:grid;grid-template-columns:1fr 1fr}.modal-actions .btn{width:100%;min-height:48px}.promptpay-step{grid-template-columns:34px 1fr}}
+
+
+/* ===== แก้ไขหน้าต่างเพิ่มสินค้า: ล็อกพื้นหลังและปรับระยะขอบ ===== */
+html.product-modal-open{
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+}
+body.product-modal-open{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  overflow:hidden !important;
+  overscroll-behavior:none !important;
+  touch-action:none;
+}
+#productModal{
+  position:fixed !important;
+  inset:0 !important;
+  z-index:10000 !important;
+  overscroll-behavior:contain;
+}
+#productModal .product-modal-card{
+  display:flex;
+  flex-direction:column;
+  width:min(760px,100%);
+  max-height:min(90vh,860px);
+  padding:0;
+  overflow:hidden !important;
+  border-radius:20px;
+}
+#productModal .product-modal-head,
+#productModal .product-modal-actions{
+  flex:0 0 auto;
+}
+#productModal .product-modal-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  padding:20px 22px 28px;
+  scrollbar-gutter:stable;
+}
+#productModal .product-form-section{
+  padding:16px 16px 20px;
+  margin-bottom:14px;
+  border-radius:14px;
+  border:1px solid #dce7e5;
+}
+#productModal .product-form-section:last-child{
+  margin-bottom:8px;
+  padding-bottom:24px;
+}
+#productModal .product-form-grid{
+  gap:16px 14px;
+  align-items:start;
+}
+#productModal .product-field,
+#productModal .product-barcode-wrap,
+#productModal input{
+  min-width:0;
+  box-sizing:border-box;
+}
+#productModal .product-field input{
+  width:100%;
+  min-height:44px;
+  border-radius:8px !important;
+}
+/* เพิ่มช่องว่างด้านล่างของจำนวนคงเหลือและจำนวนขั้นต่ำ */
+#productModal #fStock,
+#productModal #fMin{
+  margin-bottom:8px;
+}
+#productModal .product-form-section:last-child .product-field:nth-child(3),
+#productModal .product-form-section:last-child .product-field:nth-child(4){
+  padding-bottom:8px;
+}
+#productModal .product-modal-actions{
+  padding:14px 22px 18px;
+  background:#fff;
+  border-top:1px solid #e5efed;
+  box-shadow:0 -7px 20px rgba(15,23,42,.055);
+}
+@media(max-width:620px){
+  #productModal{
+    align-items:flex-end !important;
+    padding:0 !important;
+  }
+  #productModal .product-modal-card{
+    width:100% !important;
+    max-width:100% !important;
+    height:94dvh !important;
+    max-height:94dvh !important;
+    margin:0 !important;
+    border-radius:20px 20px 0 0 !important;
+    border-left:0 !important;
+    border-right:0 !important;
+    border-bottom:0 !important;
+  }
+  #productModal .product-modal-head{
+    padding:16px !important;
+  }
+  #productModal .product-modal-body{
+    padding:12px 12px 26px !important;
+  }
+  #productModal .product-form-section{
+    margin-bottom:12px !important;
+    padding:14px 14px 20px !important;
+    border-radius:13px !important;
+  }
+  #productModal .product-modal-actions{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    padding:12px 12px calc(12px + env(safe-area-inset-bottom)) !important;
+    position:static !important;
+  }
+}
+
+
+
+/* ===== Mobile fixed menu + POS + Customer display ===== */
+@media (max-width:768px){
+  body{padding-top:96px!important;overflow-x:hidden!important}
+  .layout{display:block!important;min-height:100dvh!important}
+  aside#sidebar{
+    display:block!important;
+    position:fixed!important;
+    top:0!important;left:0!important;right:0!important;
+    width:100%!important;height:96px!important;min-height:96px!important;
+    padding:8px 9px 7px!important;
+    z-index:2000!important;
+    overflow:hidden!important;
+    background:linear-gradient(135deg,#172554,#312e81)!important;
+    box-shadow:0 8px 22px rgba(15,23,42,.22)!important;
+  }
+  aside#sidebar .brand{font-size:16px!important;line-height:1.1!important;margin:0 4px 6px!important;white-space:nowrap!important}
+  aside#sidebar .brand::before{width:27px!important;height:27px!important;border-radius:9px!important;margin-right:7px!important;font-size:13px!important}
+  aside#sidebar .brand small{display:inline!important;margin:0 0 0 7px!important;font-size:9px!important;opacity:.75!important}
+  aside#sidebar .nav{display:flex!important;gap:7px!important;overflow-x:auto!important;overflow-y:hidden!important;padding:0 1px 3px!important;scrollbar-width:none!important;-webkit-overflow-scrolling:touch!important}
+  aside#sidebar .nav::-webkit-scrollbar{display:none!important}
+  aside#sidebar .nav button{display:block!important;flex:0 0 auto!important;width:auto!important;min-width:max-content!important;min-height:36px!important;margin:0!important;padding:8px 11px!important;border-radius:11px!important;font-size:11.5px!important;white-space:nowrap!important}
+  aside#sidebar .nav button.active{background:#fff!important;color:#312e81!important;box-shadow:0 4px 11px rgba(0,0,0,.16)!important}
+  main{width:100%!important;padding:10px!important;margin:0!important;overflow:visible!important}
+  header{position:relative!important;top:auto!important;z-index:1!important;margin-bottom:10px!important;padding:11px!important}
+  .mobile-menu{display:none!important}
+
+  /* POS */
+  #pos .pos-layout{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+  #pos .pos-main,#pos .pos-summary{width:100%!important;min-width:0!important;padding:12px!important;border-radius:16px!important}
+  #pos .pos-search{display:grid!important;grid-template-columns:1fr 1fr!important;gap:7px!important;padding:9px!important}
+  #pos .pos-search input{grid-column:1/-1!important;width:100%!important;min-width:0!important}
+  #pos .pos-search .btn{width:100%!important;padding:9px 7px!important;font-size:12px!important}
+  #pos .pos-table{width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+  #pos .pos-table table{min-width:650px!important}
+  #pos .quick-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;max-height:none!important;overflow:visible!important;padding-right:0!important}
+  #pos .quick-item{min-width:0!important;min-height:82px!important;padding:10px!important;border-radius:13px!important}
+  #pos .quick-item b{font-size:12px!important;overflow-wrap:anywhere!important}
+  #pos .pos-summary{position:static!important;top:auto!important}
+  #pos .payment-tools{display:grid!important;grid-template-columns:1fr!important;gap:8px!important}
+  #pos .payment-tools .btn{width:100%!important;min-width:0!important}
+  #pos .sum-row{padding:11px 0!important}
+  #pos .sum-row.total{font-size:19px!important;padding:14px 11px!important}
+  #pos input,#pos select{width:100%!important;min-width:0!important}
+
+  /* Customer display */
+  #customer .customer-display{width:100%!important;min-height:auto!important;padding:10px!important;border-radius:16px!important}
+  #customer .customer-head{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:9px!important;margin-bottom:10px!important}
+  #customer .customer-shop{font-size:21px!important;line-height:1.25!important}
+  #customer .customer-sub{font-size:11px!important}
+  #customer .customer-bill{width:100%!important;padding:10px 12px!important;text-align:left!important}
+  #customer .customer-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:10px!important}
+  #customer .customer-items-card,#customer .customer-summary-card{width:100%!important;min-width:0!important;padding:12px!important;border-radius:15px!important}
+  #customer .customer-title{font-size:17px!important;margin-bottom:10px!important}
+  #customer .customer-table{width:100%!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important}
+  #customer .customer-table table{min-width:560px!important}
+  #customer .customer-table th,#customer .customer-table td{font-size:12px!important;padding:9px 7px!important}
+  #customer .customer-total-row{font-size:14px!important;padding:11px 0!important;gap:10px!important}
+  #customer .customer-total-row b{font-size:16px!important;text-align:right!important}
+  #customer .customer-net,#customer .customer-change{padding:13px!important;border-radius:13px!important}
+  #customer .customer-net span,#customer .customer-net b{font-size:20px!important}
+  #customer .customer-change span,#customer .customer-change b{font-size:18px!important}
+  #customer .customer-qr-area{padding:12px!important;border-radius:15px!important}
+  #customer .qr-highlight{font-size:17px!important}
+  #customer .qr-frame{width:min(210px,72vw)!important;height:min(210px,72vw)!important;border-radius:15px!important}
+  #customer .qr-amount{font-size:15px!important}
+  #customer .qr-amount b{font-size:23px!important}
+}
+@media (max-width:390px){
+  body{padding-top:91px!important}
+  aside#sidebar{height:91px!important;min-height:91px!important}
+  aside#sidebar .brand small{display:none!important}
+  #pos .quick-products{grid-template-columns:1fr!important}
+  #pos .pos-search{grid-template-columns:1fr 1fr!important}
+}
 </style>
 </head>
 <body>
@@ -661,18 +860,12 @@ main{max-width:1700px;width:100%;margin:0 auto}
       <div style="margin-top:12px"><label>ส่วนลด (บาท)</label><input id="posDiscount" type="number" min="0" value="0" oninput="renderCart()"></div>
       <div class="sum-row total"><span>ยอดสุทธิ</span><span id="posNet">฿0</span></div>
       <div style="margin-top:13px">
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px">
-<label class="btn btn-light" style="cursor:pointer">
-📷 ตั้งค่า QR
-<input id="qrUpload" type="file" accept="image/*" style="display:none" onchange="saveQrImage(event)">
-</label>
-<button class="btn btn-danger" onclick="removeQrImage()">🗑 ลบ QR</button>
-
-<button class="btn btn-primary" onclick="openCustomerDisplay()">🖥️ เปิดจอลูกค้า</button>
-
+<div class="payment-tools">
+<button class="btn btn-light" type="button" onclick="openPromptPaySettings()">⚙️ ตั้งค่า QR พร้อมเพย์</button>
+<button class="btn btn-primary" type="button" onclick="openCustomerDisplay()">🖥️ เปิดจอลูกค้า</button>
 </div>
 <label>วิธีชำระเงิน</label>
-        <select id="posPayment" onchange="toggleCashInput()"><option>เงินสด</option><option>โอน</option><option>บัตร</option></select>
+        <select id="posPayment" onchange="toggleCashInput()"><option>เงินสด</option><option>โอน</option></select>
       </div>
       <div id="cashBox" style="margin-top:12px"><label>รับเงิน (บาท)</label><input id="posReceived" type="number" min="0" value="0" oninput="renderCart()"></div>
       <div class="sum-row"><span>เงินทอน</span><b id="posChange">฿0</b></div>
@@ -724,10 +917,11 @@ main{max-width:1700px;width:100%;margin:0 auto}
             <img id="customerQrImage" alt="QR Code ร้านค้า">
             <div id="customerQrPlaceholder" class="qr-placeholder">
               <div class="qr-icon">▦</div>
-              <b>ยังไม่ได้ตั้งค่า QR Code</b>
-              <span>กด “ตั้งค่า QR” เพื่อเลือกรูปจากเครื่อง</span>
+              <b>ยังไม่ได้ตั้งค่าพร้อมเพย์</b>
+              <span>ยังไม่ได้กำหนดข้อมูลพร้อมเพย์ในระบบ</span>
             </div>
           </div>
+          <div id="customerPromptPayInfo" class="promptpay-info"></div>
           <div class="qr-amount">ยอดชำระ <b id="customerQrAmount">฿0</b></div>
         </div>
 
@@ -815,7 +1009,7 @@ main{max-width:1700px;width:100%;margin:0 auto}
         </div>
         <div class="product-field"><label>ชื่อสินค้า</label><input id="fName" placeholder="เช่น น้ำดื่ม 600 มล."></div>
         <div class="product-field"><label>กลุ่มสินค้า</label><input id="fCategory" list="categoryOptions" placeholder="เลือกหรือพิมพ์กลุ่มสินค้าใหม่"><datalist id="categoryOptions"></datalist></div>
-        <div class="product-field"><label>หน่วยนับ</label><input id="fUnit" list="unitOptions" value="ชิ้น" placeholder="เช่น ชิ้น, ขวด, กล่อง"><datalist id="unitOptions"></datalist></div>
+        <div class="product-field"><label>หน่วยนับ</label><input id="fUnit" list="unitOptions" value="ชุด" placeholder="เช่น ชิ้น, ขวด, กล่อง"><datalist id="unitOptions"></datalist></div>
       </div>
     </div>
     <div class="product-form-section">
@@ -844,6 +1038,33 @@ main{max-width:1700px;width:100%;margin:0 auto}
   </div>
   <div id="barcodeScannerStatus" class="scanner-status">กำลังเปิดกล้อง…</div>
   <div style="display:flex;justify-content:center;margin-top:12px"><button class="btn btn-light" type="button" onclick="closeBarcodeScanner()">ยกเลิก</button></div>
+</div></div>
+
+<div class="modal" id="promptPayModal"><div class="modal-card promptpay-settings-card">
+  <div class="promptpay-sheet-handle" aria-hidden="true"></div>
+  <div class="modal-header-modern">
+    <div><h3>⚙️ ตั้งค่า QR พร้อมเพย์</h3><p>กรอกข้อมูลตามลำดับ เพื่อใช้สร้าง QR ตามยอดสุทธิอัตโนมัติ</p></div>
+    <button class="modal-close" type="button" onclick="closePromptPaySettings()" aria-label="ปิด">×</button>
+  </div>
+  <div class="promptpay-form">
+    <div class="promptpay-step">
+      <div class="promptpay-step-number">1</div>
+      <div class="promptpay-step-content"><label for="promptPayIdInput">เบอร์โทรศัพท์หรือเลขพร้อมเพย์</label><input id="promptPayIdInput" inputmode="numeric" autocomplete="tel" placeholder="เช่น 0863386977"></div>
+    </div>
+    <div class="promptpay-step">
+      <div class="promptpay-step-number">2</div>
+      <div class="promptpay-step-content"><label for="promptPayNameInput">ชื่อบัญชี</label><input id="promptPayNameInput" autocomplete="name" placeholder="ชื่อเจ้าของบัญชี"></div>
+    </div>
+    <div class="promptpay-step">
+      <div class="promptpay-step-number">3</div>
+      <div class="promptpay-step-content"><label for="promptPayAccountInput">เลขบัญชีสำหรับแสดงผล</label><input id="promptPayAccountInput" inputmode="numeric" placeholder="เช่น 9850852291"></div>
+    </div>
+  </div>
+  <div class="promptpay-note">QR จะสร้างผ่าน promptpay.io ตามยอดสุทธิในใบขาย จึงต้องเชื่อมต่ออินเทอร์เน็ต</div>
+  <div class="modal-actions">
+    <button class="btn btn-light" type="button" onclick="closePromptPaySettings()">ยกเลิก</button>
+    <button class="btn btn-primary" type="button" onclick="savePromptPaySettings()">💾 บันทึกการตั้งค่า</button>
+  </div>
 </div></div>
 
 <div class="modal" id="receiptModal"><div class="modal-card" style="width:min(390px,100%)">
@@ -884,7 +1105,14 @@ let storefrontWindow=null;
 let storefrontQueueChannel=null;
 try{storefrontQueueChannel=new BroadcastChannel('stock_storefront_queue')}catch(e){}
 let posInvoice=createInvoiceNo();
-let customerQrData=localStorage.getItem('stock_demo_qr')||'';
+const DEFAULT_PROMPTPAY_SETTINGS={
+  promptPayId:'0863386977',
+  accountName:'ว่าที่ร.ต.พลวัต บังเกิด',
+  accountNumber:'9850852291',
+  logoUrl:'https://brilliantpy.com/wp-content/uploads/2021/07/cropped-logo_circle_v2_whitebg.jpg'
+};
+let promptPaySettings=(()=>{try{return {...DEFAULT_PROMPTPAY_SETTINGS,...JSON.parse(localStorage.getItem('stock_promptpay_settings')||'{}')}}catch(e){return {...DEFAULT_PROMPTPAY_SETTINGS}}})();
+let customerQrData='';
 let customerWindow=null;
 let customerChannel=null;
 try{customerChannel=new BroadcastChannel('stock_customer_display')}catch(e){}
@@ -1303,6 +1531,120 @@ body{min-width:320px;overflow-x:hidden}
   .pos-search{grid-template-columns:1fr 1fr!important}
   .pos-search input{grid-column:1/-1!important}
 }
+
+/* Product modal layout fix: aligned edges and isolated scrolling */
+html.product-modal-open{
+  overflow:hidden !important;
+  overscroll-behavior:none;
+}
+body.product-modal-open{
+  position:fixed !important;
+  left:0 !important;
+  right:0 !important;
+  width:100% !important;
+  overflow:hidden !important;
+  overscroll-behavior:none;
+}
+#productModal{
+  box-sizing:border-box;
+  overscroll-behavior:contain;
+}
+#productModal .product-modal-card{
+  box-sizing:border-box;
+  display:flex;
+  flex-direction:column;
+  overflow:hidden !important;
+}
+#productModal .product-modal-head,
+#productModal .product-modal-actions{
+  flex:0 0 auto;
+  box-sizing:border-box;
+}
+#productModal .product-modal-body{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  box-sizing:border-box;
+}
+#productModal .product-form-section,
+#productModal .product-field,
+#productModal .product-barcode-wrap,
+#productModal input{
+  box-sizing:border-box;
+  min-width:0;
+}
+#productModal .product-form-section{
+  padding-bottom:20px;
+}
+#productModal .product-form-grid{
+  align-items:start;
+}
+#productModal .product-field input{
+  border-radius:10px;
+}
+#productModal .product-form-grid > .product-field:nth-last-child(-n+2){
+  padding-bottom:4px;
+}
+#productModal .product-form-section:last-child{
+  margin-bottom:12px;
+}
+#productModal .product-modal-body{
+  padding-bottom:14px;
+}
+@media (max-width:620px){
+  #productModal{
+    align-items:flex-end !important;
+    padding:0 !important;
+  }
+  #productModal .product-modal-card{
+    width:100% !important;
+    max-width:100% !important;
+    height:min(94dvh, 896px) !important;
+    max-height:94dvh !important;
+    margin:0 !important;
+    padding:0 !important;
+    border-radius:24px 24px 0 0 !important;
+    border-left:0 !important;
+    border-right:0 !important;
+    border-bottom:0 !important;
+  }
+  #productModal .product-modal-head{
+    width:100%;
+    padding:16px 16px 14px !important;
+  }
+  #productModal .product-modal-head h3{font-size:20px !important}
+  #productModal .product-modal-head p{font-size:12px !important;line-height:1.45}
+  #productModal .product-modal-body{
+    width:100%;
+    padding:12px 12px 16px !important;
+  }
+  #productModal .product-form-section{
+    width:100%;
+    margin:0 0 12px !important;
+    padding:14px 14px 20px !important;
+    border-radius:16px !important;
+  }
+  #productModal .product-modal-actions{
+    width:100%;
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    padding:12px 12px calc(12px + env(safe-area-inset-bottom)) !important;
+    margin:0 !important;
+    position:static !important;
+    border-radius:0 !important;
+    box-shadow:0 -8px 24px rgba(15,23,42,.08);
+  }
+  #productModal .product-modal-actions .btn{
+    width:100% !important;
+    min-width:0 !important;
+    min-height:48px !important;
+    margin:0 !important;
+  }
+}
 </style></head><body><div class="doc">${docHtml}</div><script>
    window.onload=()=>{setTimeout(()=>window.print(),150)};
  <\/script></body></html>`);
@@ -1595,7 +1937,8 @@ function getCustomerState(){
    payment:posPayment.value,
    received:c.received,
    change:c.change,
-   qr:customerQrData
+   qr:getPromptPayQrUrl(c.net),
+   promptPay:{...promptPaySettings}
  };
 }
 
@@ -1634,7 +1977,7 @@ function renderCustomerState(state){
 
  const img=document.getElementById('customerQrImage');
  const placeholder=document.getElementById('customerQrPlaceholder');
- if(state.qr){
+ if(state.qr&&isTransfer){
    img.src=state.qr;
    img.style.display='block';
    placeholder.style.display='none';
@@ -1642,6 +1985,11 @@ function renderCustomerState(state){
    img.removeAttribute('src');
    img.style.display='none';
    placeholder.style.display='flex';
+ }
+ const pp=state.promptPay||{};
+ const info=document.getElementById('customerPromptPayInfo');
+ if(info){
+   info.innerHTML=isTransfer&&pp.accountName?`<b>${pp.accountName}</b><span>เลขบัญชี ${pp.accountNumber||'-'}</span>`:'';
  }
 }
 
@@ -1685,27 +2033,30 @@ function setupCustomerWindow(){
  return true;
 }
 
-function saveQrImage(event){
- const file=event.target.files&&event.target.files[0];
- if(!file)return;
- if(!file.type.startsWith('image/')){alert('กรุณาเลือกไฟล์รูปภาพ');return}
- const reader=new FileReader();
- reader.onload=()=>{
-   customerQrData=reader.result;
-   localStorage.setItem('stock_demo_qr',customerQrData);
-   renderCustomerDisplay();
-   alert('บันทึก QR Code เรียบร้อย');
- };
- reader.readAsDataURL(file);
- event.target.value='';
+function normalizePromptPayId(value){return String(value||'').replace(/\D/g,'')}
+function getPromptPayQrUrl(amount){
+ const id=normalizePromptPayId(promptPaySettings.promptPayId);
+ const value=Number(amount||0);
+ if(!id||value<=0)return '';
+ return `https://promptpay.io/${id}/${value.toFixed(2)}`;
 }
-
-function removeQrImage(){
- if(!customerQrData)return;
- if(!confirm('ต้องการลบรูป QR Code ใช่หรือไม่?'))return;
- customerQrData='';
- localStorage.removeItem('stock_demo_qr');
+function openPromptPaySettings(){
+ promptPayIdInput.value=promptPaySettings.promptPayId||'';
+ promptPayNameInput.value=promptPaySettings.accountName||'';
+ promptPayAccountInput.value=promptPaySettings.accountNumber||'';
+ promptPayModal.classList.add('show');
+}
+function closePromptPaySettings(){promptPayModal.classList.remove('show')}
+function savePromptPaySettings(){
+ const id=normalizePromptPayId(promptPayIdInput.value);
+ if(id.length<10){alert('กรุณากรอกเบอร์โทรศัพท์หรือเลขพร้อมเพย์ให้ถูกต้อง');return}
+ const name=promptPayNameInput.value.trim();
+ if(!name){alert('กรุณากรอกชื่อบัญชี');return}
+ promptPaySettings={...promptPaySettings,promptPayId:id,accountName:name,accountNumber:promptPayAccountInput.value.trim(),logoUrl:promptPaySettings.logoUrl||DEFAULT_PROMPTPAY_SETTINGS.logoUrl};
+ localStorage.setItem('stock_promptpay_settings',JSON.stringify(promptPaySettings));
+ closePromptPaySettings();
  renderCustomerDisplay();
+ alert('บันทึกการตั้งค่า QR พร้อมเพย์เรียบร้อย');
 }
 
 function toggleCashInput(){cashBox.style.display=posPayment.value==='เงินสด'?'block':'none';renderCart();renderCustomerDisplay()}
@@ -1896,6 +2247,24 @@ function autoCalculateSellingPrice(){
 
 function refreshCategories(){const current=categoryFilter.value;const cats=[...new Set(products.map(p=>p.category))];categoryFilter.innerHTML='<option value="">ทุกกลุ่มสินค้า</option>'+cats.map(c=>`<option>${c}</option>`).join('');categoryFilter.value=current}
 function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart();renderStorefrontProducts();renderCustomerDisplay()}
+let productModalScrollY=0;
+let productModalLocked=false;
+function lockProductModalScroll(){
+ if(productModalLocked)return;
+ productModalScrollY=window.scrollY||document.documentElement.scrollTop||0;
+ document.documentElement.classList.add('product-modal-open');
+ document.body.classList.add('product-modal-open');
+ document.body.style.top=`-${productModalScrollY}px`;
+ productModalLocked=true;
+}
+function unlockProductModalScroll(){
+ if(!productModalLocked)return;
+ document.documentElement.classList.remove('product-modal-open');
+ document.body.classList.remove('product-modal-open');
+ document.body.style.top='';
+ productModalLocked=false;
+ window.scrollTo({top:productModalScrollY,left:0,behavior:'auto'});
+}
 function openProductModal(){
  editingBarcode=null;
  priceManuallyEdited=false;
@@ -1904,13 +2273,16 @@ function openProductModal(){
  fBarcode.value=generateAutoBarcode();
  fName.value='';
  fCategory.value='';
- fUnit.value='ชิ้น';
+ fUnit.value='ชุด';
  fCost.value='';
  fPrice.value='';
  fStock.value='0';
  fMin.value='5';
  productModal.classList.add('show');
- setTimeout(()=>fName.focus(),50);
+ lockProductModalScroll();
+ const modalBody=productModal.querySelector('.product-modal-body');
+ if(modalBody)modalBody.scrollTop=0;
+ setTimeout(()=>fName.focus({preventScroll:true}),50);
 }
 function editProduct(code){
  const p=products.find(x=>x.barcode===code);
@@ -1927,10 +2299,13 @@ function editProduct(code){
  fStock.value=p.stock;
  fMin.value=p.min;
  productModal.classList.add('show');
+ lockProductModalScroll();
+ const modalBody=productModal.querySelector('.product-modal-body');
+ if(modalBody)modalBody.scrollTop=0;
 }
-function closeModal(){closeBarcodeScanner();productModal.classList.remove('show')}
+function closeModal(){closeBarcodeScanner();productModal.classList.remove('show');unlockProductModalScroll()}
 function saveProduct(){
- const p={barcode:fBarcode.value.trim(),name:fName.value.trim(),category:fCategory.value.trim()||'อื่นๆ',unit:fUnit.value.trim()||'ชิ้น',cost:+fCost.value||0,price:+fPrice.value||0,stock:+fStock.value||0,min:+fMin.value||0};
+ const p={barcode:fBarcode.value.trim(),name:fName.value.trim(),category:fCategory.value.trim()||'อื่นๆ',unit:fUnit.value.trim()||'ชุด',cost:+fCost.value||0,price:+fPrice.value||0,stock:+fStock.value||0,min:+fMin.value||0};
  if(!p.barcode||!p.name){alert('กรุณากรอกบาร์โค้ดและชื่อสินค้า');return}
  if(editingBarcode)products=products.map(x=>x.barcode===editingBarcode?p:x);else{if(products.some(x=>x.barcode===p.barcode)){alert('บาร์โค้ดนี้มีอยู่แล้ว');return}products.push(p)}
  closeModal();refreshAll();
