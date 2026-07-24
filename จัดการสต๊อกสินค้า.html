@@ -1282,6 +1282,7 @@ if(products.length===0){
 let editingBarcode=null;
 let priceManuallyEdited=false;
 let cart=JSON.parse(localStorage.getItem('stock_demo_cart')||'[]');
+// หมายเหตุ: localStorage ซิงก์ได้เฉพาะแท็บ/หน้าต่างในเบราว์เซอร์และอุปกรณ์เดียวกัน ไม่สามารถซิงก์ข้ามคอมกับมือถือผ่านอินเทอร์เน็ตได้โดยไม่มีฐานข้อมูลออนไลน์
 let storefrontCategory='ทั้งหมด';
 let storefrontSelection={};
 try{const savedSelection=JSON.parse(localStorage.getItem('stock_storefront_selection')||'{}');if(savedSelection&&typeof savedSelection==='object'&&!Array.isArray(savedSelection))storefrontSelection=savedSelection}catch(e){}
@@ -2556,6 +2557,8 @@ function setupCustomerWindow(){
  if(params.get('customer')!=='1')return false;
  const customerSessionId=params.get('session')||'';
  const openedFromStorefront=params.get('from')==='storefront';
+ // เวลาที่เปิดหน้าจอลูกค้ารอบนี้ ใช้ป้องกันคำสั่งเก่าค้างใน localStorage
+ const customerOpenedAt=Date.now();
 
  document.querySelector('aside').style.display='none';
  document.querySelector('main').style.padding='0';
@@ -2593,8 +2596,14 @@ function setupCustomerWindow(){
 
  function handleCustomerCommand(cmd){
    if(!cmd)return;
-   // รับเฉพาะคำสั่งของลูกค้ารอบปัจจุบัน หาก URL มี session กำกับ
-   if(customerSessionId&&cmd.sessionId&&cmd.sessionId!==customerSessionId)return;
+   // หน้าจอที่เปิดจากหน้าสินค้าทั้งร้านต้องรับเฉพาะคำสั่งของ session เดียวกันเท่านั้น
+   // ป้องกันมือถือเด้งกลับเองจากคำสั่ง CANCELLED/PAID รอบก่อนที่ยังค้างอยู่
+   if(openedFromStorefront){
+     if(!customerSessionId || cmd.sessionId!==customerSessionId)return;
+     if(Number(cmd.at||0) < customerOpenedAt)return;
+   }else if(customerSessionId && cmd.sessionId!==customerSessionId){
+     return;
+   }
    if(cmd.type==='CANCELLED'||cmd.type==='PAID'){
      // ให้หน้าสินค้าทั้งร้านรับคำสั่งและอัปเดตตะกร้าก่อน จากนั้นค่อยปิดจอลูกค้า
      setTimeout(leaveCustomerDisplay,180);
@@ -2610,10 +2619,8 @@ function setupCustomerWindow(){
    }
  });
  if(customerChannel)customerChannel.onmessage=e=>renderCustomerState(e.data);
- try{
-   const latestCommand=JSON.parse(localStorage.getItem('stock_storefront_command')||'null');
-   if(latestCommand)handleCustomerCommand(latestCommand);
- }catch(e){}
+ // ห้ามนำคำสั่งเก่าจาก localStorage มาทำงานทันทีตอนเปิดหน้า
+ // เพราะบนมือถืออาจทำให้หน้าจอลูกค้าเด้งกลับเองจากคำสั่งของรอบก่อน
  return true;
 }
 
