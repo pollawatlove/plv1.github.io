@@ -67,15 +67,395 @@ h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px
   @page{size:A4;margin:12mm}
 }
 
+
+/* ===== Modern UI 2026 ===== */
+:root{
+  --primary:#2563eb;--primary2:#1d4ed8;--primary-soft:#eff6ff;--accent:#7c3aed;
+  --bg:#f6f8fc;--card:#ffffff;--text:#172033;--muted:#697386;
+  --danger:#dc2626;--warn:#d97706;--ok:#16a34a;--line:#e6eaf0;
+  --shadow:0 12px 32px rgba(20,32,64,.08);--shadow-sm:0 4px 14px rgba(20,32,64,.06)
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(circle at top right,rgba(37,99,235,.08),transparent 28%),linear-gradient(180deg,#f8faff 0%,#f4f7fb 100%);color:var(--text)}
+.layout{grid-template-columns:272px minmax(0,1fr)}
+aside{background:linear-gradient(180deg,#172554 0%,#1e3a8a 48%,#312e81 100%);padding:24px 16px;border-right:1px solid rgba(255,255,255,.08);box-shadow:10px 0 35px rgba(30,41,90,.13)}
+.brand{font-size:23px;letter-spacing:.2px;margin:6px 10px 28px;padding:0 2px}
+.brand::before{content:"S";display:inline-grid;place-items:center;width:38px;height:38px;margin-right:10px;border-radius:12px;background:linear-gradient(135deg,#60a5fa,#8b5cf6);box-shadow:0 8px 20px rgba(96,165,250,.35);vertical-align:middle}
+.brand small{margin:9px 0 0 50px;color:#cbd5e1}
+.nav button{color:#dbeafe;padding:14px 15px;border-radius:12px;font-weight:700;transition:.2s ease;border:1px solid transparent}
+.nav button:hover{transform:translateX(3px);background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.08)}
+.nav button.active{background:linear-gradient(135deg,rgba(96,165,250,.28),rgba(139,92,246,.24));border-color:rgba(191,219,254,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 8px 18px rgba(0,0,0,.12)}
+main{padding:28px 30px 40px}
+header{padding:18px 20px;border:1px solid rgba(230,234,240,.9);background:rgba(255,255,255,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-radius:18px;box-shadow:var(--shadow-sm);position:sticky;top:14px;z-index:8;margin-bottom:22px}
+h1{font-size:27px;letter-spacing:-.3px}.sub{font-size:12.5px;color:#7b8497}
+.card,.pos-main,.pos-summary{border:1px solid rgba(226,232,240,.9);border-radius:20px;box-shadow:var(--shadow);background:rgba(255,255,255,.96)}
+.card{padding:20px}
+.kpi{position:relative;overflow:hidden;min-height:138px}
+.kpi::after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-25px;top:-25px;background:linear-gradient(135deg,rgba(37,99,235,.13),rgba(124,58,237,.08))}
+.kpi .label{font-weight:700;color:#64748b}.kpi .value{font-size:30px;letter-spacing:-.6px}.kpi .hint{color:#94a3b8}
+.section-title{font-size:18px;letter-spacing:-.15px;color:#1e293b}
+.btn{border-radius:11px;padding:10px 15px;transition:.18s ease;box-shadow:none}
+.btn:hover{transform:translateY(-1px);filter:brightness(.98)}.btn:active{transform:translateY(0)}
+.btn-primary{background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:0 7px 18px rgba(37,99,235,.22)}
+.btn-light{background:#eef2ff;color:#3730a3}.btn-danger{background:#fee2e2;color:#b91c1c}
+.toolbar{padding:12px;border-radius:14px;background:#f8fafc;border:1px solid #edf0f5}
+input,select{border:1px solid #dbe1ea;border-radius:11px;padding:11px 12px;color:#243047;transition:.18s ease;outline:none}
+input:focus,select:focus{border-color:#60a5fa;box-shadow:0 0 0 4px rgba(96,165,250,.14)}
+.table-wrap{border:1px solid #e5e9f0;border-radius:16px;box-shadow:inset 0 1px 0 #fff}
+table{background:#fff}
+th{background:linear-gradient(180deg,#f8fafc,#eef2f7);color:#334155;font-weight:800;font-size:12.5px;letter-spacing:.1px;padding:13px 12px}
+td{padding:12px;border-bottom:1px solid #eef1f5}tr:last-child td{border-bottom:0}tr:hover td{background:#f8fbff}
+.badge{padding:5px 10px}.ok{background:#dcfce7;color:#166534}.mid{background:#fef3c7;color:#92400e}.low{background:#fee2e2;color:#991b1b}
+.bar{height:11px;background:#edf1f6}.bar span{background:linear-gradient(90deg,#3b82f6,#8b5cf6)}
+.pos-layout{gap:18px}.pos-main,.pos-summary{padding:20px}
+.pos-summary{position:sticky;top:118px;height:max-content}
+.pos-search{padding:12px;background:#f8fafc;border:1px solid #edf0f5;border-radius:14px}
+.quick-products{gap:11px}
+.quick-item{border:1px solid #e4e9f1;background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:14px;padding:13px;min-height:88px;transition:.18s ease}
+.quick-item:hover{transform:translateY(-2px);border-color:#93c5fd;box-shadow:0 10px 22px rgba(37,99,235,.12)}
+.quick-item b{font-size:13.5px;color:#1e293b}.quick-item small{display:block;margin-top:6px}
+.qty-box{border-radius:10px}.qty-box button{background:#eef2ff;color:#3730a3}
+.sum-row{padding:13px 0}
+.sum-row.total{margin-top:6px;padding:17px 14px;border-radius:14px;background:linear-gradient(135deg,#eff6ff,#f5f3ff)}
+.modal{background:rgba(15,23,42,.52);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.modal-card{border-radius:22px;box-shadow:0 24px 65px rgba(15,23,42,.25);border:1px solid rgba(255,255,255,.55);animation:modalPop .2s ease-out}
+@keyframes modalPop{from{opacity:0;transform:translateY(10px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.form-grid{gap:14px}.form-grid>div{padding:11px;border:1px solid #edf0f5;border-radius:13px;background:#fafcff}
+.form-grid label{font-weight:700;color:#596579}.form-grid input{background:#fff}
+.receipt{border-radius:14px;box-shadow:0 10px 28px rgba(15,23,42,.12)}
+.purchase-doc{border-radius:14px;border:1px solid #e5e7eb}
+.empty{padding:34px;color:#94a3b8;background:#fbfcfe}.mobile-menu{background:#eef2ff;color:#3730a3}
+@media(max-width:1100px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:22px}}
+@media(max-width:900px){aside{width:272px}main{padding:16px}header{top:8px;border-radius:15px}.pos-summary{position:static}}
+@media(max-width:600px){header{padding:14px}h1{font-size:21px}.card,.pos-main,.pos-summary{border-radius:16px;padding:15px}.grid{grid-template-columns:1fr}.toolbar>*{width:100%}input[type=search]{min-width:0}.quick-products{grid-template-columns:1fr 1fr}.form-grid>div{padding:8px}}
+
+
+/* ===== Customer Display ===== */
+.customer-display{min-height:calc(100vh - 150px);padding:24px;border-radius:24px;background:linear-gradient(135deg,#0f172a,#1e3a8a 55%,#312e81);color:#fff;box-shadow:0 20px 55px rgba(15,23,42,.22)}
+.customer-head{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:20px}
+.customer-shop{font-size:30px;font-weight:900;letter-spacing:-.5px}
+.customer-sub{color:#cbd5e1;margin-top:5px}
+.customer-bill{padding:12px 16px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.14)}
+.customer-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(340px,.7fr);gap:20px}
+.customer-items-card,.customer-summary-card{background:rgba(255,255,255,.98);color:#172033;border-radius:20px;padding:20px;box-shadow:0 16px 38px rgba(0,0,0,.17)}
+.customer-title{font-size:20px;font-weight:900;margin-bottom:15px}
+.customer-table table{min-width:650px}
+.customer-table th{font-size:14px}
+.customer-table td{font-size:15px}
+.customer-total-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px dashed #dbe1ea;font-size:17px}
+.customer-total-row b{font-size:20px}
+.customer-net{margin:8px 0;padding:18px;border-radius:16px;border:0;background:linear-gradient(135deg,#dbeafe,#ede9fe);color:#1e3a8a}
+.customer-net span,.customer-net b{font-size:25px;font-weight:900}
+.customer-change{margin-top:8px;padding:18px;border:0;border-radius:16px;background:#dcfce7;color:#166534}
+.customer-change span,.customer-change b{font-size:23px;font-weight:900}
+.customer-qr-area{text-align:center;margin-top:16px;padding:16px;border-radius:18px;background:linear-gradient(180deg,#eff6ff,#f5f3ff);border:2px solid #93c5fd}
+.qr-highlight{font-size:21px;font-weight:900;color:#1d4ed8;margin-bottom:12px;animation:qrPulse 1.4s infinite}
+@keyframes qrPulse{0%,100%{opacity:1}50%{opacity:.62}}
+.qr-frame{width:250px;height:250px;margin:auto;border-radius:18px;background:#fff;border:8px solid #fff;box-shadow:0 12px 28px rgba(37,99,235,.2);display:grid;place-items:center;overflow:hidden}
+.qr-frame img{width:100%;height:100%;object-fit:contain;display:none}
+.qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:#64748b;padding:20px}
+.qr-placeholder span{font-size:12px}.qr-icon{font-size:72px;color:#94a3b8;line-height:1}
+.qr-amount{font-size:18px;margin-top:14px;color:#334155}.qr-amount b{font-size:28px;color:#1d4ed8}
+.customer-actions{display:flex;justify-content:center;gap:9px;margin-top:14px}
+@media(max-width:1050px){.customer-grid{grid-template-columns:1fr}.customer-summary-card{max-width:none}.customer-display{padding:18px}}
+@media(max-width:600px){.customer-head{align-items:flex-start;flex-direction:column}.customer-shop{font-size:24px}.customer-display{padding:12px;border-radius:17px}.customer-items-card,.customer-summary-card{padding:14px;border-radius:16px}.qr-frame{width:220px;height:220px}}
+
+
+body.customer-only .customer-display{min-height:100vh;border-radius:0}
+
+
+/* ===== Responsive Layout: Mobile / Tablet / Desktop ===== */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+*{
+  box-sizing:border-box;
+}
+body{
+  overflow-x:hidden;
+}
+img,svg,video,canvas{
+  max-width:100%;
+  height:auto;
+}
+input,select,textarea,button{
+  max-width:100%;
+  font-size:16px;
+}
+.table-wrap{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+table{
+  width:100%;
+}
+.page{
+  min-width:0;
+}
+.card,.panel,.modal-content{
+  max-width:100%;
+}
+
+/* Tablet */
+@media (max-width:1100px){
+  .layout{
+    grid-template-columns:220px minmax(0,1fr);
+  }
+  main{
+    min-width:0;
+  }
+  .grid,
+  .dashboard-grid,
+  .pos-grid,
+  .customer-grid{
+    grid-template-columns:1fr;
+  }
+  .customer-summary-card{
+    width:100%;
+  }
+}
+
+/* Mobile */
+@media (max-width:768px){
+  body{
+    font-size:14px;
+  }
+  .layout{
+    display:block !important;
+    min-height:100vh;
+  }
+  aside{
+    position:sticky;
+    top:0;
+    z-index:1000;
+    width:100% !important;
+    min-height:auto !important;
+    height:auto !important;
+    padding:10px !important;
+    overflow:visible !important;
+  }
+  aside .brand{
+    margin-bottom:8px;
+  }
+  aside nav,
+  aside .nav,
+  aside .menu{
+    display:flex !important;
+    gap:7px;
+    overflow-x:auto;
+    padding-bottom:4px;
+    scrollbar-width:thin;
+    -webkit-overflow-scrolling:touch;
+  }
+  aside button,
+  aside nav button,
+  aside .nav button{
+    flex:0 0 auto;
+    width:auto !important;
+    min-width:max-content;
+    white-space:nowrap;
+    padding:10px 12px !important;
+    margin:0 !important;
+    border-radius:12px !important;
+  }
+  main{
+    width:100%;
+    margin:0 !important;
+    padding:10px !important;
+  }
+  header{
+    position:relative !important;
+    top:auto !important;
+    padding:12px !important;
+    border-radius:14px !important;
+  }
+  header h1,
+  .page-title{
+    font-size:21px !important;
+  }
+  .page{
+    padding:0 !important;
+  }
+  .card,
+  .panel,
+  .summary-card,
+  .customer-items-card,
+  .customer-summary-card{
+    padding:12px !important;
+    border-radius:15px !important;
+  }
+  .grid,
+  .dashboard-grid,
+  .stats-grid,
+  .form-grid,
+  .pos-grid,
+  .customer-grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:10px !important;
+  }
+  .row,
+  .toolbar,
+  .actions,
+  .form-actions,
+  .customer-actions{
+    flex-wrap:wrap !important;
+    gap:8px !important;
+  }
+  .row > *,
+  .toolbar > *,
+  .form-actions > *{
+    min-width:0;
+  }
+  input,select,textarea{
+    width:100% !important;
+    min-height:44px;
+  }
+  button,.btn{
+    min-height:42px;
+    touch-action:manipulation;
+  }
+  .modal{
+    padding:8px !important;
+  }
+  .modal-content{
+    width:100% !important;
+    max-height:94vh !important;
+    overflow:auto !important;
+    margin:3vh auto !important;
+    padding:14px !important;
+    border-radius:16px !important;
+  }
+
+  /* Tables remain readable on small screens */
+  .table-wrap{
+    margin:0;
+    border-radius:12px;
+  }
+  table{
+    min-width:720px;
+  }
+  th,td{
+    padding:10px 8px !important;
+    white-space:nowrap;
+  }
+
+  /* POS */
+  .pos-products,
+  .pos-cart,
+  .pos-summary{
+    width:100% !important;
+    min-width:0 !important;
+  }
+  .pos-summary{
+    position:static !important;
+  }
+
+  /* Customer display */
+  .customer-display{
+    min-height:auto !important;
+    padding:10px !important;
+    border-radius:15px !important;
+  }
+  .customer-head{
+    flex-direction:column !important;
+    align-items:flex-start !important;
+  }
+  .customer-shop{
+    font-size:23px !important;
+  }
+  .customer-table table{
+    min-width:620px;
+  }
+  .customer-net span,
+  .customer-net b{
+    font-size:21px !important;
+  }
+  .customer-change span,
+  .customer-change b{
+    font-size:20px !important;
+  }
+  .qr-frame{
+    width:min(220px,75vw) !important;
+    height:min(220px,75vw) !important;
+  }
+}
+
+/* Small phone */
+@media (max-width:420px){
+  main{
+    padding:7px !important;
+  }
+  aside{
+    padding:8px !important;
+  }
+  aside button,
+  aside nav button{
+    padding:9px 10px !important;
+    font-size:13px !important;
+  }
+  .brand-title{
+    font-size:17px !important;
+  }
+  .brand-subtitle{
+    font-size:11px !important;
+  }
+  header h1,
+  .page-title{
+    font-size:19px !important;
+  }
+  .card,
+  .panel{
+    padding:10px !important;
+  }
+  .btn,button{
+    font-size:13px;
+  }
+}
+
+/* Full-screen customer window */
+@media (max-width:768px){
+  body.customer-only .customer-display{
+    min-height:100vh !important;
+    border-radius:0 !important;
+  }
+}
+
+
+/* ===== Monthly Sales Summary ===== */
+.monthly-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.monthly-sub{color:var(--muted);font-size:13px}
+.monthly-bars{display:grid;gap:9px;margin-top:18px}
+.monthly-row{display:grid;grid-template-columns:105px minmax(0,1fr) 125px;gap:12px;align-items:center}
+.monthly-label{font-weight:700;white-space:nowrap}
+.monthly-track{height:16px;border-radius:999px;background:#e8edf5;overflow:hidden}
+.monthly-fill{height:100%;min-width:0;border-radius:999px;background:linear-gradient(90deg,#2563eb,#7c3aed);transition:width .35s ease}
+.monthly-amount{text-align:right;font-weight:800}
+.stock-product-list{max-height:390px;overflow:auto;padding-right:4px}
+.stock-product-row{display:grid;grid-template-columns:minmax(120px,1fr) 85px 120px;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.stock-product-row:last-child{border-bottom:0}
+.stock-product-name{min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.stock-product-qty{text-align:right;color:var(--muted)}
+.stock-product-value{text-align:right;font-weight:800}
+@media(max-width:768px){
+ .monthly-head{align-items:flex-start;flex-direction:column}
+ .monthly-head .btn{width:100%}
+ .monthly-row{grid-template-columns:82px minmax(90px,1fr) 100px;gap:7px;font-size:12px}
+ .stock-product-row{grid-template-columns:minmax(100px,1fr) 55px 95px;font-size:13px}
+}
+
 </style>
 </head>
 <body>
 <div class="layout">
 <aside id="sidebar">
-  <div class="brand">Stock Manager<small>ตัวอย่างจากไฟล์ Excel ที่ส่งมา</small></div>
+  <div class="brand">Stock Manager<small>ระบบจัดการสินค้าและหน้าร้าน</small></div>
   <div class="nav">
     <button class="active" data-page="dashboard">▦ Dashboard</button>
     <button data-page="pos">🛒 หน้าร้าน / คิดเงิน</button>
+    <button data-page="customer">🖥️ จอลูกค้า</button>
     <button data-page="products">▣ สินค้าและสต๊อก</button>
     <button data-page="sales">฿ ประวัติการขาย</button>
     <button data-page="lowstock">⚠ รายการจัดซื้อสินค้า</button>
@@ -84,7 +464,7 @@ h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px
 <main>
 <header>
   <div><button class="btn btn-light mobile-menu" onclick="toggleMenu()">☰</button>
-  <h1 id="pageTitle">Dashboard</h1><div class="sub">ข้อมูลตัวอย่างนำเข้าจาก “จัดการสต๊อกสินค้า v1.0.0.xlsx”</div></div>
+  <h1 id="pageTitle">Dashboard</h1><div class="sub">จัดการยอดขาย สินค้า สต๊อก และรายการจัดซื้อในที่เดียว</div></div>
   <button class="btn btn-primary" onclick="openProductModal()">+ เพิ่มสินค้า</button>
 </header>
 
@@ -95,11 +475,41 @@ h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px
     <div class="card kpi"><div class="label">มูลค่าสต๊อก</div><div class="value" id="kpiStockValue">0</div><div class="hint">จำนวนคงเหลือ × ต้นทุน</div></div>
     <div class="card kpi"><div class="label">รายการที่ต้องจัดซื้อ</div><div class="value" id="kpiLow">0</div><div class="hint">อ้างอิงจากจำนวนขั้นต่ำในสินค้าและสต๊อก</div></div>
   </div>
+
   <div class="two">
-    <div class="card"><div class="section-title">สินค้ามูลค่าสต๊อกสูงสุด</div><div id="topStock"></div></div>
-    <div class="card"><div class="section-title">สรุปตามกลุ่มสินค้า</div><div id="categorySummary"></div></div>
+    <div class="card">
+      <div class="section-title">สินค้าขายดีที่สุด</div>
+      <div id="topStock"></div>
+    </div>
+
+    <div class="card">
+      <div class="monthly-head">
+        <div>
+          <div class="section-title" style="margin-bottom:3px">สรุปยอดขายรายเดือนย้อนหลัง 12 เดือน</div>
+          <div class="monthly-sub">แสดงยอดขายรวมของแต่ละเดือน</div>
+        </div>
+        <button class="btn btn-light" id="toggleMonthlyBtn" onclick="toggleMonthlySummary()">เปิดดูรายเดือน</button>
+      </div>
+      <div id="monthlySummaryArea" style="display:none">
+        <div id="monthlySalesBars" class="monthly-bars"></div>
+        <div class="table-wrap" style="margin-top:14px">
+          <table class="monthly-table">
+            <thead><tr><th>เดือน</th><th>จำนวนรายการขาย</th><th>ยอดขายรวม</th></tr></thead>
+            <tbody id="monthlySalesRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="card" style="margin-top:14px"><div class="section-title">รายการขายล่าสุด</div><div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
+<div class="card" style="margin-top:14px">
+    <div class="section-title">รายการขายล่าสุด</div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead>
+        <tbody id="recentSales"></tbody>
+      </table>
+    </div>
+  </div>
 </section>
 
 
@@ -128,7 +538,18 @@ h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px
       <div class="sum-row"><span>รวม</span><b id="posSubtotal">฿0</b></div>
       <div style="margin-top:12px"><label>ส่วนลด (บาท)</label><input id="posDiscount" type="number" min="0" value="0" oninput="renderCart()"></div>
       <div class="sum-row total"><span>ยอดสุทธิ</span><span id="posNet">฿0</span></div>
-      <div style="margin-top:13px"><label>วิธีชำระเงิน</label>
+      <div style="margin-top:13px">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 14px">
+<label class="btn btn-light" style="cursor:pointer">
+📷 ตั้งค่า QR
+<input id="qrUpload" type="file" accept="image/*" style="display:none" onchange="saveQrImage(event)">
+</label>
+<button class="btn btn-danger" onclick="removeQrImage()">🗑 ลบ QR</button>
+
+<button class="btn btn-primary" onclick="openCustomerDisplay()">🖥️ เปิดจอลูกค้า</button>
+
+</div>
+<label>วิธีชำระเงิน</label>
         <select id="posPayment" onchange="toggleCashInput()"><option>เงินสด</option><option>โอน</option><option>บัตร</option></select>
       </div>
       <div id="cashBox" style="margin-top:12px"><label>รับเงิน (บาท)</label><input id="posReceived" type="number" min="0" value="0" oninput="renderCart()"></div>
@@ -136,6 +557,59 @@ h1{margin:0;font-size:26px}.sub{color:var(--muted);margin-top:5px;font-size:13px
       <div style="margin-top:12px"><label>ชื่อลูกค้า (ไม่บังคับ)</label><input id="posCustomer" placeholder="ลูกค้าทั่วไป"></div>
       <button class="btn btn-primary" style="width:100%;margin-top:16px;padding:14px;font-size:17px" onclick="checkout()">คิดเงินและตัดสต๊อก</button>
       <button class="btn btn-light" style="width:100%;margin-top:9px" onclick="openReceipt()">ดูตัวอย่างใบเสร็จ</button>
+    </div>
+  </div>
+</section>
+
+
+<section id="customer" class="page">
+  <div class="customer-display">
+    <div class="customer-head">
+      <div>
+        <div class="customer-shop">หน้าจอสำหรับลูกค้า</div>
+        <div class="customer-sub">ตรวจสอบรายการและยอดชำระก่อนชำระเงิน</div>
+      </div>
+      <div class="customer-bill">เลขที่บิล <b id="customerInvoice">-</b></div>
+    </div>
+
+    <div class="customer-grid">
+      <div class="customer-items-card">
+        <div class="customer-title">รายการสินค้า</div>
+        <div class="table-wrap customer-table">
+          <table>
+            <thead>
+              <tr><th>ลำดับ</th><th>รายการ</th><th>จำนวน</th><th>ราคาต่อหน่วย</th><th>รวม</th></tr>
+            </thead>
+            <tbody id="customerRows"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="customer-summary-card">
+        <div class="customer-title">สรุปการชำระเงิน</div>
+        <div class="customer-total-row"><span>ยอดรวม</span><b id="customerSubtotal">฿0</b></div>
+        <div class="customer-total-row"><span>ส่วนลด</span><b id="customerDiscount">฿0</b></div>
+        <div class="customer-total-row customer-net"><span>ยอดสุทธิ</span><b id="customerNet">฿0</b></div>
+        <div class="customer-total-row"><span>วิธีชำระเงิน</span><b id="customerPayment">เงินสด</b></div>
+        <div id="customerCashArea">
+          <div class="customer-total-row"><span>รับเงิน</span><b id="customerReceived">฿0</b></div>
+          <div class="customer-total-row customer-change"><span>เงินทอน</span><b id="customerChange">฿0</b></div>
+        </div>
+
+        <div id="customerQrArea" class="customer-qr-area" style="display:none">
+          <div class="qr-highlight">สแกน QR Code เพื่อชำระเงิน</div>
+          <div class="qr-frame">
+            <img id="customerQrImage" alt="QR Code ร้านค้า">
+            <div id="customerQrPlaceholder" class="qr-placeholder">
+              <div class="qr-icon">▦</div>
+              <b>ยังไม่ได้ตั้งค่า QR Code</b>
+              <span>กด “ตั้งค่า QR” เพื่อเลือกรูปจากเครื่อง</span>
+            </div>
+          </div>
+          <div class="qr-amount">ยอดชำระ <b id="customerQrAmount">฿0</b></div>
+        </div>
+
+        </div>
     </div>
   </div>
 </section>
@@ -250,6 +724,10 @@ let editingBarcode=null;
 let priceManuallyEdited=false;
 let cart=JSON.parse(localStorage.getItem('stock_demo_cart')||'[]');
 let posInvoice=createInvoiceNo();
+let customerQrData=localStorage.getItem('stock_demo_qr')||'';
+let customerWindow=null;
+let customerChannel=null;
+try{customerChannel=new BroadcastChannel('stock_customer_display')}catch(e){}
 function createInvoiceNo(){
   const d=new Date(), y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0');
   const n=String((Number(localStorage.getItem('stock_demo_bill_seq')||0)+1)).padStart(4,'0');
@@ -264,18 +742,110 @@ function showPage(id,title){document.querySelectorAll('.page').forEach(p=>p.clas
 function toggleMenu(){document.getElementById('sidebar').classList.toggle('show')}
 function statusOf(p){if(p.stock<=p.min)return ['ควรเติมทันที','low']; if(p.stock<=p.min*2)return ['ใกล้หมด','mid']; return ['ปกติ','ok'];}
 function renderDashboard(){
- const totalSales=SALES.reduce((s,x)=>s+(Number(x.total)||0),0), profit=SALES.reduce((s,x)=>s+(Number(x.profit)||0),0), stockValue=products.reduce((s,p)=>s+p.cost*p.stock,0), lows=products.filter(p=>p.stock<=p.min).length;
- kpiSales.textContent=money(totalSales);kpiProfit.textContent=money(profit);kpiStockValue.textContent=money(stockValue);kpiLow.textContent=num(lows)+' รายการ';
- const top=[...products].sort((a,b)=>b.cost*b.stock-a.cost*a.stock).slice(0,7),max=Math.max(...top.map(p=>p.cost*p.stock),1);
- topStock.innerHTML=top.map(p=>`<div class="bar-row"><span>${p.name}</span><div class="bar"><span style="width:${(p.cost*p.stock/max)*100}%"></span></div><b>${money(p.cost*p.stock)}</b></div>`).join('');
- const cats={};products.forEach(p=>{cats[p.category]??={count:0,value:0};cats[p.category].count++;cats[p.category].value+=p.cost*p.stock});
- categorySummary.innerHTML=Object.entries(cats).map(([k,v])=>`<div style="padding:12px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between"><span><b>${k}</b><small style="display:block;color:var(--muted)">${v.count} รายการ</small></span><b>${money(v.value)}</b></div>`).join('');
+ const totalSales=SALES.reduce((s,x)=>s+(Number(x.total)||0),0),
+       profit=SALES.reduce((s,x)=>s+(Number(x.profit)||0),0),
+       stockValue=products.reduce((s,p)=>s+(Number(p.cost)||0)*(Number(p.stock)||0),0),
+       lows=products.filter(p=>p.stock<=p.min).length;
+
+ kpiSales.textContent=money(totalSales);
+ kpiProfit.textContent=money(profit);
+ kpiStockValue.textContent=money(stockValue);
+ kpiLow.textContent=num(lows)+' รายการ';
+
+ // Best-selling products by quantity sold.
+ const sold={};
+ SALES.forEach(s=>{
+   const name=s.product||'ไม่ระบุสินค้า';
+   sold[name]??={qty:0,total:0};
+   sold[name].qty+=Number(s.qty)||0;
+   sold[name].total+=Number(s.total)||0;
+ });
+ const best=Object.entries(sold)
+   .map(([name,v])=>({name,...v}))
+   .sort((a,b)=>b.qty-a.qty||b.total-a.total)
+   .slice(0,7);
+ const bestMax=Math.max(...best.map(x=>x.qty),1);
+ topStock.innerHTML=best.length?best.map(x=>`
+   <div class="bar-row">
+     <span title="${x.name}">${x.name}</span>
+     <div class="bar"><span style="width:${(x.qty/bestMax)*100}%"></span></div>
+     <b>${num(x.qty)} ชิ้น</b>
+   </div>`).join(''):'<div class="empty">ยังไม่มีข้อมูลการขาย</div>';
+
+ // Stock value separated by each product.
+ const stockItems=[...products]
+   .map(p=>({...p,stockValue:(Number(p.cost)||0)*(Number(p.stock)||0)}))
+   .sort((a,b)=>b.stockValue-a.stockValue);
+ categorySummary.innerHTML=stockItems.length?`
+   <div class="stock-product-list">
+     ${stockItems.map(p=>`
+       <div class="stock-product-row">
+         <div class="stock-product-name" title="${p.name}">${p.name}</div>
+         <div class="stock-product-qty">${num(p.stock)} ${p.unit||''}</div>
+         <div class="stock-product-value">${money(p.stockValue)}</div>
+       </div>`).join('')}
+   </div>`:'<div class="empty">ยังไม่มีข้อมูลสินค้า</div>';
+
+ renderMonthlySales();
  recentSales.innerHTML=[...SALES].reverse().slice(0,6).map(s=>`<tr><td>${s.invoice}</td><td>${s.date}</td><td>${s.product}</td><td>${s.qty}</td><td>${s.payment}</td><td>${money(s.total)}</td></tr>`).join('');
 }
+
+function getLast12Months(){
+ const now=new Date();
+ const months=[];
+ for(let i=11;i>=0;i--){
+   const d=new Date(now.getFullYear(),now.getMonth()-i,1);
+   months.push({
+     key:`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`,
+     label:d.toLocaleDateString('th-TH',{month:'short',year:'2-digit'})
+   });
+ }
+ return months;
+}
+
+function renderMonthlySales(){
+ const months=getLast12Months();
+ const summary={};
+ months.forEach(m=>summary[m.key]={label:m.label,count:0,total:0});
+
+ SALES.forEach(s=>{
+   const key=String(s.date||'').slice(0,7);
+   if(summary[key]){
+     summary[key].count++;
+     summary[key].total+=Number(s.total)||0;
+   }
+ });
+
+ const data=months.map(m=>({...m,...summary[m.key]}));
+ const max=Math.max(...data.map(x=>x.total),1);
+
+ monthlySalesBars.innerHTML=data.map(x=>`
+   <div class="monthly-row">
+     <div class="monthly-label">${x.label}</div>
+     <div class="monthly-track"><div class="monthly-fill" style="width:${x.total?Math.max((x.total/max)*100,2):0}%"></div></div>
+     <div class="monthly-amount">${money(x.total)}</div>
+   </div>`).join('');
+
+ monthlySalesRows.innerHTML=data.map(x=>`
+   <tr>
+     <td>${x.label}</td>
+     <td>${num(x.count)}</td>
+     <td><b>${money(x.total)}</b></td>
+   </tr>`).join('');
+}
+
+function toggleMonthlySummary(){
+ const area=document.getElementById('monthlySummaryArea');
+ const btn=document.getElementById('toggleMonthlyBtn');
+ const open=area.style.display==='none'||!area.style.display;
+ area.style.display=open?'block':'none';
+ btn.textContent=open?'ซ่อนรายเดือน':'เปิดดูรายเดือน';
+}
+
 function renderProducts(){
  const q=(searchProduct.value||'').toLowerCase(),cat=categoryFilter.value;
  const list=products.filter(p=>(p.name.toLowerCase().includes(q)||p.barcode.includes(q))&&(!cat||p.category===cat));
- productRows.innerHTML=list.length?list.map(p=>{const st=statusOf(p);return `<tr><td>${p.barcode}</td><td><b>${p.name}</b></td><td>${p.category}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><b>${money((Number(p.price)||0)-(Number(p.cost)||0))}</b></td><td>${p.unit}</td><td>${num(p.stock)} ตัว</td><td>${p.min}</td><td><span class="badge ${st[1]}">${st[0]}</span></td><td><button class="btn btn-light" onclick="editProduct('${p.barcode}')">แก้ไข</button> <button class="btn btn-danger" onclick="deleteProduct('${p.barcode}')">ลบ</button></td></tr>`}).join(''):`<tr><td colspan="10" class="empty">ไม่พบสินค้า</td></tr>`;
+ productRows.innerHTML=list.length?list.map(p=>{const st=statusOf(p);return `<tr><td>${p.barcode}</td><td><b>${p.name}</b></td><td>${p.category}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><b>${money((Number(p.price)||0)-(Number(p.cost)||0))}</b></td><td>${p.unit}</td><td>${num(p.stock)}</td><td>${p.min}</td><td><span class="badge ${st[1]}">${st[0]}</span></td><td><button class="btn btn-light" onclick="editProduct('${p.barcode}')">แก้ไข</button> <button class="btn btn-danger" onclick="deleteProduct('${p.barcode}')">ลบ</button></td></tr>`}).join(''):`<tr><td colspan="10" class="empty">ไม่พบสินค้า</td></tr>`;
 }
 
 function clearSalesHistory(){
@@ -486,8 +1056,134 @@ function renderCart(){
  cartRows.innerHTML=cart.length?cart.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.name}</b></td><td>${money(x.price)}</td><td><div class="qty-box"><button onclick="changeQty('${x.barcode}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${x.barcode}',1)">+</button></div></td><td>${x.unit}</td><td><b>${money(x.price*x.qty)}</b></td><td><button class="btn btn-danger" onclick="removeCart('${x.barcode}')">ลบ</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีสินค้าในรายการ</td></tr>`;
  quickProducts.innerHTML=products.slice(0,12).map(p=>`<button class="quick-item" onclick="addToCart('${p.barcode}')"><b>${p.name}</b><small>${money(p.price)} · เหลือ ${p.stock} ${p.unit}</small></button>`).join('');
  const c=calcPos();document.getElementById('posInvoice').textContent=posInvoice;posSubtotal.textContent=money(c.subtotal);posNet.textContent=money(c.net);posChange.textContent=money(c.change);
+ renderCustomerDisplay();
 }
-function toggleCashInput(){cashBox.style.display=posPayment.value==='เงินสด'?'block':'none';renderCart()}
+
+function getCustomerState(){
+ const c=calcPos();
+ return {
+   invoice:posInvoice,
+   items:cart.map(x=>({name:x.name,qty:x.qty,unit:x.unit,price:x.price})),
+   subtotal:c.subtotal,
+   discount:c.discount,
+   net:c.net,
+   payment:posPayment.value,
+   received:c.received,
+   change:c.change,
+   qr:customerQrData
+ };
+}
+
+function saveCustomerState(){
+ const state=getCustomerState();
+ try{localStorage.setItem('stock_customer_state',JSON.stringify(state))}catch(e){}
+ try{if(customerChannel)customerChannel.postMessage(state)}catch(e){}
+ return state;
+}
+
+function renderCustomerState(state){
+ const rows=document.getElementById('customerRows');
+ if(!rows||!state)return;
+
+ rows.innerHTML=state.items&&state.items.length?state.items.map((x,i)=>`
+   <tr>
+     <td>${i+1}</td>
+     <td><b>${x.name}</b></td>
+     <td>${x.qty} ${x.unit}</td>
+     <td>${money(x.price)}</td>
+     <td><b>${money(x.price*x.qty)}</b></td>
+   </tr>`).join(''):`<tr><td colspan="5" class="empty">กำลังรอรายการสินค้า</td></tr>`;
+
+ customerInvoice.textContent=state.invoice||'-';
+ customerSubtotal.textContent=money(state.subtotal||0);
+ customerDiscount.textContent=money(state.discount||0);
+ customerNet.textContent=money(state.net||0);
+ customerPayment.textContent=state.payment||'เงินสด';
+ customerReceived.textContent=money(state.received||0);
+ customerChange.textContent=money(state.change||0);
+ customerQrAmount.textContent=money(state.net||0);
+
+ const isTransfer=state.payment==='โอน';
+ customerQrArea.style.display=isTransfer?'block':'none';
+ customerCashArea.style.display=isTransfer?'none':'block';
+
+ const img=document.getElementById('customerQrImage');
+ const placeholder=document.getElementById('customerQrPlaceholder');
+ if(state.qr){
+   img.src=state.qr;
+   img.style.display='block';
+   placeholder.style.display='none';
+ }else{
+   img.removeAttribute('src');
+   img.style.display='none';
+   placeholder.style.display='flex';
+ }
+}
+
+function renderCustomerDisplay(){
+ renderCustomerState(saveCustomerState());
+}
+
+function openCustomerDisplay(){
+ const url=location.href.split('?')[0].split('#')[0]+'?customer=1';
+ customerWindow=window.open(url,'stock_customer_display','width=1280,height=800');
+ if(!customerWindow){
+   alert('เบราว์เซอร์ปิดกั้นหน้าต่างใหม่ กรุณาอนุญาต Pop-up สำหรับไฟล์นี้');
+   return;
+ }
+ saveCustomerState();
+}
+
+function setupCustomerWindow(){
+ const params=new URLSearchParams(location.search);
+ if(params.get('customer')!=='1')return false;
+
+ document.querySelector('aside').style.display='none';
+ document.querySelector('main').style.padding='0';
+ document.querySelector('main').style.margin='0';
+ document.querySelector('header').style.display='none';
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById('customer').classList.add('active');
+ document.body.style.background='#0f172a';
+ document.querySelector('.layout').style.display='block';
+
+ let state=null;
+ try{state=JSON.parse(localStorage.getItem('stock_customer_state')||'null')}catch(e){}
+ if(state)renderCustomerState(state);
+
+ window.addEventListener('storage',e=>{
+   if(e.key==='stock_customer_state'&&e.newValue){
+     try{renderCustomerState(JSON.parse(e.newValue))}catch(err){}
+   }
+ });
+ if(customerChannel)customerChannel.onmessage=e=>renderCustomerState(e.data);
+ return true;
+}
+
+function saveQrImage(event){
+ const file=event.target.files&&event.target.files[0];
+ if(!file)return;
+ if(!file.type.startsWith('image/')){alert('กรุณาเลือกไฟล์รูปภาพ');return}
+ const reader=new FileReader();
+ reader.onload=()=>{
+   customerQrData=reader.result;
+   localStorage.setItem('stock_demo_qr',customerQrData);
+   renderCustomerDisplay();
+   alert('บันทึก QR Code เรียบร้อย');
+ };
+ reader.readAsDataURL(file);
+ event.target.value='';
+}
+
+function removeQrImage(){
+ if(!customerQrData)return;
+ if(!confirm('ต้องการลบรูป QR Code ใช่หรือไม่?'))return;
+ customerQrData='';
+ localStorage.removeItem('stock_demo_qr');
+ renderCustomerDisplay();
+}
+
+function toggleCashInput(){cashBox.style.display=posPayment.value==='เงินสด'?'block':'none';renderCart();renderCustomerDisplay()}
 function receiptHtml(){
  const c=calcPos(), customer=(posCustomer.value||'ลูกค้าทั่วไป').trim();
  const rows=cart.map(x=>`<div style="display:flex;justify-content:space-between"><span>${x.name} x${x.qty}</span><span>${money(x.price*x.qty)}</span></div>`).join('');
@@ -587,7 +1283,7 @@ function autoCalculateSellingPrice(){
 }
 
 function refreshCategories(){const current=categoryFilter.value;const cats=[...new Set(products.map(p=>p.category))];categoryFilter.innerHTML='<option value="">ทุกกลุ่มสินค้า</option>'+cats.map(c=>`<option>${c}</option>`).join('');categoryFilter.value=current}
-function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart()}
+function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart();renderCustomerDisplay()}
 function openProductModal(){
  editingBarcode=null;
  priceManuallyEdited=false;
@@ -641,6 +1337,7 @@ document.getElementById('fPrice').addEventListener('dblclick',()=>{
  }
 });
 
-refreshAll();
+const isCustomerWindow=setupCustomerWindow();
+if(!isCustomerWindow)refreshAll();
 </script>
 </body></html>
