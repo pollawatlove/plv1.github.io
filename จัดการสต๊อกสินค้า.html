@@ -778,8 +778,97 @@ html.storefront-customer-root #storefront .storefront-toolbar{position:sticky!im
  html.storefront-customer-root #storefront .storefront-toolbar{padding:10px!important;border-radius:15px!important}
 }
 
+
+/* ===== บังคับรูปแบบ: ชื่อสินค้า จำนวน × ราคา = รวม อยู่บรรทัดเดียวจริง ===== */
+.storefront-summary-list{overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+.storefront-summary-row{display:block!important;width:100%!important;padding:13px 2px!important;overflow:visible!important}
+.storefront-summary-one-line{
+  display:flex!important;align-items:baseline!important;gap:6px!important;
+  width:max-content!important;min-width:100%!important;white-space:nowrap!important;
+  font-size:14px!important;line-height:1.5!important;
+}
+.summary-product-name{color:#1c1917!important;font-weight:800!important;margin-right:auto!important;padding-right:16px!important}
+.storefront-summary-one-line .summary-qty{color:#1d4ed8!important;font-weight:900!important}
+.storefront-summary-one-line .summary-price{color:#b45309!important;font-weight:900!important}
+.storefront-summary-one-line .summary-line-total{color:#166534!important;font-weight:900!important}
+.storefront-summary-one-line .summary-times,.storefront-summary-one-line .summary-equals{color:#78716c!important;font-weight:800!important}
+@media(max-width:560px){
+ .storefront-summary-one-line{font-size:13px!important;gap:4px!important}
+ .summary-product-name{padding-right:10px!important}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
+
+<style id="final-summary-style">
+/* ===== สรุปรายการ: ชื่อสินค้า จำนวน × ราคา = รวม อยู่บรรทัดเดียว ===== */
+#storefrontSummaryModal .storefront-summary-row{
+  display:block!important;
+  padding:14px 4px!important;
+  margin:0!important;
+  border:0!important;
+  border-bottom:1px solid #e7e5e4!important;
+  border-radius:0!important;
+  background:#fff!important;
+  overflow-x:auto!important;
+}
+#storefrontSummaryModal .storefront-summary-row:last-child{border-bottom:0!important}
+#storefrontSummaryModal .storefront-summary-one-line{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  width:max-content!important;
+  min-width:100%!important;
+  white-space:nowrap!important;
+  font-size:15px!important;
+}
+#storefrontSummaryModal .summary-product-name{
+  color:#1c1917!important;
+  font-weight:800!important;
+  margin-right:auto!important;
+  padding-right:18px!important;
+}
+#storefrontSummaryModal .summary-qty{color:#1d4ed8!important;background:transparent!important;padding:0!important}
+#storefrontSummaryModal .summary-times,#storefrontSummaryModal .summary-equals{color:#78716c!important}
+#storefrontSummaryModal .summary-price{color:#b45309!important;background:transparent!important;padding:0!important}
+#storefrontSummaryModal .summary-line-total{color:#166534!important;background:transparent!important;padding:0!important;font-weight:900!important}
+
+/* จำนวนสินค้ารวม: สีครีมมินิมอล */
+#storefrontSummaryModal .summary-count-card{
+  background:#fff8e7!important;
+  border:1px solid #eadfca!important;
+  border-radius:15px!important;
+  padding:15px 17px!important;
+  box-shadow:0 4px 12px rgba(107,88,64,.06)!important;
+}
+#storefrontSummaryModal .summary-count-card span,
+#storefrontSummaryModal .summary-count-card b{color:#6b5840!important}
+#storefrontSummaryModal .summary-count-card b{font-size:22px!important}
+
+/* ยอดรวมทั้งหมด: สีเขียวเข้ม */
+#storefrontSummaryModal .summary-grand-card{
+  background:#14532d!important;
+  border:1px solid #14532d!important;
+  border-radius:15px!important;
+  padding:17px!important;
+  box-shadow:0 8px 18px rgba(20,83,45,.20)!important;
+}
+#storefrontSummaryModal .summary-grand-card span,
+#storefrontSummaryModal .summary-grand-card strong{color:#fff!important}
+#storefrontSummaryModal .summary-grand-card strong{font-size:30px!important}
+
+#storefrontSummaryModal .storefront-summary-total{
+  grid-template-columns:1fr!important;
+  gap:11px!important;
+  padding:14px 20px 18px!important;
+}
+@media(max-width:560px){
+  #storefrontSummaryModal .storefront-summary-one-line{font-size:13px!important;gap:5px!important}
+  #storefrontSummaryModal .summary-product-name{padding-right:12px!important}
+  #storefrontSummaryModal .storefront-summary-list{padding:8px 12px!important}
+  #storefrontSummaryModal .storefront-summary-total{padding:12px!important}
+  #storefrontSummaryModal .summary-grand-card strong{font-size:26px!important}
+}
+</style>
 </head>
 <body>
 <div class="layout">
@@ -2009,7 +2098,7 @@ function openStorefrontSummary(){
  const countBox=document.getElementById('storefrontSummaryCount');
  const totalBox=document.getElementById('storefrontSummaryTotal');
  if(!modal||!list||!countBox||!totalBox)return;
- list.innerHTML=data.items.map((item,index)=>`<div class="storefront-summary-row"><div class="storefront-summary-line"><b>${escapeHtml(item.product.name||'สินค้า')}</b></div><div class="storefront-summary-equation"><span class="summary-qty">${num(item.qty)}</span><span class="summary-times">×</span><span class="summary-price">${money(Number(item.product.price||0))}</span><span class="summary-equals">=</span><span class="summary-line-total">${money(item.lineTotal)}</span></div></div>`).join('')+'<div class="storefront-summary-divider"></div>';
+ list.innerHTML=data.items.map((item,index)=>`<div class="storefront-summary-row"><div class="storefront-summary-one-line"><b class="summary-product-name">${escapeHtml(item.product.name||'สินค้า')}</b><span class="summary-qty">${num(item.qty)}</span><span class="summary-times">×</span><span class="summary-price">${money(Number(item.product.price||0))}</span><span class="summary-equals">=</span><span class="summary-line-total">${money(item.lineTotal)}</span></div></div>`).join('')+'<div class="storefront-summary-divider"></div>';
  countBox.textContent=`${num(data.count)} ชิ้น`;
  totalBox.textContent=money(data.total);
  storefrontSummaryPreviousOverflow=document.body.style.overflow||'';
@@ -2948,8 +3037,7 @@ if(new URLSearchParams(location.search).get('storefront')==='1'){
       var line=Number(item.lineTotal)||qty*price;
       var safeName=String(name).replace(/[&<>"']/g,function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]});
       return '<div class="storefront-summary-row">'+
-        '<div class="storefront-summary-line"><b>'+safeName+'</b></div>'+
-        '<div class="storefront-summary-equation"><span class="summary-qty">'+qty.toLocaleString('th-TH')+'</span><span class="summary-times">×</span><span class="summary-price">'+price.toLocaleString('th-TH')+' บาท</span><span class="summary-equals">=</span><span class="summary-line-total">'+line.toLocaleString('th-TH')+' บาท</span></div>'+
+        '<div class="storefront-summary-one-line"><b class="summary-product-name">'+safeName+'</b><span class="summary-qty">'+qty.toLocaleString('th-TH')+'</span><span class="summary-times">×</span><span class="summary-price">'+price.toLocaleString('th-TH')+' บาท</span><span class="summary-equals">=</span><span class="summary-line-total">'+line.toLocaleString('th-TH')+' บาท</span></div>'+
       '</div>';
     }).join('')+'<div class="storefront-summary-divider"></div>';
     countBox.textContent=(Number(data.count)||0).toLocaleString('th-TH')+' ชิ้น';
