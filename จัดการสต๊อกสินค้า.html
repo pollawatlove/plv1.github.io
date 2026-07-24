@@ -4,6 +4,16 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ระบบจัดการสต๊อกสินค้า</title>
+<script>
+/* ตรวจจับหน้าสินค้าสำหรับลูกค้าตั้งแต่ก่อนแสดงผล ป้องกันเมนูกะพริบ/แสดงบน Safari มือถือ */
+(function(){
+  try{
+    var p=new URLSearchParams(location.search);
+    var isCustomerStorefront=p.get('storefront')==='1' || location.hash==='#storefront-customer' || String(window.name||'').indexOf('stock_storefront_')===0;
+    if(isCustomerStorefront){ document.documentElement.classList.add('storefront-customer-root'); }
+  }catch(e){}
+})();
+</script>
 <style>
 :root{--primary:#0f766e;--primary2:#115e59;--bg:#f4f7f8;--card:#fff;--text:#18302e;--muted:#6b7f7c;--danger:#c2413b;--warn:#d97706;--ok:#15803d;--line:#dfe9e7}
 *{box-sizing:border-box}body{margin:0;font-family:Tahoma,"Noto Sans Thai",sans-serif;background:var(--bg);color:var(--text)}
@@ -745,6 +755,27 @@ body.storefront-only .storefront-checkout-btn{display:inline-flex!important}
  body.storefront-only .storefront-checkout-btn{display:none!important}
  body.storefront-only .storefront-sticky-checkout{display:flex!important}
 }
+
+/* ===== Hard lock storefront customer view (mobile Safari safe) ===== */
+html.storefront-customer-root body{padding-top:0!important;overflow-x:hidden!important;background:#eef4f8!important}
+html.storefront-customer-root .layout{display:block!important;grid-template-columns:1fr!important;min-height:100vh!important}
+html.storefront-customer-root aside,
+html.storefront-customer-root #sidebar,
+html.storefront-customer-root main>header{display:none!important;visibility:hidden!important;opacity:0!important;height:0!important;min-height:0!important;overflow:hidden!important;pointer-events:none!important}
+html.storefront-customer-root main{width:100%!important;max-width:none!important;margin:0!important;padding:10px!important}
+html.storefront-customer-root main>.page{display:none!important}
+html.storefront-customer-root main>#storefront{display:block!important;min-height:100vh!important;padding:0!important}
+html.storefront-customer-root #storefront .storefront-toolbar .btn-light,
+html.storefront-customer-root #storefront .storefront-checkout-btn{display:none!important}
+html.storefront-customer-root #storefront .storefront-sticky-checkout{display:flex!important}
+html.storefront-customer-root #storefront .storefront-hero{margin-top:0!important}
+html.storefront-customer-root #storefront .storefront-toolbar{position:sticky!important;top:0!important;z-index:60!important;margin-top:0!important}
+@media(max-width:520px){
+ html.storefront-customer-root main{padding:7px!important}
+ html.storefront-customer-root #storefront .storefront-hero{padding:20px 18px!important;border-radius:18px!important}
+ html.storefront-customer-root #storefront .storefront-toolbar{padding:10px!important;border-radius:15px!important}
+}
+
 </style>
 </head>
 <body>
@@ -1823,8 +1854,9 @@ function sendStorefrontToPOS(){
 
 function openStorefrontDisplay(){
  // เปิดหน้าสินค้าทั้งร้านโดยยังไม่จองหรือเพิ่มเลขที่บิล
- const url=location.href.split('?')[0].split('#')[0]+'?storefront=1';
- storefrontWindow=window.open(url,'stock_storefront_'+Date.now(),'width=1440,height=900');
+ const url=location.href.split('?')[0].split('#')[0]+'?storefront=1#storefront-customer';
+ const storefrontName='stock_storefront_'+Date.now();
+ storefrontWindow=window.open(url,storefrontName,'width=1440,height=900');
  if(!storefrontWindow){alert('เบราว์เซอร์ปิดกั้นหน้าต่างใหม่ กรุณาอนุญาต Pop-up สำหรับไฟล์นี้');}
 }
 
@@ -1886,14 +1918,16 @@ function notifyStorefrontSession(type,sessionId,message=''){
 
 function setupStorefrontWindow(){
  const params=new URLSearchParams(location.search);
- if(params.get('storefront')!=='1')return false;
+ const isStorefrontMode=params.get('storefront')==='1' || location.hash==='#storefront-customer' || String(window.name||'').indexOf('stock_storefront_')===0;
+ if(!isStorefrontMode)return false;
+ document.documentElement.classList.add('storefront-customer-root');
  document.body.classList.add('storefront-only');
  storefrontSessionId='SF-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
  storefrontInvoice='รอชำระเงิน';
- document.querySelector('aside').style.setProperty('display','none','important');
+ const sfAside=document.querySelector('aside'); if(sfAside)sfAside.style.setProperty('display','none','important');
  document.querySelector('main').style.padding='18px';
  document.querySelector('main').style.margin='0';
- document.querySelector('header').style.setProperty('display','none','important');
+ const sfHeader=document.querySelector('main>header'); if(sfHeader)sfHeader.style.setProperty('display','none','important');
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  document.getElementById('storefront').classList.add('active');
  document.querySelector('.layout').style.display='block';
