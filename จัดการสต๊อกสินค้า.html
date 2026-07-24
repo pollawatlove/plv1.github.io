@@ -475,41 +475,31 @@ table{
     <div class="card kpi"><div class="label">มูลค่าสต๊อก</div><div class="value" id="kpiStockValue">0</div><div class="hint">จำนวนคงเหลือ × ต้นทุน</div></div>
     <div class="card kpi"><div class="label">รายการที่ต้องจัดซื้อ</div><div class="value" id="kpiLow">0</div><div class="hint">อ้างอิงจากจำนวนขั้นต่ำในสินค้าและสต๊อก</div></div>
   </div>
-
   <div class="two">
-    <div class="card">
-      <div class="section-title">สินค้าขายดีที่สุด</div>
-      <div id="topStock"></div>
-    </div>
+    <div class="card"><div class="section-title">สินค้าขายดีที่สุด</div><div id="topStock"></div></div>
+    <div class="card"><div class="section-title">มูลค่าสต๊อกแยกตามสินค้า</div><div id="categorySummary"></div></div>
+  </div>
 
-    <div class="card">
-      <div class="monthly-head">
-        <div>
-          <div class="section-title" style="margin-bottom:3px">สรุปยอดขายรายเดือนย้อนหลัง 12 เดือน</div>
-          <div class="monthly-sub">แสดงยอดขายรวมของแต่ละเดือน</div>
-        </div>
-        <button class="btn btn-light" id="toggleMonthlyBtn" onclick="toggleMonthlySummary()">เปิดดูรายเดือน</button>
+  <div class="card" style="margin-top:14px">
+    <div class="monthly-head">
+      <div>
+        <div class="section-title" style="margin-bottom:3px">สรุปยอดขายรายเดือนย้อนหลัง 12 เดือน</div>
+        <div class="monthly-sub">แสดงยอดขายรวมของแต่ละเดือน</div>
       </div>
-      <div id="monthlySummaryArea" style="display:none">
-        <div id="monthlySalesBars" class="monthly-bars"></div>
-        <div class="table-wrap" style="margin-top:14px">
-          <table class="monthly-table">
-            <thead><tr><th>เดือน</th><th>จำนวนรายการขาย</th><th>ยอดขายรวม</th></tr></thead>
-            <tbody id="monthlySalesRows"></tbody>
-          </table>
-        </div>
+      <button class="btn btn-light" id="toggleMonthlyBtn" onclick="toggleMonthlySummary()">เปิดดูรายเดือน</button>
+    </div>
+    <div id="monthlySummaryArea" style="display:none">
+      <div id="monthlySalesBars" class="monthly-bars"></div>
+      <div class="table-wrap" style="margin-top:14px">
+        <table class="monthly-table">
+          <thead><tr><th>เดือน</th><th>จำนวนรายการขาย</th><th>ยอดขายรวม</th></tr></thead>
+          <tbody id="monthlySalesRows"></tbody>
+        </table>
       </div>
     </div>
   </div>
-<div class="card" style="margin-top:14px">
-    <div class="section-title">รายการขายล่าสุด</div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead>
-        <tbody id="recentSales"></tbody>
-      </table>
-    </div>
-  </div>
+
+  <div class="card" style="margin-top:14px"><div class="section-title">รายการขายล่าสุด</div><div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
 </section>
 
 
