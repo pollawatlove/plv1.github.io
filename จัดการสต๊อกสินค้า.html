@@ -480,6 +480,53 @@ main{max-width:1700px;width:100%;margin:0 auto}
 @media(max-width:1150px){.dashboard-content-grid{grid-template-columns:1fr}.dashboard-hero{align-items:flex-start}.modern-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:768px){.dashboard-hero{padding:20px;border-radius:19px;display:block}.dashboard-hero h2{font-size:24px}.hero-badge{margin-top:16px;display:inline-flex}.modern-kpi-grid{grid-template-columns:1fr!important}.modern-kpi{min-height:112px;padding:17px}.dashboard-panel{padding:15px;border-radius:18px}.sales-goal-top{display:block}.modern-goal-control{margin-top:14px}.goal-input-row{display:grid;grid-template-columns:1fr auto}.goal-input-row input{min-width:0}.bar-row{grid-template-columns:70px 1fr 75px}.dashboard-content-grid{display:grid!important;grid-template-columns:1fr!important}.panel-heading{margin-bottom:14px}}
 
+
+/* หน้าแสดงสินค้าทั้งร้าน */
+.storefront-hero{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px 28px;border-radius:24px;background:linear-gradient(135deg,#0f766e,#0ea5e9 58%,#6366f1);color:#fff;box-shadow:0 18px 40px rgba(14,116,144,.22);margin-bottom:18px}
+.storefront-eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.82}.storefront-hero h2{font-size:29px;margin:5px 0 7px}.storefront-hero p{margin:0;opacity:.86}.storefront-cart-summary{min-width:175px;padding:15px 18px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.14);backdrop-filter:blur(10px);border-radius:18px;display:grid;gap:3px;text-align:right}.storefront-cart-summary span{font-size:12px;opacity:.8}.storefront-cart-summary b{font-size:15px}.storefront-cart-summary strong{font-size:24px}
+.storefront-toolbar{display:flex;align-items:center;gap:10px;padding:13px;margin-bottom:14px}.storefront-search-wrap{flex:1;display:flex;align-items:center;gap:9px;padding:0 13px;border:1px solid #dbe4f0;border-radius:13px;background:#f8fafc}.storefront-search-wrap span{font-size:23px;color:#64748b}.storefront-search-wrap input{border:0!important;background:transparent!important;box-shadow:none!important;padding:12px 0!important;width:100%}.storefront-checkout-btn{white-space:nowrap}
+.storefront-categories{display:flex;gap:9px;overflow-x:auto;padding:3px 2px 13px;scrollbar-width:thin}.storefront-category-btn{border:1px solid #dbe4f0;background:#fff;color:#475569;border-radius:999px;padding:9px 15px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.18s}.storefront-category-btn:hover{transform:translateY(-1px);border-color:#60a5fa}.storefront-category-btn.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#0f766e,#2563eb);box-shadow:0 7px 17px rgba(37,99,235,.22)}
+.storefront-products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding-bottom:90px}.storefront-product{position:relative;background:#fff;border:1px solid #e5eaf2;border-radius:19px;padding:16px;box-shadow:0 8px 22px rgba(15,23,42,.055);transition:.2s;overflow:hidden}.storefront-product:hover{transform:translateY(-3px);box-shadow:0 15px 28px rgba(15,23,42,.1);border-color:#bfdbfe}.storefront-product.selected{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.13),0 15px 28px rgba(15,23,42,.1)}.storefront-product-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.storefront-product-icon{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;font-size:23px;background:linear-gradient(145deg,#ecfeff,#dbeafe)}.storefront-stock{font-size:11px;font-weight:800;padding:5px 8px;border-radius:999px;background:#ecfdf5;color:#047857}.storefront-stock.low{background:#fff1f2;color:#be123c}.storefront-product h3{font-size:15px;line-height:1.45;margin:13px 0 4px;min-height:43px}.storefront-code{font-size:11px;color:#94a3b8}.storefront-product-bottom{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:13px}.storefront-price{font-size:20px;font-weight:900;color:#0f766e}.storefront-price small{display:block;font-size:11px;font-weight:600;color:#94a3b8}.storefront-add-btn{width:38px;height:38px;border:0;border-radius:12px;background:#0f766e;color:#fff;font-size:22px;cursor:pointer}.storefront-qty{display:flex;align-items:center;gap:7px;background:#eff6ff;border-radius:12px;padding:4px}.storefront-qty button{width:30px;height:30px;border:0;border-radius:9px;background:#fff;color:#1d4ed8;font-size:18px;font-weight:800;cursor:pointer}.storefront-qty b{min-width:22px;text-align:center}.storefront-empty{grid-column:1/-1;text-align:center;padding:55px 20px;color:#64748b;background:#fff;border:1px dashed #cbd5e1;border-radius:18px}
+.storefront-sticky-checkout{display:none;position:fixed;left:15px;right:15px;bottom:14px;z-index:30;background:#0f172a;color:#fff;border-radius:17px;padding:11px 12px 11px 16px;box-shadow:0 16px 38px rgba(15,23,42,.35);align-items:center;justify-content:space-between;gap:12px}.storefront-sticky-checkout div{display:grid}.storefront-sticky-checkout span{font-size:11px;color:#cbd5e1}.storefront-sticky-checkout b{font-size:19px}
+@media(max-width:1180px){.storefront-products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:820px){.storefront-products{grid-template-columns:repeat(2,minmax(0,1fr))}.storefront-hero{align-items:flex-start}.storefront-toolbar{flex-wrap:wrap}.storefront-search-wrap{flex-basis:100%}.storefront-checkout-btn{display:none}.storefront-sticky-checkout{display:flex}}
+@media(max-width:520px){.storefront-hero{display:block;padding:21px}.storefront-hero h2{font-size:23px}.storefront-cart-summary{margin-top:15px;text-align:left;min-width:0}.storefront-products{grid-template-columns:1fr}.storefront-product h3{min-height:0}}
+
+
+/* Barcode camera scanner */
+.barcode-input-row{display:flex;gap:8px;align-items:center}
+.barcode-input-row input{flex:1;min-width:0}
+.scan-camera-btn{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:8px 12px;border-radius:10px;font-size:13px;box-shadow:none}
+.btn-scan-pos{white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;gap:5px;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;padding:9px 13px;box-shadow:none}
+.btn-scan-pos:hover{background:#dbeafe;border-color:#93c5fd}
+.pos-search{align-items:center}
+.pos-search input{min-width:180px}
+.scanner-card{width:min(520px,100%);padding:18px}
+.scanner-stage{position:relative;background:#08111f;border-radius:18px;overflow:hidden;aspect-ratio:4/3;margin-top:12px}
+.scanner-stage video{width:100%;height:100%;object-fit:cover;display:block}
+.scanner-frame{position:absolute;left:9%;right:9%;top:28%;height:34%;border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
+.scanner-line{position:absolute;left:12%;right:12%;top:45%;height:3px;background:#22c55e;box-shadow:0 0 12px #22c55e;animation:scanLine 1.7s ease-in-out infinite}
+@keyframes scanLine{0%,100%{transform:translateY(-42px)}50%{transform:translateY(42px)}}
+.scanner-status{margin-top:12px;padding:10px 12px;border-radius:12px;background:#f1f5f9;color:#334155;text-align:center}
+@media(max-width:560px){.barcode-input-row{display:grid;grid-template-columns:minmax(0,1fr) auto}.scan-camera-btn{width:auto}.btn-scan-pos span{display:none}.btn-scan-pos{padding-inline:11px}}
+
+/* Modern add-product modal */
+.product-modal-card{width:min(760px,100%);padding:0;overflow:hidden;border-radius:24px;box-shadow:0 28px 80px rgba(15,23,42,.28);border:1px solid rgba(255,255,255,.7)}
+.product-modal-head{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:22px 24px;background:linear-gradient(135deg,#0f766e,#0ea5a4);color:#fff}
+.product-modal-head h3{margin:0;font-size:22px}.product-modal-head p{margin:4px 0 0;color:rgba(255,255,255,.8);font-size:13px}
+.product-close{width:38px;height:38px;padding:0;border-radius:12px;background:rgba(255,255,255,.16)!important;color:#fff!important;border:1px solid rgba(255,255,255,.28)!important}
+.product-modal-body{padding:22px 24px 8px;background:linear-gradient(180deg,#f8fffe,#fff)}
+.product-form-section{background:#fff;border:1px solid #dcebea;border-radius:18px;padding:17px;margin-bottom:15px;box-shadow:0 6px 18px rgba(15,118,110,.05)}
+.product-section-title{display:flex;align-items:center;gap:9px;font-weight:850;color:#153f3b;margin-bottom:14px;font-size:15px}
+.product-section-icon{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#e6f7f5;color:#0f766e}
+.product-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.product-field label{font-size:12px;font-weight:750;color:#48635f;margin-bottom:6px}.product-field input{width:100%;min-height:44px;border-radius:12px;background:#fbfefd;border-color:#cfe1de}.product-field input:focus{outline:0;border-color:#0f9f91;box-shadow:0 0 0 3px rgba(15,159,145,.12)}
+.product-help{font-size:11px;color:#728783;margin-top:6px;line-height:1.45}
+.product-barcode-wrap{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.product-scan-btn{min-height:44px;padding:0 14px;border-radius:12px;box-shadow:none;font-size:13px}
+.product-profit-hint{display:flex;align-items:center;gap:6px;margin-top:7px;padding:7px 9px;border-radius:9px;background:#ecfdf5;color:#166534;font-size:11px}
+.product-modal-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px 22px;background:#fff;border-top:1px solid #e5efed}.product-modal-actions .btn{min-width:110px;min-height:42px;border-radius:12px}
+@media(max-width:620px){.product-modal-card{border-radius:20px}.product-modal-head{padding:18px}.product-modal-body{padding:16px 16px 4px}.product-form-grid{grid-template-columns:1fr}.product-modal-actions{padding:14px 16px 18px;position:sticky;bottom:0}.product-modal-actions .btn{flex:1;min-width:0}.product-form-section{padding:14px}.product-barcode-wrap{grid-template-columns:1fr auto}.product-scan-btn span{display:none}.product-scan-btn{padding:0 12px}}
+
 </style>
 </head>
 <body>
@@ -488,6 +535,7 @@ main{max-width:1700px;width:100%;margin:0 auto}
   <div class="brand">Stock Manager<small>ระบบจัดการสินค้าและหน้าร้าน</small></div>
   <div class="nav">
     <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="storefront">🏪 สินค้าทั้งร้าน</button>
     <button data-page="pos">🛒 หน้าร้าน / คิดเงิน</button>
     <button data-page="customer">🖥️ จอลูกค้า</button>
     <button data-page="products">▣ สินค้าและสต๊อก</button>
@@ -551,6 +599,41 @@ main{max-width:1700px;width:100%;margin:0 auto}
 </section>
 
 
+
+<section id="storefront" class="page">
+  <div class="storefront-hero">
+    <div>
+      <div class="storefront-eyebrow">เลือกซื้อสินค้า</div>
+      <h2>สินค้าทั้งหมดในร้าน</h2>
+      <p>เลือกกลุ่มสินค้า ค้นหารายการ และเพิ่มจำนวนก่อนส่งไปหน้าคิดเงิน</p>
+    </div>
+    <div class="storefront-cart-summary">
+      <span>เลขที่บิล</span>
+      <b id="storefrontInvoice">-</b>
+      <span>เลือกแล้ว <b id="storefrontSelectedCount">0 รายการ</b></span>
+      <strong id="storefrontSelectedTotal">฿0</strong>
+    </div>
+  </div>
+
+  <div class="card storefront-toolbar">
+    <div class="storefront-search-wrap">
+      <span>⌕</span>
+      <input id="storefrontSearch" type="search" placeholder="ค้นหาชื่อสินค้า หรือบาร์โค้ด" oninput="renderStorefrontProducts()">
+    </div>
+    <button class="btn btn-light" onclick="clearStorefrontSelection()">ล้างรายการที่เลือก</button>
+    <button class="btn btn-light" onclick="openStorefrontDisplay()">🖥️ เปิดหน้าสินค้าทั้งร้าน</button>
+    <button class="btn btn-primary storefront-checkout-btn" onclick="sendStorefrontToPOS()">ไปหน้าคิดเงิน →</button>
+  </div>
+
+  <div id="storefrontCategories" class="storefront-categories"></div>
+  <div id="storefrontProducts" class="storefront-products"></div>
+
+  <div class="storefront-sticky-checkout">
+    <div><span>ยอดรายการที่เลือก</span><b id="storefrontStickyTotal">฿0</b></div>
+    <button class="btn btn-primary" onclick="sendStorefrontToPOS()">คิดเงิน</button>
+  </div>
+</section>
+
 <section id="pos" class="page">
   <div class="pos-layout">
     <div class="pos-main">
@@ -558,6 +641,7 @@ main{max-width:1700px;width:100%;margin:0 auto}
       <div class="pos-search">
         <input id="posSearch" type="search" placeholder="ค้นหาชื่อสินค้า หรือสแกนบาร์โค้ด แล้วกด Enter">
         <button class="btn btn-primary" onclick="addBySearch()">เพิ่มสินค้า</button>
+        <button class="btn btn-scan-pos" type="button" onclick="openBarcodeScanner('pos')" title="สแกนบาร์โค้ดด้วยกล้อง">📷 <span>สแกน</span></button>
         <button class="btn btn-light" onclick="clearCart()">เคลียร์</button>
       </div>
       <div class="table-wrap pos-table">
@@ -715,21 +799,52 @@ main{max-width:1700px;width:100%;margin:0 auto}
 </main>
 </div>
 
-<div class="modal" id="productModal"><div class="modal-card">
-  <div style="display:flex;justify-content:space-between;align-items:center"><h3 id="modalTitle">เพิ่มสินค้า</h3><button class="btn btn-light" onclick="closeModal()">✕</button></div>
-  <div class="form-grid">
-    <div><label>บาร์โค้ด</label><input id="fBarcode" style="width:100%"><div class="sub" style="margin-top:4px">สร้างอัตโนมัติ แต่สามารถแก้ไขได้</div></div>
-    <div><label>ชื่อสินค้า</label><input id="fName" style="width:100%"></div>
-    <div><label>กลุ่มสินค้า</label><input id="fCategory" list="categoryOptions" placeholder="เลือกหรือพิมพ์กลุ่มสินค้าใหม่" style="width:100%"><datalist id="categoryOptions"></datalist></div>
-    <div><label>หน่วยนับ</label><input id="fUnit" list="unitOptions" value="ชิ้น" placeholder="เลือกหรือพิมพ์หน่วยใหม่" style="width:100%"><datalist id="unitOptions"></datalist></div>
-    <div><label>ต้นทุน</label><input id="fCost" type="number" min="0" step="0.01" style="width:100%"></div>
-    <div><label>ราคาขาย</label><input id="fPrice" type="number" min="0" step="0.01" style="width:100%"><div class="sub" style="margin-top:4px">คำนวณต้นทุนบวก 40% อัตโนมัติ และแก้ไขได้</div></div>
-    <div><label>จำนวนคงเหลือ</label><input id="fStock" type="number" min="0" style="width:100%"></div>
-    <div><label>จำนวนขั้นต่ำ</label><input id="fMin" type="number" min="0" value="5" style="width:100%"></div>
+<div class="modal" id="productModal"><div class="modal-card product-modal-card">
+  <div class="product-modal-head">
+    <div><h3 id="modalTitle">เพิ่มสินค้า</h3><p>กรอกข้อมูลสินค้าให้ครบ แล้วกดบันทึกเพื่อเพิ่มเข้าสต๊อก</p></div>
+    <button class="btn product-close" onclick="closeModal()" aria-label="ปิด">✕</button>
   </div>
-  <div style="display:flex;justify-content:flex-end;gap:9px;margin-top:18px"><button class="btn btn-light" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveProduct()">บันทึก</button></div>
+  <div class="product-modal-body">
+    <div class="product-form-section">
+      <div class="product-section-title"><span class="product-section-icon">▦</span>ข้อมูลสินค้า</div>
+      <div class="product-form-grid">
+        <div class="product-field">
+          <label>บาร์โค้ด</label>
+          <div class="product-barcode-wrap"><input id="fBarcode" inputmode="numeric" autocomplete="off" placeholder="สแกนหรือกรอกเลขบาร์โค้ด"><button type="button" class="btn btn-primary product-scan-btn" onclick="openBarcodeScanner('product')" title="สแกนบาร์โค้ด">📷 <span>สแกน</span></button></div>
+          <div class="product-help">ระบบสร้างเลขให้อัตโนมัติ หรือใช้กล้องสแกนเพื่อกรอกเลขทันที</div>
+        </div>
+        <div class="product-field"><label>ชื่อสินค้า</label><input id="fName" placeholder="เช่น น้ำดื่ม 600 มล."></div>
+        <div class="product-field"><label>กลุ่มสินค้า</label><input id="fCategory" list="categoryOptions" placeholder="เลือกหรือพิมพ์กลุ่มสินค้าใหม่"><datalist id="categoryOptions"></datalist></div>
+        <div class="product-field"><label>หน่วยนับ</label><input id="fUnit" list="unitOptions" value="ชิ้น" placeholder="เช่น ชิ้น, ขวด, กล่อง"><datalist id="unitOptions"></datalist></div>
+      </div>
+    </div>
+    <div class="product-form-section">
+      <div class="product-section-title"><span class="product-section-icon">฿</span>ราคาและสต๊อก</div>
+      <div class="product-form-grid">
+        <div class="product-field"><label>ต้นทุน</label><input id="fCost" type="number" min="0" step="0.01" placeholder="0.00"></div>
+        <div class="product-field"><label>ราคาขาย</label><input id="fPrice" type="number" min="0" step="0.01" placeholder="0.00"><div class="product-profit-hint">↗ คำนวณจากต้นทุนบวก 40% อัตโนมัติ และแก้ไขได้</div></div>
+        <div class="product-field"><label>จำนวนคงเหลือ</label><input id="fStock" type="number" min="0" placeholder="0"></div>
+        <div class="product-field"><label>จำนวนขั้นต่ำ</label><input id="fMin" type="number" min="0" value="5"><div class="product-help">ระบบจะแจ้งเตือนเมื่อสินค้าคงเหลือต่ำกว่าจำนวนนี้</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="product-modal-actions"><button class="btn btn-light" onclick="closeModal()">ยกเลิก</button><button class="btn btn-primary" onclick="saveProduct()">✓ บันทึกสินค้า</button></div>
 </div></div>
 
+
+
+<div class="modal" id="barcodeScannerModal"><div class="modal-card scanner-card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+    <div><h3 style="margin:0">สแกนบาร์โค้ดด้วยกล้อง</h3><div class="sub">หันกล้องไปที่บาร์โค้ดให้อยู่ในกรอบ ระบบจะอ่านเลขให้อัตโนมัติ</div></div>
+    <button class="btn btn-light" type="button" onclick="closeBarcodeScanner()">✕</button>
+  </div>
+  <div class="scanner-stage">
+    <video id="barcodeVideo" playsinline muted></video>
+    <div class="scanner-frame"></div><div class="scanner-line"></div>
+  </div>
+  <div id="barcodeScannerStatus" class="scanner-status">กำลังเปิดกล้อง…</div>
+  <div style="display:flex;justify-content:center;margin-top:12px"><button class="btn btn-light" type="button" onclick="closeBarcodeScanner()">ยกเลิก</button></div>
+</div></div>
 
 <div class="modal" id="receiptModal"><div class="modal-card" style="width:min(390px,100%)">
   <div id="receiptContent" class="receipt"></div>
@@ -761,6 +876,13 @@ let products=JSON.parse(localStorage.getItem('stock_demo_products')||'null')||st
 let editingBarcode=null;
 let priceManuallyEdited=false;
 let cart=JSON.parse(localStorage.getItem('stock_demo_cart')||'[]');
+let storefrontCategory='ทั้งหมด';
+let storefrontSelection={};
+let storefrontInvoice='';
+let storefrontSessionId='';
+let storefrontWindow=null;
+let storefrontQueueChannel=null;
+try{storefrontQueueChannel=new BroadcastChannel('stock_storefront_queue')}catch(e){}
 let posInvoice=createInvoiceNo();
 let customerQrData=localStorage.getItem('stock_demo_qr')||'';
 let customerWindow=null;
@@ -771,12 +893,23 @@ function createInvoiceNo(){
   const n=String((Number(localStorage.getItem('stock_demo_bill_seq')||0)+1)).padStart(4,'0');
   return `QT${y}${m}-${n}`;
 }
+function reserveNewInvoiceNo(){
+  const d=new Date(), y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0');
+  const next=Number(localStorage.getItem('stock_demo_bill_seq')||0)+1;
+  localStorage.setItem('stock_demo_bill_seq',String(next));
+  return `QT${y}${m}-${String(next).padStart(4,'0')}`;
+}
+function ensureStorefrontInvoice(){
+  // แสดงเลขบิลตัวอย่างเท่านั้น ยังไม่เพิ่มลำดับจนกว่าจะยืนยันการขายจริง
+  if(!storefrontInvoice)storefrontInvoice=createInvoiceNo();
+  return storefrontInvoice;
+}
 const money=n=>new Intl.NumberFormat('th-TH',{style:'currency',currency:'THB',maximumFractionDigits:0}).format(Number(n)||0);
 const num=n=>new Intl.NumberFormat('th-TH').format(Number(n)||0);
 
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page,b.textContent.trim()));
 document.getElementById('posSearch').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addBySearch();}});
-function showPage(id,title){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));document.getElementById('pageTitle').textContent=title.replace(/^[^\s]+\s/,'');document.getElementById('sidebar').classList.remove('show');}
+function showPage(id,title){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.page===id));document.getElementById('pageTitle').textContent=title.replace(/^[^\s]+\s/,'');document.getElementById('sidebar').classList.remove('show');if(id==='storefront'){ensureStorefrontInvoice();renderStorefrontProducts();}}
 function toggleMenu(){document.getElementById('sidebar').classList.toggle('show')}
 function statusOf(p){if(p.stock<=p.min)return ['ควรเติมทันที','low']; if(p.stock<=p.min*2)return ['ใกล้หมด','mid']; return ['ปกติ','ok'];}
 function renderDashboard(){
@@ -1081,7 +1214,96 @@ function exportPurchasePDF(){
    .note{font-size:10.5px;margin-top:10px}
    .sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;margin-top:45px;text-align:center;font-size:12px;page-break-inside:avoid}
    @media print{html,body,.doc{border:0!important;outline:0!important;box-shadow:none!important}.doc{page-break-before:avoid;page-break-after:avoid}}
- </style></head><body><div class="doc">${docHtml}</div><script>
+ 
+/* หน้าแสดงสินค้าทั้งร้าน */
+.storefront-hero{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:26px 28px;border-radius:24px;background:linear-gradient(135deg,#0f766e,#0ea5e9 58%,#6366f1);color:#fff;box-shadow:0 18px 40px rgba(14,116,144,.22);margin-bottom:18px}
+.storefront-eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.82}.storefront-hero h2{font-size:29px;margin:5px 0 7px}.storefront-hero p{margin:0;opacity:.86}.storefront-cart-summary{min-width:175px;padding:15px 18px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.14);backdrop-filter:blur(10px);border-radius:18px;display:grid;gap:3px;text-align:right}.storefront-cart-summary span{font-size:12px;opacity:.8}.storefront-cart-summary b{font-size:15px}.storefront-cart-summary strong{font-size:24px}
+.storefront-toolbar{display:flex;align-items:center;gap:10px;padding:13px;margin-bottom:14px}.storefront-search-wrap{flex:1;display:flex;align-items:center;gap:9px;padding:0 13px;border:1px solid #dbe4f0;border-radius:13px;background:#f8fafc}.storefront-search-wrap span{font-size:23px;color:#64748b}.storefront-search-wrap input{border:0!important;background:transparent!important;box-shadow:none!important;padding:12px 0!important;width:100%}.storefront-checkout-btn{white-space:nowrap}
+.storefront-categories{display:flex;gap:9px;overflow-x:auto;padding:3px 2px 13px;scrollbar-width:thin}.storefront-category-btn{border:1px solid #dbe4f0;background:#fff;color:#475569;border-radius:999px;padding:9px 15px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.18s}.storefront-category-btn:hover{transform:translateY(-1px);border-color:#60a5fa}.storefront-category-btn.active{color:#fff;border-color:transparent;background:linear-gradient(135deg,#0f766e,#2563eb);box-shadow:0 7px 17px rgba(37,99,235,.22)}
+.storefront-products{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding-bottom:90px}.storefront-product{position:relative;background:#fff;border:1px solid #e5eaf2;border-radius:19px;padding:16px;box-shadow:0 8px 22px rgba(15,23,42,.055);transition:.2s;overflow:hidden}.storefront-product:hover{transform:translateY(-3px);box-shadow:0 15px 28px rgba(15,23,42,.1);border-color:#bfdbfe}.storefront-product.selected{border-color:#38bdf8;box-shadow:0 0 0 3px rgba(56,189,248,.13),0 15px 28px rgba(15,23,42,.1)}.storefront-product-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}.storefront-product-icon{width:45px;height:45px;border-radius:14px;display:grid;place-items:center;font-size:23px;background:linear-gradient(145deg,#ecfeff,#dbeafe)}.storefront-stock{font-size:11px;font-weight:800;padding:5px 8px;border-radius:999px;background:#ecfdf5;color:#047857}.storefront-stock.low{background:#fff1f2;color:#be123c}.storefront-product h3{font-size:15px;line-height:1.45;margin:13px 0 4px;min-height:43px}.storefront-code{font-size:11px;color:#94a3b8}.storefront-product-bottom{display:flex;justify-content:space-between;align-items:end;gap:8px;margin-top:13px}.storefront-price{font-size:20px;font-weight:900;color:#0f766e}.storefront-price small{display:block;font-size:11px;font-weight:600;color:#94a3b8}.storefront-add-btn{width:38px;height:38px;border:0;border-radius:12px;background:#0f766e;color:#fff;font-size:22px;cursor:pointer}.storefront-qty{display:flex;align-items:center;gap:7px;background:#eff6ff;border-radius:12px;padding:4px}.storefront-qty button{width:30px;height:30px;border:0;border-radius:9px;background:#fff;color:#1d4ed8;font-size:18px;font-weight:800;cursor:pointer}.storefront-qty b{min-width:22px;text-align:center}.storefront-empty{grid-column:1/-1;text-align:center;padding:55px 20px;color:#64748b;background:#fff;border:1px dashed #cbd5e1;border-radius:18px}
+.storefront-sticky-checkout{display:none;position:fixed;left:15px;right:15px;bottom:14px;z-index:30;background:#0f172a;color:#fff;border-radius:17px;padding:11px 12px 11px 16px;box-shadow:0 16px 38px rgba(15,23,42,.35);align-items:center;justify-content:space-between;gap:12px}.storefront-sticky-checkout div{display:grid}.storefront-sticky-checkout span{font-size:11px;color:#cbd5e1}.storefront-sticky-checkout b{font-size:19px}
+@media(max-width:1180px){.storefront-products{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:820px){.storefront-products{grid-template-columns:repeat(2,minmax(0,1fr))}.storefront-hero{align-items:flex-start}.storefront-toolbar{flex-wrap:wrap}.storefront-search-wrap{flex-basis:100%}.storefront-checkout-btn{display:none}.storefront-sticky-checkout{display:flex}}
+@media(max-width:520px){.storefront-hero{display:block;padding:21px}.storefront-hero h2{font-size:23px}.storefront-cart-summary{margin-top:15px;text-align:left;min-width:0}.storefront-products{grid-template-columns:1fr}.storefront-product h3{min-height:0}}
+
+
+
+/* ===== Mobile-first polish for 414x896 phones ===== */
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{min-width:320px;overflow-x:hidden}
+@media (max-width: 600px){
+  :root{--mobile-pad:12px;--mobile-radius:18px}
+  body{background:#f3f6fb;padding-bottom:max(18px,env(safe-area-inset-bottom));font-size:14px}
+  .layout{display:block!important;min-height:100dvh}
+  aside{
+    display:block!important;position:sticky!important;top:0!important;z-index:1000!important;
+    width:100%!important;height:auto!important;padding:10px 10px 8px!important;
+    background:linear-gradient(135deg,#172554,#312e81)!important;
+    box-shadow:0 8px 24px rgba(15,23,42,.18)!important;
+  }
+  .brand{font-size:17px!important;margin:0 4px 8px!important;line-height:1.25}
+  .brand small{font-size:10px!important;margin-top:2px!important}
+  .nav{display:flex!important;gap:7px!important;overflow-x:auto!important;padding:0 1px 3px!important;scroll-snap-type:x proximity;scrollbar-width:none}
+  .nav::-webkit-scrollbar{display:none}
+  .nav button{flex:0 0 auto!important;width:auto!important;min-height:38px!important;padding:9px 12px!important;margin:0!important;border-radius:12px!important;font-size:12px!important;scroll-snap-align:start}
+  .nav button.active{background:#fff!important;color:#312e81!important;box-shadow:0 4px 12px rgba(0,0,0,.16)!important}
+  main{padding:10px!important;width:100%!important;overflow:hidden}
+  header{position:relative!important;top:0!important;margin-bottom:10px!important;padding:12px!important;border-radius:16px!important;align-items:center!important;background:rgba(255,255,255,.94)!important}
+  header>div:first-of-type{min-width:0}
+  h1{font-size:20px!important;line-height:1.25!important;white-space:normal}
+  .sub{font-size:11px!important;line-height:1.4!important}
+  .mobile-menu{display:none!important}
+  .page{width:100%;min-width:0}
+  .card,.pos-main,.pos-summary,.dashboard-panel,.storefront-toolbar,.product-form-section{border-radius:var(--mobile-radius)!important;padding:14px!important;box-shadow:0 6px 18px rgba(15,23,42,.06)!important}
+  .grid,.modern-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .modern-kpi{min-height:122px!important;padding:13px!important}
+  .modern-kpi .value,.kpi .value{font-size:22px!important;line-height:1.15!important;word-break:break-word}
+  .kpi-icon{width:38px!important;height:38px!important;font-size:18px!important}
+  .dashboard-hero,.storefront-hero{padding:17px!important;border-radius:20px!important;margin-bottom:10px!important}
+  .dashboard-hero h2,.storefront-hero h2{font-size:22px!important;line-height:1.25!important}
+  .dashboard-content-grid,.two,.pos-layout{grid-template-columns:1fr!important;gap:10px!important}
+  .section-title{font-size:16px!important;margin-bottom:10px!important}
+  .panel-subtitle{font-size:11px!important}
+  .sales-goal-top,.monthly-head,.panel-heading{align-items:flex-start!important;gap:9px!important}
+  .goal-input-row{grid-template-columns:1fr!important}
+  .monthly-bars{overflow-x:auto;padding-bottom:5px}
+  .bar-row{grid-template-columns:82px minmax(120px,1fr) 62px!important;gap:7px!important;font-size:11px!important}
+  .toolbar{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .toolbar>input,.toolbar>select,.toolbar>[type=search]{grid-column:1/-1!important;min-width:0!important}
+  .toolbar .btn{width:100%!important}
+  input,select,textarea{font-size:16px!important;border-radius:12px!important;min-height:46px!important;padding:11px 12px!important}
+  .btn,button{border-radius:12px!important;min-height:42px!important;padding:10px 12px!important;font-size:13px!important}
+  .pos-search{grid-template-columns:1fr auto auto!important;gap:7px!important}
+  .pos-search input{grid-column:1/-1!important}
+  .pos-search .btn{padding-inline:11px!important}
+  .quick-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-height:510px!important;gap:9px!important;padding-right:3px!important}
+  .quick-product{min-height:112px!important;padding:11px!important;border-radius:15px!important}
+  .pos-summary{position:static!important}
+  .sum-row.total{font-size:20px!important}
+  .storefront-categories{display:flex!important;overflow-x:auto!important;flex-wrap:nowrap!important;gap:7px!important;padding-bottom:5px!important;scrollbar-width:none}
+  .storefront-categories::-webkit-scrollbar{display:none}
+  .storefront-categories .btn,.storefront-categories button{flex:0 0 auto!important;white-space:nowrap!important}
+  .storefront-products{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
+  .storefront-sticky-checkout{left:10px!important;right:10px!important;bottom:10px!important;border-radius:17px!important;padding:10px!important}
+  .table-wrap{width:100%!important;overflow:auto!important;border-radius:14px!important;-webkit-overflow-scrolling:touch}
+  table{min-width:680px!important}
+  th,td{font-size:12px!important;padding:10px 8px!important}
+  .modal{align-items:flex-end!important;padding:0!important}
+  .modal-card,.product-modal-card,.modal-content{width:100%!important;max-width:none!important;max-height:94dvh!important;margin:0!important;border-radius:24px 24px 0 0!important;padding-bottom:max(16px,env(safe-area-inset-bottom))!important}
+  .product-modal-head{padding:16px!important}
+  .product-modal-body{padding:12px!important}
+  .product-form-grid,.form-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .product-barcode-wrap{grid-template-columns:minmax(0,1fr) auto!important;gap:7px!important}
+  .product-scan-btn{width:46px!important;min-width:46px!important;padding:0!important;justify-content:center!important}
+  .product-scan-btn span{display:none!important}
+  .product-modal-actions{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important;padding:12px!important;position:sticky!important;bottom:0!important;background:#fff!important}
+}
+@media (max-width: 380px){
+  .grid,.modern-kpi-grid,.storefront-products,.quick-products{grid-template-columns:1fr!important}
+  .pos-search{grid-template-columns:1fr 1fr!important}
+  .pos-search input{grid-column:1/-1!important}
+}
+</style></head><body><div class="doc">${docHtml}</div><script>
    window.onload=()=>{setTimeout(()=>window.print(),150)};
  <\/script></body></html>`);
  printWindow.document.close();
@@ -1092,6 +1314,231 @@ function printPurchaseDocument(){
 function closePurchaseModal(){
  purchaseModal.classList.remove('show');
  document.body.classList.remove('print-purchase');
+}
+
+
+function productIcon(category=''){
+ const c=String(category).toLowerCase();
+ if(c.includes('เครื่องดื่ม'))return '🥤';
+ if(c.includes('อาหาร'))return '🍱';
+ if(c.includes('ขนม'))return '🍪';
+ if(c.includes('เครื่องเขียน'))return '✏️';
+ if(c.includes('อุปกรณ์'))return '🧰';
+ if(c.includes('ไฟฟ้า'))return '💡';
+ return '📦';
+}
+function setStorefrontCategory(category){storefrontCategory=category;renderStorefrontProducts()}
+function changeStorefrontQty(code,delta){
+ const p=products.find(x=>x.barcode===code);if(!p)return;
+ const current=Number(storefrontSelection[code]||0);
+ const next=Math.max(0,Math.min(current+delta,Number(p.stock)||0));
+ if(next>0)storefrontSelection[code]=next;else delete storefrontSelection[code];
+ renderStorefrontProducts();
+}
+function clearStorefrontSelection(){storefrontSelection={};renderStorefrontProducts()}
+function renderStorefrontProducts(){
+ const categoryBox=document.getElementById('storefrontCategories');
+ const listBox=document.getElementById('storefrontProducts');
+ if(!categoryBox||!listBox)return;
+ const categories=['ทั้งหมด',...new Set(products.map(p=>p.category||'ไม่ระบุกลุ่ม'))];
+ if(!categories.includes(storefrontCategory))storefrontCategory='ทั้งหมด';
+ categoryBox.innerHTML=categories.map(c=>`<button class="storefront-category-btn ${c===storefrontCategory?'active':''}" onclick="setStorefrontCategory(${JSON.stringify(c).replace(/"/g,'&quot;')})">${c}</button>`).join('');
+ const q=(document.getElementById('storefrontSearch')?.value||'').trim().toLowerCase();
+ const shown=products.filter(p=>(storefrontCategory==='ทั้งหมด'||(p.category||'ไม่ระบุกลุ่ม')===storefrontCategory)&&(!q||p.name.toLowerCase().includes(q)||String(p.barcode).toLowerCase().includes(q)));
+ listBox.innerHTML=shown.length?shown.map(p=>{
+   const qty=Number(storefrontSelection[p.barcode]||0),stock=Number(p.stock)||0;
+   return `<article class="storefront-product ${qty?'selected':''}">
+    <div class="storefront-product-top"><div class="storefront-product-icon">${productIcon(p.category)}</div><span class="storefront-stock ${stock<=Number(p.min||0)?'low':''}">เหลือ ${num(stock)} ${p.unit||''}</span></div>
+    <h3>${p.name}</h3><div class="storefront-code">${p.barcode} · ${p.category||'ไม่ระบุกลุ่ม'}</div>
+    <div class="storefront-product-bottom"><div class="storefront-price">${money(p.price)}<small>ต่อ ${p.unit||'หน่วย'}</small></div>
+    ${qty?`<div class="storefront-qty"><button onclick="changeStorefrontQty('${p.barcode}',-1)">−</button><b>${qty}</b><button onclick="changeStorefrontQty('${p.barcode}',1)">+</button></div>`:`<button class="storefront-add-btn" ${stock<=0?'disabled':''} onclick="changeStorefrontQty('${p.barcode}',1)">+</button>`}</div>
+   </article>`;
+ }).join(''):'<div class="storefront-empty">ไม่พบสินค้าในกลุ่มหรือคำค้นหานี้</div>';
+ const selected=Object.entries(storefrontSelection).filter(([,q])=>q>0);
+ const count=selected.reduce((s,[,q])=>s+Number(q),0);
+ const total=selected.reduce((s,[code,q])=>{const p=products.find(x=>x.barcode===code);return s+(p?Number(p.price)*Number(q):0)},0);
+ const sfInv=document.getElementById('storefrontInvoice');if(sfInv)sfInv.textContent=ensureStorefrontInvoice();
+ document.getElementById('storefrontSelectedCount').textContent=`${num(count)} รายการ`;
+ document.getElementById('storefrontSelectedTotal').textContent=money(total);
+ document.getElementById('storefrontStickyTotal').textContent=money(total);
+}
+const POS_BUSY_KEY='stock_pos_busy';
+function getPosBusyState(){
+ try{
+   const state=JSON.parse(localStorage.getItem(POS_BUSY_KEY)||'null');
+   if(!state)return null;
+   // ป้องกันสถานะค้างเกิน 2 ชั่วโมง
+   if(Date.now()-Number(state.startedAt||0)>7200000){localStorage.removeItem(POS_BUSY_KEY);return null}
+   return state;
+ }catch(e){return null}
+}
+function setPosBusy(isBusy,invoice='',sessionId=''){
+ try{
+   if(isBusy)localStorage.setItem(POS_BUSY_KEY,JSON.stringify({busy:true,invoice:invoice||posInvoice||'',sessionId:sessionId||'',startedAt:Date.now()}));
+   else localStorage.removeItem(POS_BUSY_KEY);
+ }catch(e){}
+}
+function isPosBusy(){return !!getPosBusyState()}
+function showStorefrontQueueMessage(){
+ alert('กำลังคิดเงินให้ลูกค้าท่านอื่นอยู่ โปรดรอสักครู่');
+}
+function addStorefrontItemsToCart(selected){
+ for(const [code,qtyRaw] of selected){
+   const p=products.find(x=>x.barcode===code);if(!p)continue;
+   const qty=Math.min(Number(qtyRaw)||0,Number(p.stock)||0);if(qty<=0)continue;
+   const found=cart.find(x=>x.barcode===code);
+   if(found)found.qty=Math.min(found.qty+qty,Number(p.stock)||0);
+   else cart.push({barcode:p.barcode,name:p.name,price:p.price,unit:p.unit,qty});
+ }
+ posInvoice=createInvoiceNo();
+ saveCart();renderCart();showPage('pos','🛒 หน้าร้าน / คิดเงิน');
+}
+function receiveStorefrontSelection(selected,sessionId=''){
+ // รับคิวเฉพาะหน้าหลักของพนักงานเท่านั้น
+ if(new URLSearchParams(location.search).get('storefront')==='1')return {ok:false,reason:'not-main'};
+ const items=Array.isArray(selected)?selected:[];
+ if(!items.length)return {ok:false,reason:'empty'};
+ if(isPosBusy()||cart.length){
+   if(cart.length&&!isPosBusy())setPosBusy(true,posInvoice,'');
+   return {ok:false,reason:'busy'};
+ }
+ addStorefrontItemsToCart(items);
+ setPosBusy(true,posInvoice,sessionId);
+ showPage('pos','🛒 หน้าร้าน / คิดเงิน');
+ requestAnimationFrame(()=>{
+   renderCart();
+   const search=document.getElementById('posSearch');
+   if(search)search.focus();
+   window.scrollTo({top:0,behavior:'smooth'});
+ });
+ window.focus();
+ return {ok:true,sessionId};
+}
+function consumeStorefrontTransfer(payload){
+ try{
+   const data=typeof payload==='string'?JSON.parse(payload):payload;
+   if(!data||!Array.isArray(data.selected)||!data.selected.length)return false;
+   const result=receiveStorefrontSelection(data.selected,data.sessionId||'');
+   return !!(result&&result.ok);
+ }catch(e){return false}
+}
+function sendStorefrontToPOS(){
+ const selected=Object.entries(storefrontSelection).filter(([,q])=>Number(q)>0);
+ if(!selected.length){alert('กรุณาเลือกสินค้าอย่างน้อย 1 รายการ');return}
+
+ // ตรวจคิวก่อนส่ง เพื่อให้หน้าสินค้าทั้งร้านยังเปิดอยู่
+ if(isPosBusy()){
+   showStorefrontQueueMessage();
+   return;
+ }
+
+ const transfer={selected,sessionId:storefrontSessionId,createdAt:Date.now(),nonce:Math.random().toString(36).slice(2)};
+ let result=null;
+ try{
+   if(window.opener && !window.opener.closed && typeof window.opener.receiveStorefrontSelection==='function'){
+     result=window.opener.receiveStorefrontSelection(selected,storefrontSessionId);
+     window.opener.focus();
+   }
+ }catch(e){}
+
+ if(result&&result.ok){
+   showStorefrontWaiting();
+   return;
+ }
+ if(result&&result.reason==='busy'){
+   showStorefrontQueueMessage();
+   return;
+ }
+
+ // สำรองสำหรับเบราว์เซอร์ที่เรียก window.opener โดยตรงไม่ได้
+ try{
+   if(isPosBusy()){showStorefrontQueueMessage();return}
+   localStorage.setItem('stock_storefront_transfer',JSON.stringify(transfer));
+   showStorefrontWaiting();
+ }catch(e){
+   alert('ไม่สามารถส่งรายการไปหน้าคิดเงินได้ กรุณาลองใหม่');
+ }
+}
+
+function openStorefrontDisplay(){
+ // เปิดหน้าสินค้าทั้งร้านโดยยังไม่จองหรือเพิ่มเลขที่บิล
+ const url=location.href.split('?')[0].split('#')[0]+'?storefront=1';
+ storefrontWindow=window.open(url,'stock_storefront_'+Date.now(),'width=1440,height=900');
+ if(!storefrontWindow){alert('เบราว์เซอร์ปิดกั้นหน้าต่างใหม่ กรุณาอนุญาต Pop-up สำหรับไฟล์นี้');}
+}
+
+function ensureStorefrontStatusLayer(){
+ let layer=document.getElementById('storefrontStatusLayer');
+ if(layer)return layer;
+ layer=document.createElement('div');
+ layer.id='storefrontStatusLayer';
+ layer.style.cssText='display:none;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.82);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:22px';
+ layer.innerHTML='<div style="max-width:520px;width:100%;background:#fff;border-radius:28px;padding:38px 26px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,.35)"><div id="storefrontStatusIcon" style="font-size:64px;margin-bottom:12px">⏳</div><h2 id="storefrontStatusTitle" style="font-size:28px;margin:0 0 10px">กำลังส่งรายการ</h2><p id="storefrontStatusText" style="font-size:17px;line-height:1.7;color:#64748b;margin:0">พนักงานกำลังคิดเงินให้ท่าน โปรดรอสักครู่</p></div>';
+ document.body.appendChild(layer);
+ return layer;
+}
+function showStorefrontWaiting(){
+ const layer=ensureStorefrontStatusLayer();
+ document.getElementById('storefrontStatusIcon').textContent='⏳';
+ document.getElementById('storefrontStatusTitle').textContent='กำลังคิดเงิน';
+ document.getElementById('storefrontStatusText').textContent='พนักงานกำลังคิดเงินให้ท่าน โปรดรอสักครู่';
+ layer.style.display='flex';
+}
+function completeStorefrontOrder(){
+ const layer=ensureStorefrontStatusLayer();
+ storefrontSelection={};
+ storefrontInvoice='รอชำระเงิน';
+ renderStorefrontProducts();
+ document.getElementById('storefrontStatusIcon').textContent='✅';
+ document.getElementById('storefrontStatusTitle').textContent='ชำระเงินเรียบร้อย';
+ document.getElementById('storefrontStatusText').textContent='ขอบคุณที่ใช้บริการ หน้าจอจะพร้อมสำหรับลูกค้าท่านถัดไป';
+ layer.style.display='flex';
+ setTimeout(()=>{layer.style.display='none'},3000);
+}
+function cancelStorefrontWaiting(message='ยกเลิกการคิดเงินแล้ว รายการสินค้ายังอยู่ ท่านสามารถแก้ไขหรือส่งใหม่ได้'){
+ // ไม่ล้างรายการที่ลูกค้าเลือก เพื่อให้แก้ไขและส่งเข้าคิดเงินใหม่ได้
+ renderStorefrontProducts();
+ const layer=ensureStorefrontStatusLayer();
+ document.getElementById('storefrontStatusIcon').textContent='↩️';
+ document.getElementById('storefrontStatusTitle').textContent='ยกเลิกการคิดเงิน';
+ document.getElementById('storefrontStatusText').textContent=message;
+ layer.style.display='flex';
+ setTimeout(()=>{layer.style.display='none'},2800);
+}
+function handleStorefrontQueueCommand(cmd){
+ if(!cmd||cmd.sessionId!==storefrontSessionId)return;
+ if(cmd.type==='PAID')completeStorefrontOrder();
+ if(cmd.type==='CANCELLED')cancelStorefrontWaiting(cmd.message);
+}
+function setupStorefrontQueueListener(){
+ window.addEventListener('storage',e=>{
+   if(e.key==='stock_storefront_command'&&e.newValue){try{handleStorefrontQueueCommand(JSON.parse(e.newValue))}catch(err){}}
+ });
+ if(storefrontQueueChannel)storefrontQueueChannel.onmessage=e=>handleStorefrontQueueCommand(e.data);
+}
+function notifyStorefrontSession(type,sessionId,message=''){
+ if(!sessionId)return;
+ const cmd={type,sessionId,message,at:Date.now(),nonce:Math.random().toString(36).slice(2)};
+ try{localStorage.setItem('stock_storefront_command',JSON.stringify(cmd))}catch(e){}
+ try{if(storefrontQueueChannel)storefrontQueueChannel.postMessage(cmd)}catch(e){}
+}
+
+function setupStorefrontWindow(){
+ const params=new URLSearchParams(location.search);
+ if(params.get('storefront')!=='1')return false;
+ storefrontSessionId='SF-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
+ storefrontInvoice='รอชำระเงิน';
+ document.querySelector('aside').style.display='none';
+ document.querySelector('main').style.padding='18px';
+ document.querySelector('main').style.margin='0';
+ document.querySelector('header').style.display='none';
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById('storefront').classList.add('active');
+ document.querySelector('.layout').style.display='block';
+ document.body.style.background='#eef4f8';
+ renderStorefrontProducts();
+ setupStorefrontQueueListener();
+ return true;
 }
 
 function addBySearch(){
@@ -1120,8 +1567,8 @@ function changeQty(code,delta){
  if(next>p.stock){alert('จำนวนสินค้าในสต๊อกไม่เพียงพอ');return}
  item.qty=next;saveCart();renderCart();
 }
-function removeCart(code){cart=cart.filter(x=>x.barcode!==code);saveCart();renderCart()}
-function clearCart(){if(!cart.length||confirm('ต้องการล้างรายการทั้งหมดหรือไม่?')){cart=[];saveCart();renderCart()}}
+function removeCart(code){cart=cart.filter(x=>x.barcode!==code);if(!cart.length)setPosBusy(false);saveCart();renderCart()}
+function clearCart(){if(!cart.length||confirm('ต้องการยกเลิกการคิดเงินและเคลียร์รายการในหน้าพนักงานหรือไม่?')){const busy=getPosBusyState();if(cart.length&&busy?.sessionId)notifyStorefrontSession('CANCELLED',busy.sessionId,'ยกเลิกการคิดเงินแล้ว รายการสินค้ายังอยู่ ท่านสามารถแก้ไขหรือกดไปหน้าคิดเงินใหม่ได้');cart=[];setPosBusy(false);saveCart();renderCart()}}
 function saveCart(){localStorage.setItem('stock_demo_cart',JSON.stringify(cart))}
 function calcPos(){
  const subtotal=cart.reduce((s,x)=>s+x.price*x.qty,0);
@@ -1281,6 +1728,8 @@ function checkout(){
    if(!p||p.stock<x.qty){alert(`สต๊อกสินค้า ${x.name} ไม่เพียงพอ`);return}
  }
 
+ const activeQueue=getPosBusyState();
+ const activeSessionId=activeQueue?.sessionId||'';
  const invoiceNo=posInvoice;
  const payment=posPayment.value;
  const saleDate=new Date().toISOString().slice(0,10);
@@ -1321,6 +1770,8 @@ function checkout(){
  receiptModal.classList.add('show');
 
  cart=[];
+ notifyStorefrontSession('PAID',activeSessionId);
+ setPosBusy(false);
  posDiscount.value=0;
  posReceived.value=0;
  posCustomer.value='';
@@ -1331,6 +1782,89 @@ function checkout(){
  renderCart();
 }
 
+
+
+let barcodeCameraStream=null;
+let barcodeScanTimer=null;
+let barcodeDetectorInstance=null;
+let barcodeScannerBusy=false;
+let barcodeScannerTarget='product';
+
+async function openBarcodeScanner(target='product'){
+ barcodeScannerTarget=target==='pos'?'pos':'product';
+ const modal=document.getElementById('barcodeScannerModal');
+ const video=document.getElementById('barcodeVideo');
+ const status=document.getElementById('barcodeScannerStatus');
+ if(!modal||!video)return;
+ modal.classList.add('show');
+ status.textContent=barcodeScannerTarget==='pos'?'กำลังเปิดกล้องเพื่อเพิ่มสินค้าเข้าตะกร้า…':'กำลังเปิดกล้อง…';
+ try{
+   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+     throw new Error('เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง');
+   }
+   barcodeCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+   video.srcObject=barcodeCameraStream;
+   await video.play();
+   if(!('BarcodeDetector' in window)){
+     status.innerHTML='เบราว์เซอร์นี้เปิดกล้องได้ แต่ยังไม่รองรับการอ่านบาร์โค้ดอัตโนมัติ<br>แนะนำเปิดด้วย Chrome หรือ Edge รุ่นล่าสุด';
+     return;
+   }
+   let formats;
+   try{formats=await BarcodeDetector.getSupportedFormats();}catch(e){formats=undefined;}
+   const preferred=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','itf','codabar','qr_code'];
+   const useFormats=formats?preferred.filter(x=>formats.includes(x)):preferred;
+   barcodeDetectorInstance=new BarcodeDetector(useFormats.length?{formats:useFormats}:undefined);
+   status.textContent='พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ';
+   barcodeScanTimer=setInterval(scanBarcodeFrame,220);
+ }catch(err){
+   status.innerHTML='ไม่สามารถเปิดกล้องได้<br><small>กรุณาอนุญาตสิทธิ์กล้อง และเปิดผ่าน HTTPS หรือ localhost</small>';
+   console.error(err);
+ }
+}
+
+async function scanBarcodeFrame(){
+ if(barcodeScannerBusy||!barcodeDetectorInstance)return;
+ const video=document.getElementById('barcodeVideo');
+ if(!video||video.readyState<2)return;
+ barcodeScannerBusy=true;
+ try{
+   const codes=await barcodeDetectorInstance.detect(video);
+   if(codes&&codes.length){
+     const value=String(codes[0].rawValue||'').trim();
+     if(value){
+       const field=document.getElementById(barcodeScannerTarget==='pos'?'posSearch':'fBarcode');
+       if(!field)return;
+       field.value=value;
+       field.dispatchEvent(new Event('input',{bubbles:true}));
+       if(navigator.vibrate)navigator.vibrate(120);
+       const status=document.getElementById('barcodeScannerStatus');
+       status.textContent=barcodeScannerTarget==='pos'?'สแกนสำเร็จ กำลังเพิ่มสินค้า: '+value:'สแกนสำเร็จ: '+value;
+       const target=barcodeScannerTarget;
+       setTimeout(()=>{
+         closeBarcodeScanner();
+         field.focus();
+         field.select();
+         if(target==='pos') addBySearch();
+       },350);
+     }
+   }
+ }catch(err){console.debug('barcode scan',err)}
+ finally{barcodeScannerBusy=false}
+}
+
+function closeBarcodeScanner(){
+ if(barcodeScanTimer){clearInterval(barcodeScanTimer);barcodeScanTimer=null;}
+ if(barcodeCameraStream){barcodeCameraStream.getTracks().forEach(t=>t.stop());barcodeCameraStream=null;}
+ const video=document.getElementById('barcodeVideo');
+ if(video)video.srcObject=null;
+ const modal=document.getElementById('barcodeScannerModal');
+ if(modal)modal.classList.remove('show');
+ barcodeDetectorInstance=null;barcodeScannerBusy=false;
+}
+
+document.addEventListener('visibilitychange',()=>{
+ if(document.hidden&&document.getElementById('barcodeScannerModal')?.classList.contains('show'))closeBarcodeScanner();
+});
 
 function generateAutoBarcode(){
  const base=String(Date.now()).slice(-12);
@@ -1361,7 +1895,7 @@ function autoCalculateSellingPrice(){
 }
 
 function refreshCategories(){const current=categoryFilter.value;const cats=[...new Set(products.map(p=>p.category))];categoryFilter.innerHTML='<option value="">ทุกกลุ่มสินค้า</option>'+cats.map(c=>`<option>${c}</option>`).join('');categoryFilter.value=current}
-function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart();renderCustomerDisplay()}
+function refreshAll(){localStorage.setItem('stock_demo_products',JSON.stringify(products));localStorage.setItem('stock_demo_sales',JSON.stringify(SALES));refreshCategories();refreshProductFormOptions();renderDashboard();renderProducts();renderSales();renderLow();renderCart();renderStorefrontProducts();renderCustomerDisplay()}
 function openProductModal(){
  editingBarcode=null;
  priceManuallyEdited=false;
@@ -1394,7 +1928,7 @@ function editProduct(code){
  fMin.value=p.min;
  productModal.classList.add('show');
 }
-function closeModal(){productModal.classList.remove('show')}
+function closeModal(){closeBarcodeScanner();productModal.classList.remove('show')}
 function saveProduct(){
  const p={barcode:fBarcode.value.trim(),name:fName.value.trim(),category:fCategory.value.trim()||'อื่นๆ',unit:fUnit.value.trim()||'ชิ้น',cost:+fCost.value||0,price:+fPrice.value||0,stock:+fStock.value||0,min:+fMin.value||0};
  if(!p.barcode||!p.name){alert('กรุณากรอกบาร์โค้ดและชื่อสินค้า');return}
@@ -1415,7 +1949,43 @@ document.getElementById('fPrice').addEventListener('dblclick',()=>{
  }
 });
 
+
+// รับสินค้าจากหน้าต่างสินค้าทั้งร้านเฉพาะ “หน้าหลัก” เท่านั้น
+// ป้องกันไม่ให้หน้าสินค้าทั้งร้านของลูกค้าคนอื่นสลับไปหน้าคิดเงินตามกัน
+function isMainPOSWindow(){
+ const params=new URLSearchParams(location.search);
+ return params.get('storefront')!=='1' && params.get('customer')!=='1';
+}
+window.addEventListener('message',event=>{
+ if(!isMainPOSWindow())return;
+ const msg=event.data;
+ if(msg&&msg.type==='STOREFRONT_TO_POS'){
+   const ok=consumeStorefrontTransfer(msg.payload);
+   try{event.source&&event.source.postMessage({type:'STOREFRONT_TO_POS_RESULT',ok,reason:ok?'':'busy'},'*')}catch(e){}
+ }
+});
+window.addEventListener('storage',event=>{
+ if(!isMainPOSWindow())return;
+ if(event.key==='stock_storefront_transfer'&&event.newValue){
+   if(consumeStorefrontTransfer(event.newValue)){
+     try{localStorage.removeItem('stock_storefront_transfer')}catch(e){}
+   }
+ }
+});
+// ตรวจรายการค้างเมื่อหน้าหลักกลับมาโฟกัส
+window.addEventListener('focus',()=>{
+ if(new URLSearchParams(location.search).get('storefront')==='1')return;
+ try{
+   const pending=localStorage.getItem('stock_storefront_transfer');
+   if(pending&&consumeStorefrontTransfer(pending))localStorage.removeItem('stock_storefront_transfer');
+ }catch(e){}
+});
+
 const isCustomerWindow=setupCustomerWindow();
-if(!isCustomerWindow)refreshAll();
+const isStorefrontWindow=!isCustomerWindow&&setupStorefrontWindow();
+if(!isCustomerWindow&&!isStorefrontWindow){
+ if(cart.length)setPosBusy(true,posInvoice);else setPosBusy(false);
+ refreshAll();
+}
 </script>
 </body></html>
