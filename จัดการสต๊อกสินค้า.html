@@ -511,7 +511,9 @@ main{max-width:1700px;width:100%;margin:0 auto}
 .btn-scan-pos:hover{background:#dbeafe;border-color:#93c5fd}
 .pos-search{align-items:center}
 .pos-search input{min-width:180px}
-.scanner-card{width:min(520px,100%);padding:18px}
+#barcodeScannerModal{z-index:13000!important}
+#barcodeScannerModal.show{display:flex!important}
+.scanner-card{width:min(520px,100%);padding:18px;position:relative;z-index:13001}
 .scanner-stage{position:relative;background:#08111f;border-radius:18px;overflow:hidden;aspect-ratio:4/3;margin-top:12px}
 .scanner-stage video{width:100%;height:100%;object-fit:cover;display:block}
 .scanner-frame{position:absolute;left:9%;right:9%;top:28%;height:34%;border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.35)}
@@ -777,6 +779,7 @@ html.storefront-customer-root #storefront .storefront-toolbar{position:sticky!im
 }
 
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.21.3/umd/index.min.js"></script>
 </head>
 <body>
 <div class="layout">
@@ -1087,7 +1090,12 @@ html.storefront-customer-root #storefront .storefront-toolbar{position:sticky!im
     <div class="scanner-frame"></div><div class="scanner-line"></div>
   </div>
   <div id="barcodeScannerStatus" class="scanner-status">กำลังเปิดกล้อง…</div>
-  <div style="display:flex;justify-content:center;margin-top:12px"><button class="btn btn-light" type="button" onclick="closeBarcodeScanner()">ยกเลิก</button></div>
+  <input id="barcodePhotoInput" type="file" accept="image/*" capture="environment" hidden onchange="decodeBarcodePhoto(this)">
+  <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="btn btn-primary" type="button" onclick="retryBarcodeCamera()">↻ เปิดกล้องอีกครั้ง</button>
+    <button class="btn btn-light" type="button" onclick="document.getElementById('barcodePhotoInput').click()">📷 ถ่ายรูปบาร์โค้ด</button>
+    <button class="btn btn-light" type="button" onclick="closeBarcodeScanner()">ยกเลิก</button>
+  </div>
 </div></div>
 
 <div class="modal" id="promptPayModal"><div class="modal-card promptpay-settings-card">
@@ -2192,79 +2200,158 @@ function checkout(){
 let barcodeCameraStream=null;
 let barcodeScanTimer=null;
 let barcodeDetectorInstance=null;
+let barcodeZXingReader=null;
 let barcodeScannerBusy=false;
 let barcodeScannerTarget='product';
+let barcodeResultLocked=false;
+
+function applyScannedBarcode(value){
+ value=String(value||'').trim();
+ if(!value||barcodeResultLocked)return;
+ barcodeResultLocked=true;
+ const field=document.getElementById(barcodeScannerTarget==='pos'?'posSearch':'fBarcode');
+ if(!field){barcodeResultLocked=false;return;}
+ field.value=value;
+ field.dispatchEvent(new Event('input',{bubbles:true}));
+ if(navigator.vibrate)navigator.vibrate(120);
+ const status=document.getElementById('barcodeScannerStatus');
+ if(status)status.textContent=barcodeScannerTarget==='pos'?'สแกนสำเร็จ กำลังเพิ่มสินค้า: '+value:'สแกนสำเร็จ: '+value;
+ const target=barcodeScannerTarget;
+ setTimeout(()=>{
+   closeBarcodeScanner();
+   field.focus();
+   try{field.select()}catch(e){}
+   if(target==='pos')addBySearch();
+ },300);
+}
+
+async function requestBarcodeCamera(){
+ const attempts=[
+   {video:{facingMode:{exact:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false},
+   {video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false},
+   {video:true,audio:false}
+ ];
+ let lastError=null;
+ for(const constraints of attempts){
+   try{return await navigator.mediaDevices.getUserMedia(constraints)}catch(err){lastError=err}
+ }
+ throw lastError||new Error('camera unavailable');
+}
+
+
+async function retryBarcodeCamera(){
+ const target=barcodeScannerTarget||'product';
+ await openBarcodeScanner(target);
+}
+
+async function decodeBarcodePhoto(input){
+ const status=document.getElementById('barcodeScannerStatus');
+ const file=input&&input.files&&input.files[0];
+ if(!file)return;
+ if(status)status.textContent='กำลังอ่านบาร์โค้ดจากรูปภาพ…';
+ try{
+   if(!(window.ZXing&&ZXing.BrowserMultiFormatReader))throw new Error('ZXING_NOT_READY');
+   const url=URL.createObjectURL(file);
+   const img=new Image();
+   img.onload=async()=>{
+     try{
+       const reader=new ZXing.BrowserMultiFormatReader();
+       const result=await reader.decodeFromImageElement(img);
+       try{reader.reset()}catch(e){}
+       URL.revokeObjectURL(url);
+       applyScannedBarcode(result.getText?result.getText():result.text);
+     }catch(err){
+       URL.revokeObjectURL(url);
+       if(status)status.innerHTML='ยังอ่านบาร์โค้ดจากภาพไม่ได้<br><small>ถ่ายให้บาร์โค้ดชัด เต็มกรอบ และไม่มีแสงสะท้อน</small>';
+     }
+   };
+   img.onerror=()=>{URL.revokeObjectURL(url);if(status)status.textContent='ไม่สามารถเปิดรูปภาพได้';};
+   img.src=url;
+ }catch(err){
+   if(status)status.innerHTML='ตัวอ่านรูปภาพยังโหลดไม่สำเร็จ<br><small>กรุณาเชื่อมต่ออินเทอร์เน็ต แล้วเปิดไฟล์ใหม่อีกครั้ง</small>';
+ }
+ input.value='';
+}
 
 async function openBarcodeScanner(target='product'){
+ closeBarcodeScanner();
  barcodeScannerTarget=target==='pos'?'pos':'product';
+ barcodeResultLocked=false;
  const modal=document.getElementById('barcodeScannerModal');
  const video=document.getElementById('barcodeVideo');
  const status=document.getElementById('barcodeScannerStatus');
  if(!modal||!video)return;
  modal.classList.add('show');
- status.textContent=barcodeScannerTarget==='pos'?'กำลังเปิดกล้องเพื่อเพิ่มสินค้าเข้าตะกร้า…':'กำลังเปิดกล้อง…';
+ modal.style.zIndex='13000';
+ if(status)status.textContent=barcodeScannerTarget==='pos'?'กำลังเปิดกล้องเพื่อเพิ่มสินค้าเข้าตะกร้า…':'กำลังเปิดกล้อง…';
  try{
-   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
-     throw new Error('เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง');
-   }
-   barcodeCameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false});
+   if(!window.isSecureContext&&location.protocol!=='file:')throw new Error('INSECURE_CONTEXT');
+   if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw new Error('NO_CAMERA_API');
+   barcodeCameraStream=await requestBarcodeCamera();
    video.srcObject=barcodeCameraStream;
+   video.setAttribute('playsinline','');
+   video.muted=true;
    await video.play();
-   if(!('BarcodeDetector' in window)){
-     status.innerHTML='เบราว์เซอร์นี้เปิดกล้องได้ แต่ยังไม่รองรับการอ่านบาร์โค้ดอัตโนมัติ<br>แนะนำเปิดด้วย Chrome หรือ Edge รุ่นล่าสุด';
+
+   if('BarcodeDetector' in window){
+     let formats;
+     try{formats=await BarcodeDetector.getSupportedFormats()}catch(e){formats=undefined}
+     const preferred=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','itf','codabar','qr_code'];
+     const useFormats=formats?preferred.filter(x=>formats.includes(x)):preferred;
+     barcodeDetectorInstance=new BarcodeDetector(useFormats.length?{formats:useFormats}:undefined);
+     if(status)status.textContent='พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ';
+     barcodeScanTimer=setInterval(scanBarcodeFrame,220);
      return;
    }
-   let formats;
-   try{formats=await BarcodeDetector.getSupportedFormats();}catch(e){formats=undefined;}
-   const preferred=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','itf','codabar','qr_code'];
-   const useFormats=formats?preferred.filter(x=>formats.includes(x)):preferred;
-   barcodeDetectorInstance=new BarcodeDetector(useFormats.length?{formats:useFormats}:undefined);
-   status.textContent='พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ';
-   barcodeScanTimer=setInterval(scanBarcodeFrame,220);
+
+   if(window.ZXing&&ZXing.BrowserMultiFormatReader){
+     barcodeCameraStream.getTracks().forEach(t=>t.stop());
+     barcodeCameraStream=null;
+     video.srcObject=null;
+     barcodeZXingReader=new ZXing.BrowserMultiFormatReader();
+     if(status)status.textContent='พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ';
+     barcodeZXingReader.decodeFromVideoDevice(undefined,video,(result,err)=>{
+       if(result)applyScannedBarcode(result.getText ? result.getText() : result.text);
+     });
+     return;
+   }
+
+   if(status)status.innerHTML='เปิดกล้องได้ แต่ตัวอ่านบาร์โค้ดสำรองโหลดไม่สำเร็จ<br><small>กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วเปิดหน้านี้ใหม่</small>';
  }catch(err){
-   status.innerHTML='ไม่สามารถเปิดกล้องได้<br><small>กรุณาอนุญาตสิทธิ์กล้อง และเปิดผ่าน HTTPS หรือ localhost</small>';
    console.error(err);
+   let detail=location.protocol==='file:'?'เบราว์เซอร์อาจไม่อนุญาตกล้องเมื่อเปิดไฟล์ HTML โดยตรง กรุณาใช้ปุ่ม ถ่ายรูปบาร์โค้ด ด้านล่าง หรือเปิดผ่าน HTTPS':'กรุณาอนุญาตสิทธิ์กล้องในเบราว์เซอร์';
+   if(err&&err.message==='INSECURE_CONTEXT')detail='ต้องเปิดผ่าน HTTPS หรือ localhost';
+   else if(err&&(err.name==='NotAllowedError'||err.name==='PermissionDeniedError'))detail='สิทธิ์กล้องถูกปฏิเสธ กรุณาอนุญาตกล้องในการตั้งค่าเว็บไซต์';
+   else if(err&&(err.name==='NotFoundError'||err.name==='DevicesNotFoundError'))detail='ไม่พบกล้องในอุปกรณ์นี้';
+   else if(err&&(err.name==='NotReadableError'||err.name==='TrackStartError'))detail='กล้องกำลังถูกใช้งานโดยแอปอื่น กรุณาปิดแอปกล้องแล้วลองใหม่';
+   if(status)status.innerHTML='ไม่สามารถเปิดกล้องได้<br><small>'+detail+'</small>';
  }
 }
 
 async function scanBarcodeFrame(){
- if(barcodeScannerBusy||!barcodeDetectorInstance)return;
+ if(barcodeScannerBusy||!barcodeDetectorInstance||barcodeResultLocked)return;
  const video=document.getElementById('barcodeVideo');
  if(!video||video.readyState<2)return;
  barcodeScannerBusy=true;
  try{
    const codes=await barcodeDetectorInstance.detect(video);
-   if(codes&&codes.length){
-     const value=String(codes[0].rawValue||'').trim();
-     if(value){
-       const field=document.getElementById(barcodeScannerTarget==='pos'?'posSearch':'fBarcode');
-       if(!field)return;
-       field.value=value;
-       field.dispatchEvent(new Event('input',{bubbles:true}));
-       if(navigator.vibrate)navigator.vibrate(120);
-       const status=document.getElementById('barcodeScannerStatus');
-       status.textContent=barcodeScannerTarget==='pos'?'สแกนสำเร็จ กำลังเพิ่มสินค้า: '+value:'สแกนสำเร็จ: '+value;
-       const target=barcodeScannerTarget;
-       setTimeout(()=>{
-         closeBarcodeScanner();
-         field.focus();
-         field.select();
-         if(target==='pos') addBySearch();
-       },350);
-     }
-   }
+   if(codes&&codes.length)applyScannedBarcode(codes[0].rawValue);
  }catch(err){console.debug('barcode scan',err)}
  finally{barcodeScannerBusy=false}
 }
 
 function closeBarcodeScanner(){
- if(barcodeScanTimer){clearInterval(barcodeScanTimer);barcodeScanTimer=null;}
- if(barcodeCameraStream){barcodeCameraStream.getTracks().forEach(t=>t.stop());barcodeCameraStream=null;}
+ if(barcodeScanTimer){clearInterval(barcodeScanTimer);barcodeScanTimer=null}
+ if(barcodeZXingReader){try{barcodeZXingReader.reset()}catch(e){} barcodeZXingReader=null}
+ if(barcodeCameraStream){barcodeCameraStream.getTracks().forEach(t=>t.stop());barcodeCameraStream=null}
  const video=document.getElementById('barcodeVideo');
- if(video)video.srcObject=null;
+ if(video){try{video.pause()}catch(e){} video.srcObject=null}
  const modal=document.getElementById('barcodeScannerModal');
  if(modal)modal.classList.remove('show');
- barcodeDetectorInstance=null;barcodeScannerBusy=false;
+ barcodeDetectorInstance=null;
+ barcodeScannerBusy=false;
+ barcodeResultLocked=false;
+ const photo=document.getElementById('barcodePhotoInput'); if(photo)photo.value='';
 }
 
 document.addEventListener('visibilitychange',()=>{
