@@ -110,7 +110,11 @@ td{padding:12px;border-bottom:1px solid #eef1f5}tr:last-child td{border-bottom:0
 .pos-layout{gap:18px}.pos-main,.pos-summary{padding:20px}
 .pos-summary{position:sticky;top:118px;height:max-content}
 .pos-search{padding:12px;background:#f8fafc;border:1px solid #edf0f5;border-radius:14px}
-.quick-products{gap:11px}
+.quick-products{gap:11px;max-height:385px;overflow-y:auto;overflow-x:hidden;padding-right:7px;align-content:start;scrollbar-gutter:stable}
+.quick-products::-webkit-scrollbar{width:8px}
+.quick-products::-webkit-scrollbar-track{background:#eef2f7;border-radius:999px}
+.quick-products::-webkit-scrollbar-thumb{background:#b8c3d1;border-radius:999px}
+.quick-products::-webkit-scrollbar-thumb:hover{background:#94a3b8}
 .quick-item{border:1px solid #e4e9f1;background:linear-gradient(180deg,#ffffff,#f8fbff);border-radius:14px;padding:13px;min-height:88px;transition:.18s ease}
 .quick-item:hover{transform:translateY(-2px);border-color:#93c5fd;box-shadow:0 10px 22px rgba(37,99,235,.12)}
 .quick-item b{font-size:13.5px;color:#1e293b}.quick-item small{display:block;margin-top:6px}
@@ -433,6 +437,18 @@ table{
 .monthly-track{height:16px;border-radius:999px;background:#e8edf5;overflow:hidden}
 .monthly-fill{height:100%;min-width:0;border-radius:999px;background:linear-gradient(90deg,#2563eb,#7c3aed);transition:width .35s ease}
 .monthly-amount{text-align:right;font-weight:800}
+
+.sales-goal-panel{margin-top:14px;padding:16px;border:1px solid #dbeafe;border-radius:18px;background:linear-gradient(135deg,#eff6ff 0%,#f5f3ff 100%);box-shadow:0 10px 24px rgba(37,99,235,.08)}
+.sales-goal-top{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.sales-goal-title{font-size:13px;font-weight:800;color:#475569}
+.sales-goal-value{font-size:24px;font-weight:900;color:#1d4ed8;margin-top:3px}
+.sales-goal-control{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sales-goal-control input{width:170px;text-align:right;font-weight:800}
+.sales-goal-track{height:18px;margin-top:14px;border-radius:999px;background:#dbe4f0;overflow:hidden}
+.sales-goal-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#2563eb,#7c3aed,#ec4899);transition:width .45s ease}
+.sales-goal-meta{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:12px;color:#64748b}
+.sales-goal-percent{font-weight:900;color:#4338ca}
+@media(max-width:768px){.sales-goal-control{width:100%}.sales-goal-control input{flex:1;width:auto}.sales-goal-value{font-size:21px}}
 .stock-product-list{max-height:390px;overflow:auto;padding-right:4px}
 .stock-product-row{display:grid;grid-template-columns:minmax(120px,1fr) 85px 120px;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
 .stock-product-row:last-child{border-bottom:0}
@@ -445,6 +461,24 @@ table{
  .monthly-row{grid-template-columns:82px minmax(90px,1fr) 100px;gap:7px;font-size:12px}
  .stock-product-row{grid-template-columns:minmax(100px,1fr) 55px 95px;font-size:13px}
 }
+
+
+/* ===== Modern Dashboard Redesign ===== */
+:root{--dash-navy:#102a43;--dash-blue:#2563eb;--dash-cyan:#06b6d4;--dash-violet:#7c3aed;--dash-orange:#f59e0b;--dash-soft:#eef4ff}
+body{background:linear-gradient(180deg,#f8fbff 0,#f3f7fb 48%,#eef3f8 100%);letter-spacing:.01em}
+main{max-width:1700px;width:100%;margin:0 auto}
+.dashboard-modern{animation:dashFade .35s ease}
+@keyframes dashFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.dashboard-hero{position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:18px;padding:26px 28px;border-radius:24px;background:linear-gradient(125deg,#0f766e 0%,#0e7490 48%,#2563eb 100%);color:#fff;box-shadow:0 18px 45px rgba(15,118,110,.2)}
+.dashboard-hero:before,.dashboard-hero:after{content:"";position:absolute;border-radius:50%;background:rgba(255,255,255,.09)}
+.dashboard-hero:before{width:230px;height:230px;right:-65px;top:-130px}.dashboard-hero:after{width:130px;height:130px;right:150px;bottom:-100px}
+.dashboard-hero>*{position:relative;z-index:1}.hero-eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.82}.dashboard-hero h2{margin:6px 0 8px;font-size:30px}.dashboard-hero p{margin:0;opacity:.84;max-width:650px}.hero-badge{display:flex;align-items:center;gap:8px;white-space:nowrap;padding:10px 14px;border:1px solid rgba(255,255,255,.24);background:rgba(255,255,255,.12);backdrop-filter:blur(8px);border-radius:999px;font-size:12px;font-weight:700}.hero-dot{width:9px;height:9px;background:#86efac;border-radius:50%;box-shadow:0 0 0 5px rgba(134,239,172,.15)}
+.modern-kpi-grid{gap:16px}.modern-kpi{position:relative;display:flex;align-items:center;gap:15px;min-height:138px;border:0;border-radius:22px;padding:21px;overflow:hidden;box-shadow:0 12px 32px rgba(15,35,52,.08);transition:.25s ease}.modern-kpi:hover{transform:translateY(-4px);box-shadow:0 18px 38px rgba(15,35,52,.13)}.modern-kpi:after{content:"";position:absolute;width:90px;height:90px;border-radius:50%;right:-35px;bottom:-42px;background:currentColor;opacity:.06}.modern-kpi .kpi-icon{flex:0 0 52px;height:52px;display:grid;place-items:center;border-radius:17px;font-size:23px;font-weight:900;color:#fff;box-shadow:0 9px 18px rgba(15,23,42,.14)}.modern-kpi .value{font-size:27px;margin-top:5px;color:#0f172a}.modern-kpi .label{font-weight:800;color:#475569}.modern-kpi .hint{line-height:1.4}.kpi-sales .kpi-icon{background:linear-gradient(135deg,#2563eb,#06b6d4)}.kpi-profit .kpi-icon{background:linear-gradient(135deg,#16a34a,#22c55e)}.kpi-stock .kpi-icon{background:linear-gradient(135deg,#7c3aed,#a855f7)}.kpi-alert .kpi-icon{background:linear-gradient(135deg,#f97316,#f59e0b)}
+.dashboard-content-grid{grid-template-columns:minmax(320px,.85fr) minmax(520px,1.45fr);gap:16px;margin-top:16px}.dashboard-panel{border:0;border-radius:22px;padding:21px;box-shadow:0 12px 32px rgba(15,35,52,.075)}.panel-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}.panel-heading .section-title{margin:0;font-size:18px;color:#0f172a}.panel-subtitle{font-size:12px;color:#8291a5;margin-top:5px}.panel-icon{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:#eef4ff;color:#2563eb;font-size:18px;font-weight:900}.modern-goal-panel{border:0;background:linear-gradient(135deg,#f8fbff,#eef6ff);border-radius:18px;padding:18px;box-shadow:inset 0 0 0 1px #e3ebf5}.modern-goal-control label{display:block;margin:0 0 8px;font-weight:800;color:#475569;font-size:12px}.goal-input-row{display:flex;gap:8px}.goal-input-row input{min-width:160px;background:#fff;border:1px solid #dce6f2;border-radius:12px;padding:11px 12px;font-weight:800;color:#0f172a}.goal-input-row .btn{border-radius:12px;padding-inline:18px}.sales-goal-value{background:linear-gradient(90deg,#0f766e,#2563eb);-webkit-background-clip:text;background-clip:text;color:transparent;font-size:30px}.sales-goal-track{height:13px;background:#dfe9f4;border-radius:999px;box-shadow:inset 0 2px 4px rgba(15,23,42,.06)}.sales-goal-fill{background:linear-gradient(90deg,#10b981,#06b6d4,#2563eb);box-shadow:0 4px 12px rgba(37,99,235,.22)}.sales-goal-percent{background:#fff;color:#2563eb;border:1px solid #dbe8ff;border-radius:999px;padding:5px 10px;font-weight:900}.monthly-bars{margin-top:18px;padding-top:4px}.bar-row{grid-template-columns:88px 1fr 96px;padding:4px 0;margin:8px 0}.bar{height:12px;background:#edf2f7}.bar span{background:linear-gradient(90deg,#14b8a6,#2563eb);box-shadow:0 3px 9px rgba(37,99,235,.2)}
+.recent-sales-panel{margin-top:16px}.recent-sales-panel .table-wrap{border:0;border-radius:16px;box-shadow:inset 0 0 0 1px #e7edf4}.recent-sales-panel th{background:#f1f6fb;color:#486174;text-transform:none}.recent-sales-panel tr:last-child td{border-bottom:0}
+.btn{transition:.2s ease}.btn:hover{transform:translateY(-1px);filter:brightness(1.03)}.btn-primary{background:linear-gradient(135deg,#0f766e,#0e7490);box-shadow:0 7px 16px rgba(15,118,110,.18)}
+@media(max-width:1150px){.dashboard-content-grid{grid-template-columns:1fr}.dashboard-hero{align-items:flex-start}.modern-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:768px){.dashboard-hero{padding:20px;border-radius:19px;display:block}.dashboard-hero h2{font-size:24px}.hero-badge{margin-top:16px;display:inline-flex}.modern-kpi-grid{grid-template-columns:1fr!important}.modern-kpi{min-height:112px;padding:17px}.dashboard-panel{padding:15px;border-radius:18px}.sales-goal-top{display:block}.modern-goal-control{margin-top:14px}.goal-input-row{display:grid;grid-template-columns:1fr auto}.goal-input-row input{min-width:0}.bar-row{grid-template-columns:70px 1fr 75px}.dashboard-content-grid{display:grid!important;grid-template-columns:1fr!important}.panel-heading{margin-bottom:14px}}
 
 </style>
 </head>
@@ -468,38 +502,52 @@ table{
   <button class="btn btn-primary" onclick="openProductModal()">+ เพิ่มสินค้า</button>
 </header>
 
-<section id="dashboard" class="page active">
-  <div class="grid">
-    <div class="card kpi"><div class="label">ยอดขายทั้งหมด</div><div class="value" id="kpiSales">0</div><div class="hint">จากประวัติรายการขายในไฟล์</div></div>
-    <div class="card kpi"><div class="label">กำไรขั้นต้น</div><div class="value" id="kpiProfit">0</div><div class="hint">คำนวณจากรายการขาย</div></div>
-    <div class="card kpi"><div class="label">มูลค่าสต๊อก</div><div class="value" id="kpiStockValue">0</div><div class="hint">จำนวนคงเหลือ × ต้นทุน</div></div>
-    <div class="card kpi"><div class="label">รายการที่ต้องจัดซื้อ</div><div class="value" id="kpiLow">0</div><div class="hint">อ้างอิงจากจำนวนขั้นต่ำในสินค้าและสต๊อก</div></div>
-  </div>
-  <div class="two">
-    <div class="card"><div class="section-title">สินค้าขายดีที่สุด</div><div id="topStock"></div></div>
-    <div class="card"><div class="section-title">มูลค่าสต๊อกแยกตามสินค้า</div><div id="categorySummary"></div></div>
+<section id="dashboard" class="page active dashboard-modern">
+  <div class="dashboard-hero">
+    <div>
+      <div class="hero-eyebrow">ภาพรวมกิจการ</div>
+      <h2>Dashboard การขายและสต๊อก</h2>
+      <p>ติดตามยอดขาย กำไร สินค้าคงเหลือ และเป้าหมายของร้านในหน้าเดียว</p>
+    </div>
+    <div class="hero-badge"><span class="hero-dot"></span>ข้อมูลอัปเดตจากรายการล่าสุด</div>
   </div>
 
-  <div class="card" style="margin-top:14px">
-    <div class="monthly-head">
-      <div>
-        <div class="section-title" style="margin-bottom:3px">สรุปยอดขายรายเดือนย้อนหลัง 12 เดือน</div>
-        <div class="monthly-sub">แสดงยอดขายรวมของแต่ละเดือน</div>
-      </div>
-      <button class="btn btn-light" id="toggleMonthlyBtn" onclick="toggleMonthlySummary()">เปิดดูรายเดือน</button>
+  <div class="grid modern-kpi-grid">
+    <div class="card kpi modern-kpi kpi-sales"><div class="kpi-icon">฿</div><div><div class="label">ยอดขายทั้งหมด</div><div class="value" id="kpiSales">0</div><div class="hint">จากประวัติรายการขายทั้งหมด</div></div></div>
+    <div class="card kpi modern-kpi kpi-profit"><div class="kpi-icon">↗</div><div><div class="label">กำไรขั้นต้น</div><div class="value" id="kpiProfit">0</div><div class="hint">คำนวณจากราคาขายและต้นทุน</div></div></div>
+    <div class="card kpi modern-kpi kpi-stock"><div class="kpi-icon">▣</div><div><div class="label">มูลค่าสต๊อก</div><div class="value" id="kpiStockValue">0</div><div class="hint">จำนวนคงเหลือ × ราคาทุน</div></div></div>
+    <div class="card kpi modern-kpi kpi-alert"><div class="kpi-icon">!</div><div><div class="label">รายการที่ต้องจัดซื้อ</div><div class="value" id="kpiLow">0</div><div class="hint">ต่ำกว่าจำนวนขั้นต่ำที่กำหนด</div></div></div>
+  </div>
+
+  <div class="two dashboard-content-grid">
+    <div class="card dashboard-panel">
+      <div class="panel-heading"><div><div class="section-title">สินค้าขายดีที่สุด</div><div class="panel-subtitle">เรียงตามจำนวนที่ขายได้มากที่สุด</div></div><div class="panel-icon">★</div></div>
+      <div id="topStock"></div>
     </div>
-    <div id="monthlySummaryArea" style="display:none">
-      <div id="monthlySalesBars" class="monthly-bars"></div>
-      <div class="table-wrap" style="margin-top:14px">
-        <table class="monthly-table">
-          <thead><tr><th>เดือน</th><th>จำนวนรายการขาย</th><th>ยอดขายรวม</th></tr></thead>
-          <tbody id="monthlySalesRows"></tbody>
-        </table>
+    <div class="card dashboard-panel monthly-panel">
+      <div class="panel-heading monthly-head">
+        <div><div class="section-title">ยอดขายย้อนหลัง 12 เดือน</div><div class="panel-subtitle">เปรียบเทียบยอดขายและติดตามเป้าหมายเดือนปัจจุบัน</div></div>
+        <div class="panel-icon">▥</div>
       </div>
+      <div class="sales-goal-panel modern-goal-panel">
+        <div class="sales-goal-top">
+          <div class="goal-current"><div class="sales-goal-title">ยอดขายเดือนปัจจุบัน</div><div class="sales-goal-value" id="currentMonthSales">฿0</div></div>
+          <div class="sales-goal-control modern-goal-control">
+            <label for="monthlySalesTarget">กำหนดเป้าหมายยอดขาย</label>
+            <div class="goal-input-row"><input id="monthlySalesTarget" type="number" min="0" step="100" value="50000" oninput="updateSalesGoalProgress()"><button class="btn btn-primary" onclick="saveMonthlySalesTarget()">บันทึก</button></div>
+          </div>
+        </div>
+        <div class="sales-goal-track"><div id="salesGoalFill" class="sales-goal-fill"></div></div>
+        <div class="sales-goal-meta"><span id="salesGoalRemaining">เหลืออีก ฿0 ถึงเป้าหมาย</span><span id="salesGoalPercent" class="sales-goal-percent">0%</span></div>
+      </div>
+      <div id="monthlySummaryArea"><div id="monthlySalesBars" class="monthly-bars"></div></div>
     </div>
   </div>
 
-  <div class="card" style="margin-top:14px"><div class="section-title">รายการขายล่าสุด</div><div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead><tbody id="recentSales"></tbody></table></div></div>
+  <div class="card dashboard-panel recent-sales-panel">
+    <div class="panel-heading"><div><div class="section-title">รายการขายล่าสุด</div><div class="panel-subtitle">ตรวจสอบรายการขายที่บันทึกล่าสุด</div></div><div class="panel-icon">◷</div></div>
+    <div class="table-wrap"><table><thead><tr><th>เลขที่</th><th>วันที่</th><th>สินค้า</th><th>จำนวน</th><th>ชำระเงิน</th><th>ยอดรวม</th></tr></thead><tbody id="recentSales"></tbody></table></div>
+  </div>
 </section>
 
 
@@ -626,7 +674,7 @@ table{
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <button class="btn btn-light" onclick="selectAllPurchase()">เลือกทั้งหมด</button>
         <button class="btn btn-light" onclick="clearPurchaseSelection()">ยกเลิกการเลือก</button>
-        <button class="btn btn-primary" onclick="exportPurchasePDF()">ส่งออก PDF</button>
+        <button class="btn btn-primary" onclick="exportPurchasePDF()">ออก PDF / พิมพ์ทันที</button>
       </div>
     </div>
 
@@ -766,7 +814,8 @@ function renderDashboard(){
  const stockItems=[...products]
    .map(p=>({...p,stockValue:(Number(p.cost)||0)*(Number(p.stock)||0)}))
    .sort((a,b)=>b.stockValue-a.stockValue);
- categorySummary.innerHTML=stockItems.length?`
+ const categorySummaryEl=document.getElementById('categorySummary');
+ if(categorySummaryEl) categorySummaryEl.innerHTML=stockItems.length?`
    <div class="stock-product-list">
      ${stockItems.map(p=>`
        <div class="stock-product-row">
@@ -816,20 +865,33 @@ function renderMonthlySales(){
      <div class="monthly-amount">${money(x.total)}</div>
    </div>`).join('');
 
- monthlySalesRows.innerHTML=data.map(x=>`
-   <tr>
-     <td>${x.label}</td>
-     <td>${num(x.count)}</td>
-     <td><b>${money(x.total)}</b></td>
-   </tr>`).join('');
+ const current=data[data.length-1]?.total||0;
+ window.currentMonthSalesTotal=current;
+ const targetInput=document.getElementById('monthlySalesTarget');
+ if(targetInput) targetInput.value=Number(localStorage.getItem('stock_monthly_sales_target')||50000);
+ updateSalesGoalProgress();
 }
 
-function toggleMonthlySummary(){
- const area=document.getElementById('monthlySummaryArea');
- const btn=document.getElementById('toggleMonthlyBtn');
- const open=area.style.display==='none'||!area.style.display;
- area.style.display=open?'block':'none';
- btn.textContent=open?'ซ่อนรายเดือน':'เปิดดูรายเดือน';
+function saveMonthlySalesTarget(){
+ const input=document.getElementById('monthlySalesTarget');
+ const target=Math.max(0,Number(input?.value)||0);
+ localStorage.setItem('stock_monthly_sales_target',String(target));
+ updateSalesGoalProgress();
+}
+
+function updateSalesGoalProgress(){
+ const current=Number(window.currentMonthSalesTotal)||0;
+ const target=Math.max(0,Number(document.getElementById('monthlySalesTarget')?.value)||0);
+ const percent=target>0?(current/target)*100:0;
+ const remaining=Math.max(target-current,0);
+ const currentEl=document.getElementById('currentMonthSales');
+ const fill=document.getElementById('salesGoalFill');
+ const remainingEl=document.getElementById('salesGoalRemaining');
+ const percentEl=document.getElementById('salesGoalPercent');
+ if(currentEl) currentEl.textContent=money(current);
+ if(fill) fill.style.width=`${Math.min(percent,100)}%`;
+ if(remainingEl) remainingEl.textContent=target<=0?'กรุณากำหนดเป้าหมายยอดขาย':remaining>0?`เหลืออีก ${money(remaining)} ถึงเป้าหมาย`:`เกินเป้าหมายแล้ว ${money(current-target)}`;
+ if(percentEl) percentEl.textContent=target>0?`${percent.toFixed(percent>=100?0:1)}%`:'0%';
 }
 
 function renderProducts(){
@@ -970,36 +1032,62 @@ function clearPurchaseSelection(){togglePurchaseAll(false)}
 function getSelectedPurchaseData(){
  return [...document.querySelectorAll('.purchase-select:checked')].map(cb=>{
    const p=products.find(x=>x.barcode===cb.value);
-   const qty=Number(document.querySelector(`input[data-buy-code="${cb.value}"]`)?.value)||0;
-   return {...p,buyQty:qty,lineTotal:qty*(p?.cost||0)};
- }).filter(x=>x&&x.buyQty>0);
+   if(!p)return null;
+   const raw=(document.querySelector(`input[data-buy-code="${cb.value}"]`)?.value||'').trim();
+   const qty=raw===''?'':Math.max(0,Number(raw)||0);
+   return {...p,buyQty:qty};
+ }).filter(Boolean);
 }
 function exportPurchasePDF(){
  const rows=getSelectedPurchaseData();
- if(!rows.length){alert('กรุณาเลือกรายการและระบุจำนวนที่ต้องการซื้อ');return}
+ if(!rows.length){alert('กรุณาเลือกรายการสินค้าอย่างน้อย 1 รายการ');return}
  const now=new Date();
- purchasePrintArea.innerHTML=`
+ const docHtml=`
    <h1>รายการสินค้าที่ต้องจัดซื้อ</h1>
-   <div style="text-align:center;font-size:13px">อ้างอิงจากข้อมูลสินค้าและสต๊อกปัจจุบัน</div>
+   <div class="subtitle">อ้างอิงจากข้อมูลสินค้าและสต๊อกปัจจุบัน</div>
    <div class="meta">
      <div>วันที่จัดทำ: ${now.toLocaleDateString('th-TH')}</div>
      <div>จำนวนรายการ: ${rows.length} รายการ</div>
    </div>
    <table>
-     <thead><tr><th>ลำดับ</th><th>รหัสสินค้า</th><th>รายการสินค้า</th><th>จำนวนที่ซื้อ</th><th>หน่วย</th></tr></thead>
-     <tbody>${rows.map((x,i)=>`<tr><td style="text-align:center">${i+1}</td><td>${x.barcode}</td><td>${x.name}</td><td style="text-align:center">${num(x.buyQty)}</td><td style="text-align:center">${x.unit}</td></tr>`).join('')}</tbody>
+     <thead><tr><th class="no">ลำดับ</th><th>รหัสสินค้า</th><th>รายการสินค้า</th><th class="stock">คงเหลือ</th><th class="qty">จำนวนที่ควรซื้อ</th><th class="unit">หน่วย</th></tr></thead>
+     <tbody>${rows.map((x,i)=>`<tr><td class="center">${i+1}</td><td>${x.barcode}</td><td>${x.name}</td><td class="center">${num(x.stock)}</td><td class="center">${x.buyQty===''?'':num(x.buyQty)}</td><td class="center">${x.unit||''}</td></tr>`).join('')}</tbody>
    </table>
-   <div style="margin-top:15px;font-size:12px">หมายเหตุ: จำนวนคงเหลือและจำนวนขั้นต่ำอ้างอิงจากข้อมูลหน้า “สินค้าและสต๊อก”</div>
+   <div class="note">หมายเหตุ: ช่อง “จำนวนที่ควรซื้อ” สามารถเว้นว่างเพื่อกรอกภายหลังได้</div>
    <div class="sign-grid">
      <div>ลงชื่อ ..................................................<br>ผู้จัดทำรายการ</div>
      <div>ลงชื่อ ..................................................<br>ผู้อนุมัติ</div>
    </div>`;
- purchaseModal.classList.add('show');
+
+ purchasePrintArea.innerHTML=docHtml;
+ const printWindow=window.open('','_blank','width=1000,height=760');
+ if(!printWindow){
+   alert('เบราว์เซอร์บล็อกหน้าต่างพิมพ์ กรุณาอนุญาต Pop-up แล้วลองอีกครั้ง');
+   return;
+ }
+ printWindow.document.open();
+ printWindow.document.write(`<!doctype html><html lang="th"><head><meta charset="utf-8"><title>รายการสินค้าที่ต้องจัดซื้อ</title><style>
+   @page{size:A4 portrait;margin:12mm}
+   *{box-sizing:border-box}
+   html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Tahoma,"Noto Sans Thai",sans-serif}
+   .doc{width:100%;margin:0;padding:0;border:0;box-shadow:none}
+   h1{text-align:center;font-size:20px;margin:0 0 4px}
+   .subtitle{text-align:center;font-size:12px;margin-bottom:14px}
+   .meta{display:flex;justify-content:space-between;gap:20px;font-size:12px;margin:0 0 10px}
+   table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0}
+   th,td{border:1px solid #555;padding:6px 7px;font-size:11px;vertical-align:middle;word-wrap:break-word}
+   th{background:#f3f4f6;text-align:center}
+   .no{width:7%}.stock{width:11%}.qty{width:16%}.unit{width:9%}.center{text-align:center}
+   .note{font-size:10.5px;margin-top:10px}
+   .sign-grid{display:grid;grid-template-columns:1fr 1fr;gap:70px;margin-top:45px;text-align:center;font-size:12px;page-break-inside:avoid}
+   @media print{html,body,.doc{border:0!important;outline:0!important;box-shadow:none!important}.doc{page-break-before:avoid;page-break-after:avoid}}
+ </style></head><body><div class="doc">${docHtml}</div><script>
+   window.onload=()=>{setTimeout(()=>window.print(),150)};
+ <\/script></body></html>`);
+ printWindow.document.close();
 }
 function printPurchaseDocument(){
- document.body.classList.add('print-purchase');
- window.print();
- setTimeout(()=>document.body.classList.remove('print-purchase'),500);
+ exportPurchasePDF();
 }
 function closePurchaseModal(){
  purchaseModal.classList.remove('show');
@@ -1044,7 +1132,7 @@ function calcPos(){
 }
 function renderCart(){
  cartRows.innerHTML=cart.length?cart.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.name}</b></td><td>${money(x.price)}</td><td><div class="qty-box"><button onclick="changeQty('${x.barcode}',-1)">−</button><span>${x.qty}</span><button onclick="changeQty('${x.barcode}',1)">+</button></div></td><td>${x.unit}</td><td><b>${money(x.price*x.qty)}</b></td><td><button class="btn btn-danger" onclick="removeCart('${x.barcode}')">ลบ</button></td></tr>`).join(''):`<tr><td colspan="7" class="empty">ยังไม่มีสินค้าในรายการ</td></tr>`;
- quickProducts.innerHTML=products.slice(0,12).map(p=>`<button class="quick-item" onclick="addToCart('${p.barcode}')"><b>${p.name}</b><small>${money(p.price)} · เหลือ ${p.stock} ${p.unit}</small></button>`).join('');
+ quickProducts.innerHTML=products.map(p=>`<button class="quick-item" onclick="addToCart('${p.barcode}')"><b>${p.name}</b><small>${money(p.price)} · เหลือ ${p.stock} ${p.unit}</small></button>`).join('') || '<div class="empty">ยังไม่มีสินค้าในระบบ</div>';
  const c=calcPos();document.getElementById('posInvoice').textContent=posInvoice;posSubtotal.textContent=money(c.subtotal);posNet.textContent=money(c.net);posChange.textContent=money(c.change);
  renderCustomerDisplay();
 }
