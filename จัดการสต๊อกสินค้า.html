@@ -726,6 +726,25 @@ body.product-modal-open{
   #pos .quick-products{grid-template-columns:1fr!important}
   #pos .pos-search{grid-template-columns:1fr 1fr!important}
 }
+
+/* ===== Storefront customer-only security layout ===== */
+body.storefront-only{overflow-x:hidden!important;background:#eef4f8!important}
+body.storefront-only .layout{display:block!important;grid-template-columns:1fr!important;min-height:100vh!important}
+body.storefront-only aside,
+body.storefront-only #sidebar,
+body.storefront-only main>header{display:none!important;visibility:hidden!important;pointer-events:none!important}
+body.storefront-only main{width:100%!important;max-width:none!important;margin:0!important;padding:18px!important}
+body.storefront-only .page{display:none!important}
+body.storefront-only #storefront{display:block!important;min-height:100vh!important}
+body.storefront-only .storefront-toolbar .btn-light{display:none!important}
+body.storefront-only .storefront-checkout-btn{display:inline-flex!important}
+@media(max-width:820px){
+ body.storefront-only main{padding:10px!important}
+ body.storefront-only .storefront-hero{margin-top:0!important}
+ body.storefront-only .storefront-toolbar{position:sticky!important;top:0!important;z-index:50!important;margin-top:0!important}
+ body.storefront-only .storefront-checkout-btn{display:none!important}
+ body.storefront-only .storefront-sticky-checkout{display:flex!important}
+}
 </style>
 </head>
 <body>
@@ -1868,12 +1887,13 @@ function notifyStorefrontSession(type,sessionId,message=''){
 function setupStorefrontWindow(){
  const params=new URLSearchParams(location.search);
  if(params.get('storefront')!=='1')return false;
+ document.body.classList.add('storefront-only');
  storefrontSessionId='SF-'+Date.now().toString(36).toUpperCase()+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
  storefrontInvoice='รอชำระเงิน';
- document.querySelector('aside').style.display='none';
+ document.querySelector('aside').style.setProperty('display','none','important');
  document.querySelector('main').style.padding='18px';
  document.querySelector('main').style.margin='0';
- document.querySelector('header').style.display='none';
+ document.querySelector('header').style.setProperty('display','none','important');
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  document.getElementById('storefront').classList.add('active');
  document.querySelector('.layout').style.display='block';
