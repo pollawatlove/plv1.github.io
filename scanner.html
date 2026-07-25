@@ -83,6 +83,8 @@
     let reader = null;
     let stream = null;
     let locked = false;
+    let lastBarcode = '';
+    let lastBarcodeAt = 0;
 
     const params = new URLSearchParams(location.search);
     const target = params.get('target') || 'pos';
@@ -101,6 +103,10 @@
     function sendBarcode(value){
       value = String(value || '').trim();
       if(!value || locked) return;
+      const now = Date.now();
+      if(value === lastBarcode && now - lastBarcodeAt < 2500) return;
+      lastBarcode = value;
+      lastBarcodeAt = now;
       locked = true;
       if(navigator.vibrate) navigator.vibrate(100);
 
