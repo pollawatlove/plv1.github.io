@@ -89,6 +89,7 @@
     const params = new URLSearchParams(location.search);
     const target = params.get('target') || 'pos';
     const channel = params.get('channel') || 'stock-barcode';
+    const appUrl = params.get('appUrl') || '';
 
     function setStatus(text){ $('status').innerHTML = text; }
 
@@ -121,15 +122,25 @@
         barcode: value
       };
 
+      // POS ส่งผ่าน Google Sheets เพื่อให้หน้าคิดเงินบนคอมพิวเตอร์อีกเครื่องรับได้
+      if(target === 'pos' && appUrl){
+        try{
+          fetch(appUrl + '?action=saveBarcodeScan&barcode=' + encodeURIComponent(value) + '&_=' + Date.now(), {
+            mode:'no-cors',
+            cache:'no-store'
+          });
+        }catch(e){}
+      }
+
       try{
-        if(window.opener && !window.opener.closed){
+        if((target !== 'pos' || !appUrl) && window.opener && !window.opener.closed){
           window.opener.postMessage(message, '*');
         }
       }catch(e){}
 
       try{
         const bc = new BroadcastChannel(channel);
-        bc.postMessage(message);
+        if(target !== 'pos' || !appUrl) bc.postMessage(message);
         bc.close();
       }catch(e){}
 
