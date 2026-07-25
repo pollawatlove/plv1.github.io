@@ -1,0 +1,237 @@
+<script>
+const $=id=>document.getElementById(id),money=n=>'฿'+Number(n||0).toLocaleString('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2}),esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const gas=(name,...args)=>new Promise((resolve,reject)=>{if(!(window.google&&google.script&&google.script.run))return reject(new Error('กรุณาเปิดผ่าน URL /exec ของ Google Apps Script'));google.script.run.withSuccessHandler(resolve).withFailureHandler(e=>reject(new Error(e&&e.message?e.message:String(e))))[name](...args)});
+function baseUrl(){return String(window.APP_URL||location.href).split('?')[0].split('#')[0]}
+function openAppPage(page,separate=false){const url=baseUrl()+'?page='+page+'&_='+Date.now();if(separate){const w=window.open(url,'_blank');if(!w)location.href=url;return}if(/Android|iPhone|iPad|Mobile/i.test(navigator.userAgent)||innerWidth<821){location.href=url;return}const w=window.open(url,'stock_'+page);if(!w)location.href=url}
+function showError(e){console.error(e);alert(e.message||e)}
+function showPage(id){document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav [data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===id));if(id==='dashboard')renderDashboard();if(id==='products')renderProducts();if(id==='purchase')renderPurchase();if(id==='history')renderHistory()}
+
+let products=[],sales=[],dashboard={},settings={},active=null,pollBusy=false,actionBusy=false,saveTimer=null,stream=null,purchaseRows=[],shownReceipt=null;
+const normalized=x=>({id:String(x.id),barcode:String(x.barcode||''),name:String(x.name||''),category:String(x.category||'ทั่วไป'),cost:Number(x.cost||0),price:Number(x.price||0),unit:String(x.unit||'ชิ้น'),stock:Number(x.stock||0),min:Number(x.min||0),qty:Math.max(0,Math.floor(Number(x.qty)||0))});
+function cartTotal(){return (active?.items||[]).reduce((s,x)=>s+x.price*x.qty,0)}
+function net(){return Math.max(0,cartTotal()-Math.max(0,Number($('discount').value)||0))}
+async function reloadAll(){try{const b=await gas('getAppBootstrap');products=(b.products||[]).map(normalized);sales=b.sales||[];dashboard=b.dashboard||{};settings=b.settings||{};applySettings();renderAll()}catch(e){showError(e)}}
+function renderAll(){render();renderQuick();renderDashboard();renderProducts();renderPurchase();renderHistory()}
+
+function render(){
+ const a=active?.items||[];$('cartBody').innerHTML=a.length?a.map((x,i)=>`<tr><td>${i+1}</td><td><b>${x.name}</b><br><small>${x.barcode}</small></td><td>${money(x.price)}</td><td><input class="qty" type="number" min="0" max="${x.stock||999999}" value="${x.qty}" onchange="changeQty('${x.id}',this.value)"></td><td>${x.unit}</td><td>${money(x.price*x.qty)}</td><td><button class="btn danger" onclick="changeQty('${x.id}',0)">ลบ</button></td></tr>`).join(''):'<tr><td colspan="7" class="empty">กำลังรอรายการ หรือเพิ่มสินค้าจากช่องค้นหา</td></tr>';
+ $('queueNo').textContent=active?.queueId||'-';$('subtotal').textContent=money(cartTotal());$('grandTotal').textContent=money(net());$('change').textContent=money(Math.max(0,Number($('received').value||0)-net()));$('checkoutBtn').disabled=!a.length||actionBusy;$('cancelBtn').disabled=!active||actionBusy;renderQr()
+}
+function renderQuick(){$('quickProducts').innerHTML=products.slice(0,24).map(p=>`<button class="btn light" onclick="addProduct('${p.id}')"><b>${p.name}</b><br><small>${money(p.price)} · เหลือ ${p.stock}</small></button>`).join('')}
+function ensureLocal(){if(!active)active={queueId:'POS-'+Date.now(),items:[],local:true}}
+function addProduct(id){const p=products.find(x=>x.id===id);if(!p||p.stock<=0)return alert('สินค้าหมด');ensureLocal();const x=active.items.find(x=>x.id===id);if(x)x.qty=Math.min(p.stock,x.qty+1);else active.items.push({...p,qty:1});render();scheduleSave()}
+function addFromSearch(){const q=$('search').value.trim().toLowerCase();if(!q)return;const p=products.find(x=>x.barcode.toLowerCase()===q)||products.find(x=>x.name.toLowerCase().includes(q));if(!p)return alert('ไม่พบสินค้า');addProduct(p.id);$('search').value=''}
+function changeQty(id,v){const x=active?.items.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!x)return;x.qty=Math.max(0,Math.min(p?.stock||999999,Math.floor(Number(v)||0)));active.items=active.items.filter(x=>x.qty>0);render();if(!active.items.length){cancelEmptyQueue();return}scheduleSave()}
+async function cancelEmptyQueue(){if(!active||actionBusy)return;clearTimeout(saveTimer);actionBusy=true;const queueId=active.queueId;try{await gas('cancelCheckout',queueId);active=null;$('status').textContent='ยกเลิกรายการและลบคิวพักแล้ว';render();await poll()}catch(e){showError(e)}finally{actionBusy=false;render()}}
+function scheduleSave(){clearTimeout(saveTimer);if(active)saveTimer=setTimeout(()=>gas('updateQueueItems',active.queueId,active.items).catch(showError),400)}
+async function poll(){if(pollBusy||actionBusy)return;pollBusy=true;try{const before=active?.queueId||'',r=await gas('getPosBootstrap',before);products=(r.products||products).map(normalized);settings=r.settings||settings;if(r.active&&(!active||!active.local||!active.items.length))active={...r.active,items:(r.active.items||[]).map(normalized)};else if(before&&!r.active)active=null;$('status').textContent=active?'รับคิวแล้ว พร้อมคิดเงิน':'เชื่อมต่อแล้ว กำลังรอคิว';if(active?.queueId&&active.queueId!==before){$('payment').value='เงินสด';renderQr();await gas('updateQueuePayment',active.queueId,'เงินสด')}render();renderQuick()}catch(e){$('status').textContent=e.message}finally{pollBusy=false}}
+async function checkout(){if(actionBusy||!active?.items?.length)return;if(!confirm('ยืนยันคิดเงินและตัดสต๊อก?'))return;clearTimeout(saveTimer);actionBusy=true;render();try{const receipt={queueId:active.queueId,items:active.items.map(x=>({...x})),subtotal:cartTotal(),discount:Math.max(0,Number($('discount').value)||0),payment:$('payment').value,received:Number($('received').value)||0,customer:$('customerName').value.trim()||'ลูกค้าทั่วไป',soldAt:new Date().toISOString()},r=await gas('completeCheckout',active.queueId,active.items,receipt.payment,receipt.received,receipt.discount,receipt.customer);Object.assign(receipt,{invoice:r.invoice,total:r.total,change:r.change});active=null;$('payment').value='เงินสด';$('received').value=0;$('discount').value=0;$('customerName').value='';renderQr();showReceipt(receipt);await reloadAll();await poll()}catch(e){showError(e)}finally{actionBusy=false;render()}}
+async function cancelQueue(){if(!active||!confirm('ยกเลิกรายการนี้?'))return;clearTimeout(saveTimer);try{await gas('cancelCheckout',active.queueId);active=null;$('payment').value='เงินสด';renderQr();render();await poll()}catch(e){showError(e)}}
+function renderQr(){if(!$('qrArea'))return;if($('payment').value!=='โอน'||!settings.promptPayId){$('qrArea').innerHTML='';return}const text='PromptPay '+settings.promptPayId+' '+net().toFixed(2);$('qrArea').innerHTML=`<div style="text-align:center;font-weight:bold;margin-top:14px">สแกน QR Code</div><img alt="QR Code" style="width:190px;display:block;margin:12px auto" src="https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(text)}"><div class="muted" style="text-align:center">ชื่อบัญชี ${settings.promptPayName||'-'} · เลขบัญชี ${settings.accountNumber||'-'}</div>`}
+function setPayment(){renderQr();if(active?.queueId)gas('updateQueuePayment',active.queueId,$('payment').value).catch(e=>console.error(e))}
+function receiptHtml(s){const items=s.items||[],subtotal=Number(s.subtotal??items.reduce((n,x)=>n+Number(x.price||0)*Number(x.qty||0),0)),total=Number(s.total)||0,discount=Math.max(0,Number(s.discount??(subtotal-total))||0);return `<div class="receipt-paper"><h2>ใบเสร็จรับเงิน</h2><div class="receipt-shop">${esc(settings.shopName||'ระบบจัดการสต๊อกสินค้า')}</div><div class="receipt-dash"></div><div>เลขที่: ${esc(s.invoice||'-')}</div><div>วันที่: ${new Date(s.soldAt||Date.now()).toLocaleString('th-TH')}</div><div>ลูกค้า: ${esc(s.customer||'ลูกค้าทั่วไป')}</div><div>ชำระ: ${esc(s.payment||'-')}</div><div class="receipt-dash"></div>${items.map(x=>`<div class="receipt-item"><span>${esc(x.name)} ×${Number(x.qty)||0}</span><b>${money(Number(x.price||0)*Number(x.qty||0))}</b></div>`).join('')}<div class="receipt-dash"></div><div class="receipt-sum"><b>รวม</b><b>${money(subtotal)}</b></div><div class="receipt-sum"><span>ส่วนลด</span><span>${money(discount)}</span></div><div class="receipt-sum receipt-net"><span>ยอดสุทธิ</span><span>${money(total)}</span></div><div class="receipt-sum"><span>รับเงิน</span><span>${money(s.received)}</span></div><div class="receipt-sum"><span>เงินทอน</span><span>${money(s.change)}</span></div><div class="receipt-dash"></div><div class="receipt-thanks">ขอบคุณที่ใช้บริการ</div></div>`}
+function showReceipt(s){shownReceipt=s;$('receiptContent').innerHTML=receiptHtml(s);$('receiptModal').classList.add('show')}
+function closeReceipt(){$('receiptModal').classList.remove('show')}
+function showHistoryReceipt(invoice){const s=sales.find(x=>x.invoice===invoice);if(!s)return alert('ไม่พบข้อมูลใบเสร็จ');showReceipt(s)}
+function printShownReceipt(){if(!shownReceipt)return;const frame=document.createElement('iframe');frame.style.cssText='position:fixed;width:0;height:0;border:0';document.body.appendChild(frame);const doc=frame.contentDocument;doc.open();doc.write(`<!doctype html><html><head><meta charset="utf-8"><title>ใบเสร็จ ${esc(shownReceipt.invoice||'')}</title><style>body{font-family:Tahoma,sans-serif;width:300px;margin:20px auto;color:#111}.receipt-paper h2{text-align:center;margin:0}.receipt-shop,.receipt-thanks{text-align:center}.receipt-dash{border-top:1px dashed #555;margin:10px 0}.receipt-item,.receipt-sum{display:flex;justify-content:space-between;gap:10px;padding:3px 0}.receipt-net{font-size:20px;font-weight:bold}</style></head><body>${receiptHtml(shownReceipt)}</body></html>`);doc.close();setTimeout(()=>{frame.contentWindow.focus();frame.contentWindow.print();setTimeout(()=>frame.remove(),1000)},250)}
+
+function renderDashboard(){if(!$('kpis'))return;const d=dashboard;$('kpis').innerHTML=[['ยอดขาย',money(d.sales)],['กำไร',money(d.profit)],['มูลค่าสต๊อก',money(d.stockValue)],['สินค้าใกล้หมด',(d.lowStock||[]).length+' รายการ']].map(x=>`<div class="card kpi"><span class="muted">${x[0]}</span><b>${x[1]}</b></div>`).join('');const goal=Number(settings.salesGoal)||50000,pct=goal?Math.min(100,(Number(d.currentMonth)||0)/goal*100):0;$('monthSales').textContent=money(d.currentMonth);$('goalPercent').textContent=pct.toFixed(0)+'%';$('goalBar').style.width=pct+'%';$('topProducts').innerHTML=(d.top||[]).map(x=>`<div class="row"><span>${x.name}</span><b>${x.qty}</b></div>`).join('')||'ยังไม่มีข้อมูล';$('lowStock').innerHTML=(d.lowStock||[]).slice(0,8).map(x=>`<div class="row"><span>${x.name}</span><b>${x.stock} ${x.unit}</b></div>`).join('')||'ไม่มีสินค้าใกล้หมด';const months=Object.entries(d.monthly||{}).slice(-12),max=Math.max(1,...months.map(x=>x[1]));$('monthlyBars').innerHTML=months.map(x=>`<div class="row"><span>${x[0]}</span><div class="bar"><i style="width:${x[1]/max*100}%"></i></div><b>${money(x[1])}</b></div>`).join('')||'ยังไม่มีข้อมูล';$('recentSales').innerHTML=(d.recent||[]).map(x=>`<div class="row"><span>${x.invoice} · ${new Date(x.soldAt).toLocaleString('th-TH')}</span><b>${money(x.total)}</b></div>`).join('')}
+function renderProducts(){if(!$('productBody'))return;const q=$('productSearch').value.toLowerCase(),cat=$('categoryFilter').value,cats=[...new Set(products.map(x=>x.category))];$('categoryFilter').innerHTML='<option value="">ทุกหมวดหมู่</option>'+cats.map(x=>`<option ${x===cat?'selected':''}>${x}</option>`).join('');const rows=products.filter(x=>(x.name.toLowerCase().includes(q)||x.barcode.includes(q))&&(!cat||x.category===cat));$('productBody').innerHTML=rows.map(x=>`<tr><td>${x.barcode||'-'}</td><td><b>${x.name}</b></td><td>${x.category}</td><td>${money(x.cost)}</td><td>${money(x.price)}</td><td>${money(x.price-x.cost)}</td><td>${x.unit}</td><td>${x.stock}</td><td>${x.min}</td><td><span class="badge ${x.stock<=x.min?'low':'ok'}">${x.stock<=x.min?'ใกล้หมด':'ปกติ'}</span></td><td><button class="btn light" onclick="openProduct('${x.id}')">แก้ไข</button> <button class="btn danger" onclick="removeProduct('${x.id}')">ลบ</button></td></tr>`).join('')||'<tr><td colspan="11" class="empty">ไม่พบสินค้า</td></tr>'}
+function openProduct(id=''){const p=products.find(x=>x.id===id)||{};$('productModalTitle').textContent=id?'แก้ไขสินค้า':'เพิ่มสินค้า';$('productId').value=p.id||'';$('pName').value=p.name||'';$('pBarcode').value=p.barcode||'';$('pCategory').value=p.category||'';$('pUnit').value=p.unit||'ชิ้น';$('pCost').value=p.cost||0;$('pPrice').value=p.price||0;$('pStock').value=p.stock||0;$('pMin').value=p.min||0;$('productModal').classList.add('show')}
+function closeProductModal(){closeBarcodeScanner();$('productModal').classList.remove('show')}
+function suggestSalePrice(force=false){const cost=Math.max(0,Number($('pCost').value)||0);if(force||document.activeElement===$('pCost'))$('pPrice').value=Math.ceil(cost*1.4)}
+async function scanProductBarcode(){await startBarcodeScanner('product',value=>{$('pBarcode').value=value})}
+async function saveProductForm(e){e.preventDefault();const btn=$('productSaveBtn');if(btn.disabled)return;btn.disabled=true;btn.textContent='กำลังบันทึก…';try{const r=await gas('saveProduct',{id:$('productId').value,name:$('pName').value.trim(),barcode:$('pBarcode').value.trim(),category:$('pCategory').value.trim()||'ทั่วไป',unit:$('pUnit').value.trim()||'ชิ้น',cost:Number($('pCost').value||0),price:Number($('pPrice').value||0),stock:Number($('pStock').value||0),min:Number($('pMin').value||0)});products=(r.products||[]).map(normalized);closeProductModal();renderAll();alert($('productId').value?'แก้ไขสินค้าเรียบร้อย':'เพิ่มสินค้าเรียบร้อย')}catch(e){showError(e)}finally{btn.disabled=false;btn.textContent='บันทึกสินค้า'}}
+async function removeProduct(id){if(confirm('ลบสินค้านี้?'))try{const r=await gas('deleteProduct',id);products=(r.products||[]).map(normalized);renderAll()}catch(e){showError(e)}}
+function renderPurchase(){if(!$('purchaseBody'))return;const q=$('purchaseSearch').value.toLowerCase(),old=Object.fromEntries(purchaseRows.map(x=>[x.id,x]));purchaseRows=products.filter(x=>x.stock<=x.min*2&&x.name.toLowerCase().includes(q)).map(x=>({...x,buyQty:old[x.id]?.buyQty??Math.max(0,x.min*2-x.stock),selected:old[x.id]?.selected??true}));$('purchaseBody').innerHTML=purchaseRows.map((x,i)=>`<tr><td><input type="checkbox" ${x.selected?'checked':''} onchange="purchaseRows[${i}].selected=this.checked"></td><td>${x.name}</td><td>${x.stock}</td><td>${x.min}</td><td><input class="qty" type="number" min="0" value="${x.buyQty}" onchange="purchaseRows[${i}].buyQty=Number(this.value||0)"></td><td>${x.unit}</td></tr>`).join('')||'<tr><td colspan="6" class="empty">ไม่มีรายการจัดซื้อ</td></tr>'}
+function fillPurchase(){purchaseRows.forEach(x=>x.buyQty=Math.max(0,x.min*2-x.stock));renderPurchase()}
+async function addPurchase(){const a=purchaseRows.filter(x=>x.selected&&x.buyQty>0).map(x=>({id:x.id,qty:x.buyQty}));if(!a.length)return alert('ไม่มีรายการ');if(confirm('เพิ่มสินค้าเข้าสต๊อก?'))try{const r=await gas('addPurchaseStock',a);products=(r.products||[]).map(normalized);renderAll()}catch(e){showError(e)}}
+function printPurchase(){const a=purchaseRows.filter(x=>x.selected&&Number(x.buyQty)>0);if(!a.length)return alert('กรุณาเลือกรายการและใส่จำนวนซื้อ');const w=window.open('','_blank');if(!w)return alert('เบราว์เซอร์บล็อกหน้าต่างพิมพ์ กรุณาอนุญาต Pop-up');const rows=a.map((x,i)=>`<tr><td>${i+1}</td><td>${x.barcode||'-'}</td><td>${x.name}</td><td>${x.stock}</td><td>${x.buyQty}</td><td>${x.unit}</td></tr>`).join('');w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>รายการจัดซื้อสินค้า</title><style>body{font-family:Tahoma;padding:25px}h2{text-align:center}table{width:100%;border-collapse:collapse}th,td{border:1px solid #555;padding:8px;text-align:left}.date{text-align:right;margin-bottom:14px}</style></head><body><h2>รายการจัดซื้อสินค้า</h2><div class="date">วันที่ ${new Date().toLocaleString('th-TH')}</div><table><thead><tr><th>ลำดับ</th><th>บาร์โค้ด</th><th>สินค้า</th><th>คงเหลือ</th><th>จำนวนซื้อ</th><th>หน่วย</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>{window.print()}<\/script></body></html>`);w.document.close()}
+function renderHistory(){if(!$('historyBody'))return;$('historyBody').innerHTML=sales.map(x=>`<tr><td>${new Date(x.soldAt).toLocaleString('th-TH')}</td><td>${x.invoice}</td><td>${(x.items||[]).map(i=>esc(i.name)+' × '+i.qty).join(', ')}</td><td>${money(x.total)}</td><td>${money(x.profit)}</td><td>${esc(x.payment)}</td><td>${money(x.received)}</td><td>${money(x.change)}</td><td><button class="btn light" onclick="showHistoryReceipt('${esc(x.invoice)}')">ออกใบเสร็จ</button></td></tr>`).join('')||'<tr><td colspan="9" class="empty">ยังไม่มีประวัติ</td></tr>'}
+function applySettings(){['shopName','promptPayId','promptPayName','accountNumber','logoUrl','salesGoal'].forEach(k=>{if($(k))$(k).value=settings[k]??''})}
+async function saveAppSettings(){const s={};['shopName','promptPayId','promptPayName','accountNumber','logoUrl','salesGoal'].forEach(k=>s[k]=$(k).value);try{const r=await gas('saveSettings',s);settings=r.settings;alert('บันทึกแล้ว');renderAll()}catch(e){showError(e)}}
+let cameraStream=null;
+let scanTimer=null;
+let nativeDetector=null;
+let zxingReader=null;
+let scannerBusy=false;
+let scannerResultLocked=false;
+let barcodeCaptureDone=null;
+let barcodeTarget='pos';
+
+function prepareBarcodeCapture(target){
+ barcodeTarget=target||'pos';
+ barcodeCaptureDone=barcodeTarget==='product'
+   ? value=>{$('pBarcode').value=value;$('pBarcode').dispatchEvent(new Event('input',{bubbles:true}))}
+   : value=>{$('search').value=value;addFromSearch()};
+ const input=$('barcodeCapture');
+ if(input)input.value='';
+}
+function scannerStatus(html){if($('scannerStatus'))$('scannerStatus').innerHTML=html}
+function scannerResult(value){const box=$('scannerResult');if(!box)return;box.style.display='block';box.textContent='เลขบาร์โค้ด: '+value}
+async function requestBarcodeCamera(){
+ const tries=[
+  {video:{facingMode:{exact:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false},
+  {video:{facingMode:{ideal:'environment'},width:{ideal:1280},height:{ideal:720}},audio:false},
+  {video:true,audio:false}
+ ];
+ let lastError;
+ for(const constraints of tries){try{return await navigator.mediaDevices.getUserMedia(constraints)}catch(e){lastError=e}}
+ throw lastError||new Error('CAMERA_UNAVAILABLE');
+}
+async function stopBarcodeScanner(){
+ if(scanTimer){clearInterval(scanTimer);scanTimer=null}
+ if(zxingReader){try{zxingReader.reset()}catch(e){}zxingReader=null}
+ if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null}
+ const video=$('barcodeVideo');if(video){try{video.pause()}catch(e){}video.srcObject=null}
+ nativeDetector=null;scannerBusy=false;
+}
+async function closeBarcodeScanner(){
+ await stopBarcodeScanner();
+ $('scannerModal').classList.remove('show');
+ scannerStatus('กดปุ่ม 📷 สแกน เพื่อเปิดกล้อง');
+ if($('scannerResult'))$('scannerResult').style.display='none';
+}
+function completeBarcodeScan(value){
+ value=String(value||'').trim();
+ if(!value||scannerResultLocked)return;
+ scannerResultLocked=true;
+ if(navigator.vibrate)navigator.vibrate(100);
+ scannerResult(value);scannerStatus('✓ สแกนสำเร็จ');
+ const done=barcodeCaptureDone;barcodeCaptureDone=null;
+ setTimeout(async()=>{await closeBarcodeScanner();if(done)done(value);scannerResultLocked=false},250);
+}
+async function startCamera(target='pos'){
+ prepareBarcodeCapture(target);scannerResultLocked=false;
+ $('scannerModal').classList.add('show');
+ if($('scannerResult'))$('scannerResult').style.display='none';
+ scannerStatus('กำลังเปิดกล้อง…');
+ await stopBarcodeScanner();
+ const video=$('barcodeVideo');
+ try{
+  if(!window.isSecureContext&&location.protocol!=='file:')throw new Error('INSECURE_CONTEXT');
+  if(!navigator.mediaDevices?.getUserMedia)throw new Error('NO_CAMERA_API');
+  cameraStream=await requestBarcodeCamera();video.srcObject=cameraStream;await video.play();
+  if('BarcodeDetector' in window){
+   let supported;try{supported=await BarcodeDetector.getSupportedFormats()}catch(e){}
+   const wanted=['ean_13','ean_8','upc_a','upc_e','code_128','code_39','itf','codabar','qr_code'];
+   const formats=supported?wanted.filter(f=>supported.includes(f)):wanted;
+   nativeDetector=new BarcodeDetector(formats.length?{formats}:undefined);
+   scannerStatus('พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ');
+   scanTimer=setInterval(scanBarcodeVideoFrame,220);return;
+  }
+  if(window.ZXing&&ZXing.BrowserMultiFormatReader){
+   await stopBarcodeScanner();
+   zxingReader=new ZXing.BrowserMultiFormatReader();
+   scannerStatus('พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ');
+   zxingReader.decodeFromVideoDevice(undefined,video,result=>{if(result)completeBarcodeScan(result.getText?result.getText():result.text)});return;
+  }
+  scannerStatus('เปิดกล้องได้ แต่ตัวอ่านบาร์โค้ดยังโหลดไม่สำเร็จ');
+ }catch(e){
+  console.error(e);await stopBarcodeScanner();let detail='กรุณาอนุญาตสิทธิ์กล้องในเบราว์เซอร์';
+  if(e.message==='INSECURE_CONTEXT')detail='ต้องเปิดผ่าน HTTPS หรือ URL /exec ของ Google Apps Script';
+  else if(e.name==='NotAllowedError')detail='สิทธิ์กล้องถูกปฏิเสธ ให้กดรูปกุญแจข้าง URL แล้วเลือกกล้องเป็น “อนุญาต”';
+  else if(e.name==='NotFoundError')detail='ไม่พบกล้องในอุปกรณ์นี้';
+  else if(e.name==='NotReadableError')detail='กล้องอาจกำลังถูกใช้งานโดยแอปอื่น';
+  scannerStatus('ไม่สามารถเปิดกล้องได้<br><small>'+detail+'</small>');
+ }
+}
+async function scanBarcodeVideoFrame(){
+ if(scannerBusy||!nativeDetector||scannerResultLocked)return;
+ const video=$('barcodeVideo');if(!video||video.readyState<2)return;
+ scannerBusy=true;try{const codes=await nativeDetector.detect(video);if(codes?.length)completeBarcodeScan(codes[0].rawValue)}catch(e){}finally{scannerBusy=false}
+}
+function retryBarcodeCamera(){startCamera(barcodeTarget)}
+function openImageBarcodeFallback(){const input=$('barcodeCapture');if(input){input.value='';input.click()}}
+async function decodeCapturedBarcode(event){
+ const file=event.target.files?.[0],done=barcodeCaptureDone;if(!file||!done)return;
+ $('scannerModal').classList.add('show');scannerStatus('กำลังอ่านบาร์โค้ดจากภาพ…');
+ try{
+  if(!(window.ZXing&&ZXing.BrowserMultiFormatReader))throw new Error('ZXING_NOT_READY');
+  const url=URL.createObjectURL(file),image=new Image();
+  image.onload=async()=>{try{const reader=new ZXing.BrowserMultiFormatReader();const result=await reader.decodeFromImageElement(image);reader.reset();barcodeCaptureDone=null;const value=result.getText?result.getText():result.text;scannerResult(value);scannerStatus('✓ อ่านบาร์โค้ดจากภาพสำเร็จ');setTimeout(async()=>{await closeBarcodeScanner();done(String(value).trim())},250)}catch(e){scannerStatus('ไม่พบบาร์โค้ดในภาพ<br><small>ถ่ายให้ชัด เต็มกรอบ และไม่มีแสงสะท้อน</small>')}finally{URL.revokeObjectURL(url)}};
+  image.onerror=()=>{URL.revokeObjectURL(url);scannerStatus('ไม่สามารถเปิดรูปภาพได้')};image.src=url;
+ }catch(e){scannerStatus('ตัวอ่านรูปภาพยังโหลดไม่สำเร็จ<br><small>กรุณาเชื่อมต่ออินเทอร์เน็ตแล้วลองใหม่</small>')}
+ event.target.value='';
+}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopBarcodeScanner()});
+
+
+/* =========================================================
+   GitHub Camera Bridge
+   1) อัปโหลดไฟล์ scanner.html ขึ้น GitHub Pages
+   2) เปลี่ยน URL ด้านล่างเป็น URL จริงของ scanner.html
+   ========================================================= */
+const GITHUB_SCANNER_URL = 'https://YOUR-USERNAME.github.io/YOUR-REPOSITORY/scanner.html';
+let githubScannerWindow = null;
+let githubScannerTarget = 'pos';
+const githubScannerChannelName = 'stock-barcode';
+
+function githubScannerConfigured(){
+  return /^https:\/\/.+/i.test(GITHUB_SCANNER_URL)
+    && !GITHUB_SCANNER_URL.includes('YOUR-USERNAME')
+    && !GITHUB_SCANNER_URL.includes('YOUR-REPOSITORY');
+}
+
+function receiveGithubBarcode(data){
+  if(!data || data.type !== 'GITHUB_BARCODE_SCAN' || data.channel !== githubScannerChannelName) return;
+  const value = String(data.barcode || '').trim();
+  if(!value) return;
+
+  if((data.target || githubScannerTarget) === 'product'){
+    $('pBarcode').value = value;
+    $('pBarcode').dispatchEvent(new Event('input',{bubbles:true}));
+  }else{
+    $('search').value = value;
+    addFromSearch();
+  }
+
+  try{
+    if(githubScannerWindow && !githubScannerWindow.closed) githubScannerWindow.close();
+  }catch(e){}
+  githubScannerWindow = null;
+}
+
+window.addEventListener('message', event => receiveGithubBarcode(event.data));
+
+try{
+  const githubBarcodeChannel = new BroadcastChannel(githubScannerChannelName);
+  githubBarcodeChannel.onmessage = event => receiveGithubBarcode(event.data);
+}catch(e){}
+
+function startCamera(target='pos'){
+  githubScannerTarget = target || 'pos';
+
+  if(!githubScannerConfigured()){
+    alert(
+      'ยังไม่ได้ตั้งค่า URL กล้อง GitHub\n\n' +
+      'เปิดไฟล์ JavaScript.html แล้วเปลี่ยนค่า GITHUB_SCANNER_URL\n' +
+      'ให้เป็น URL ของ scanner.html บน GitHub Pages'
+    );
+    return;
+  }
+
+  const url = GITHUB_SCANNER_URL
+    + '?target=' + encodeURIComponent(githubScannerTarget)
+    + '&channel=' + encodeURIComponent(githubScannerChannelName)
+    + '&_=' + Date.now();
+
+  const width = Math.min(520, screen.availWidth || 520);
+  const height = Math.min(760, screen.availHeight || 760);
+  const left = Math.max(0, ((screen.availWidth || width) - width) / 2);
+  const top = Math.max(0, ((screen.availHeight || height) - height) / 2);
+
+  githubScannerWindow = window.open(
+    url,
+    'github_barcode_scanner',
+    `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`
+  );
+
+  if(!githubScannerWindow){
+    alert('เบราว์เซอร์บล็อกหน้าต่างกล้อง กรุณาอนุญาต Pop-up แล้วกดสแกนอีกครั้ง');
+  }
+}
+
+
+reloadAll().then(poll);setInterval(poll,5000);
+</script>
