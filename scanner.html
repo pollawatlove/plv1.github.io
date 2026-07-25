@@ -122,25 +122,26 @@
         barcode: value
       };
 
-      // POS ส่งผ่าน Google Sheets เพื่อให้หน้าคิดเงินบนคอมพิวเตอร์อีกเครื่องรับได้
-      if(target === 'pos' && appUrl){
+      let sentToOpener = false;
+      try{
+        if(window.opener && !window.opener.closed){
+          window.opener.postMessage(message, '*');
+          sentToOpener = true;
+        }
+      }catch(e){}
+
+      // ถ้าเปิด scanner.html โดยตรงโดยไม่มีหน้าร้านเป็น opener จึงค่อยส่งเข้า Apps Script
+      if(target === 'pos' && appUrl && !sentToOpener){
         try{
-          fetch(appUrl + '?action=saveBarcodeScan&barcode=' + encodeURIComponent(value) + '&_=' + Date.now(), {
-            mode:'no-cors',
-            cache:'no-store'
-          });
+          const beacon = new Image();
+          beacon.src = appUrl + '?action=saveBarcodeScan&barcode='
+            + encodeURIComponent(value) + '&_=' + Date.now();
         }catch(e){}
       }
 
       try{
-        if((target !== 'pos' || !appUrl) && window.opener && !window.opener.closed){
-          window.opener.postMessage(message, '*');
-        }
-      }catch(e){}
-
-      try{
         const bc = new BroadcastChannel(channel);
-        if(target !== 'pos' || !appUrl) bc.postMessage(message);
+        if(!sentToOpener && (target !== 'pos' || !appUrl)) bc.postMessage(message);
         bc.close();
       }catch(e){}
 
