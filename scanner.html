@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#020617">
+  <title>สแกนบาร์โค้ด</title>
+  <style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;min-height:100vh;background:#020617;color:#fff;
+      font-family:Tahoma,Arial,sans-serif;display:flex;justify-content:center;
+    }
+    .app{width:min(680px,100%);padding:14px}
+    .head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+    h1{font-size:22px;margin:0 0 5px}
+    .muted{color:#94a3b8;font-size:13px;line-height:1.5}
+    .reader{
+      position:relative;width:100%;aspect-ratio:1/1.15;background:#000;
+      overflow:hidden;border-radius:20px;border:1px solid #334155
+    }
+    video{width:100%;height:100%;object-fit:cover;display:block;background:#000}
+    .frame{
+      position:absolute;left:8%;right:8%;top:30%;height:31%;
+      border:3px solid #fff;border-radius:18px;
+      box-shadow:0 0 0 9999px rgba(0,0,0,.28);pointer-events:none
+    }
+    .line{
+      position:absolute;left:12%;right:12%;top:45%;height:3px;
+      background:#22c55e;box-shadow:0 0 15px #22c55e;
+      animation:move 1.6s ease-in-out infinite;pointer-events:none
+    }
+    @keyframes move{0%,100%{transform:translateY(-42px)}50%{transform:translateY(42px)}}
+    .status{
+      margin-top:12px;padding:13px;border-radius:13px;background:#172033;
+      text-align:center;font-weight:700;line-height:1.5
+    }
+    .result{
+      display:none;margin-top:10px;padding:13px;border-radius:13px;
+      background:#14532d;color:#dcfce7;text-align:center;font-weight:900
+    }
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}
+    button{
+      border:0;border-radius:12px;padding:12px;font:inherit;font-weight:800;
+      cursor:pointer
+    }
+    .primary{background:#2563eb;color:#fff}
+    .light{background:#e2e8f0;color:#0f172a}
+    .danger{background:#ef4444;color:#fff}
+    input[type=file]{display:none}
+    @media(max-width:480px){.app{padding:9px}.reader{border-radius:15px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="head">
+      <div>
+        <h1>📷 สแกนบาร์โค้ด</h1>
+        <div class="muted">วางบาร์โค้ดให้อยู่กลางกรอบ ระบบจะส่งเลขกลับไปหน้าร้านอัตโนมัติ</div>
+      </div>
+      <button class="danger" onclick="closePage()">✕ ปิด</button>
+    </div>
+
+    <div class="reader">
+      <video id="video" playsinline muted></video>
+      <div class="frame"></div>
+      <div class="line"></div>
+    </div>
+
+    <div id="status" class="status">กำลังเตรียมกล้อง…</div>
+    <div id="result" class="result"></div>
+
+    <div class="actions">
+      <button class="primary" onclick="startScanner()">↻ เปิดกล้องอีกครั้ง</button>
+      <button class="light" onclick="document.getElementById('capture').click()">📷 ถ่ายรูปบาร์โค้ด</button>
+    </div>
+    <input id="capture" type="file" accept="image/*" capture="environment">
+  </main>
+
+  <script src="https://unpkg.com/@zxing/library@0.21.3/umd/index.min.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    let reader = null;
+    let stream = null;
+    let locked = false;
+
+    const params = new URLSearchParams(location.search);
+    const target = params.get('target') || 'pos';
+    const channel = params.get('channel') || 'stock-barcode';
+
+    function setStatus(text){ $('status').innerHTML = text; }
+
+    function stopScanner(){
+      if(reader){ try{ reader.reset(); }catch(e){} reader = null; }
+      if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
+      const video = $('video');
+      try{ video.pause(); }catch(e){}
+      video.srcObject = null;
+    }
+
+    function sendBarcode(value){
+      value = String(value || '').trim();
+      if(!value || locked) return;
+      locked = true;
+      if(navigator.vibrate) navigator.vibrate(100);
+
+      $('result').style.display = 'block';
+      $('result').textContent = 'เลขบาร์โค้ด: ' + value;
+      setStatus('✓ สแกนสำเร็จ กำลังส่งข้อมูลกลับ…');
+
+      const message = {
+        type: 'GITHUB_BARCODE_SCAN',
+        channel,
+        target,
+        barcode: value
+      };
+
+      try{
+        if(window.opener && !window.opener.closed){
+          window.opener.postMessage(message, '*');
+        }
+      }catch(e){}
+
+      try{
+        const bc = new BroadcastChannel(channel);
+        bc.postMessage(message);
+        bc.close();
+      }catch(e){}
+
+      setTimeout(()=>{
+        stopScanner();
+        try{ window.close(); }catch(e){}
+        setTimeout(()=>{
+          setStatus('ส่งเลขแล้ว กรุณากลับไปหน้าร้าน');
+          locked = false;
+        }, 500);
+      }, 450);
+    }
+
+    async function startScanner(){
+      locked = false;
+      $('result').style.display = 'none';
+      setStatus('กำลังขอสิทธิ์เปิดกล้อง…');
+      stopScanner();
+
+      if(!window.isSecureContext){
+        setStatus('เปิดกล้องไม่ได้<br><small>กรุณาเปิดไฟล์ผ่าน GitHub Pages ที่เป็น HTTPS</small>');
+        return;
+      }
+      if(!navigator.mediaDevices?.getUserMedia){
+        setStatus('เบราว์เซอร์นี้ไม่รองรับการเปิดกล้อง');
+        return;
+      }
+      if(!(window.ZXing && ZXing.BrowserMultiFormatReader)){
+        setStatus('โหลดตัวอ่านบาร์โค้ดไม่สำเร็จ<br><small>กรุณาตรวจสอบอินเทอร์เน็ต</small>');
+        return;
+      }
+
+      try{
+        reader = new ZXing.BrowserMultiFormatReader();
+        setStatus('พร้อมสแกน กรุณาวางบาร์โค้ดให้อยู่กลางกรอบ');
+
+        await reader.decodeFromConstraints(
+          {
+            audio:false,
+            video:{
+              facingMode:{ideal:'environment'},
+              width:{ideal:1280},
+              height:{ideal:720}
+            }
+          },
+          $('video'),
+          (result, error) => {
+            if(result) sendBarcode(result.getText ? result.getText() : result.text);
+          }
+        );
+
+        stream = $('video').srcObject;
+      }catch(e){
+        console.error(e);
+        let detail = 'กรุณาอนุญาตสิทธิ์กล้องแล้วลองอีกครั้ง';
+        if(e?.name === 'NotAllowedError') detail = 'สิทธิ์กล้องถูกปฏิเสธ ให้กดรูปกุญแจข้าง URL แล้วเลือก “อนุญาต”';
+        else if(e?.name === 'NotFoundError') detail = 'ไม่พบกล้องในอุปกรณ์นี้';
+        else if(e?.name === 'NotReadableError') detail = 'กล้องอาจถูกใช้งานโดยแอปอื่น';
+        setStatus('ไม่สามารถเปิดกล้องได้<br><small>' + detail + '</small>');
+      }
+    }
+
+    async function decodeImage(file){
+      if(!file) return;
+      setStatus('กำลังอ่านบาร์โค้ดจากภาพ…');
+      try{
+        const image = new Image();
+        const url = URL.createObjectURL(file);
+        image.onload = async () => {
+          try{
+            const imageReader = new ZXing.BrowserMultiFormatReader();
+            const result = await imageReader.decodeFromImageElement(image);
+            imageReader.reset();
+            sendBarcode(result.getText ? result.getText() : result.text);
+          }catch(e){
+            setStatus('ไม่พบบาร์โค้ดในภาพ<br><small>ถ่ายให้ชัด เต็มกรอบ และไม่มีแสงสะท้อน</small>');
+          }finally{
+            URL.revokeObjectURL(url);
+          }
+        };
+        image.onerror = () => {
+          URL.revokeObjectURL(url);
+          setStatus('ไม่สามารถเปิดรูปภาพได้');
+        };
+        image.src = url;
+      }catch(e){
+        setStatus('ไม่สามารถอ่านรูปภาพได้');
+      }
+    }
+
+    function closePage(){
+      stopScanner();
+      try{ window.close(); }catch(e){}
+      history.back();
+    }
+
+    $('capture').addEventListener('change', e => {
+      decodeImage(e.target.files?.[0]);
+      e.target.value = '';
+    });
+
+    document.addEventListener('visibilitychange', ()=>{
+      if(document.hidden) stopScanner();
+    });
+    window.addEventListener('beforeunload', stopScanner);
+    startScanner();
+  </script>
+</body>
+</html>
