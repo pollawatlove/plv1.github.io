@@ -128,12 +128,17 @@
       }catch(e){}
 
       setTimeout(()=>{
-        stopScanner();
-        try{ window.close(); }catch(e){}
-        setTimeout(()=>{
-          setStatus('ส่งเลขแล้ว กรุณากลับไปหน้าร้าน');
-          locked = false;
-        }, 500);
+        if(target === 'product'){
+          stopScanner();
+          try{ window.close(); }catch(e){}
+          setStatus('ส่งเลขแล้ว กรุณากลับไปหน้าเพิ่มสินค้า');
+          return;
+        }
+
+        // POS ส่งค่าอย่างเดียวและเปิดกล้องค้างไว้สำหรับสแกนรายการถัดไป
+        $('result').style.display = 'none';
+        setStatus('ส่งเลขเข้าหน้าร้านแล้ว พร้อมสแกนรายการถัดไป');
+        locked = false;
       }, 450);
     }
 
