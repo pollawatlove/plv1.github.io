@@ -48,7 +48,8 @@
     .light{background:#e2e8f0;color:#0f172a}
     .danger{background:#ef4444;color:#fff}
     input[type=file]{display:none}
-    @media(max-width:480px){.app{padding:9px}.reader{border-radius:15px}}
+    @media(max-width:480px){body{min-height:100dvh}.app{padding:8px}.head{align-items:center}.head h1{font-size:19px}.head .danger{padding:10px}.reader{border-radius:15px;aspect-ratio:1/1.05}.actions{grid-template-columns:1fr}.status{font-size:14px;padding:11px}}
+    @media(max-height:620px) and (orientation:landscape){.app{width:min(900px,100%);display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.7fr);grid-template-rows:auto auto 1fr;gap:10px}.head{grid-column:1/-1;margin:0}.reader{grid-row:2/4;aspect-ratio:auto;min-height:380px}.status,.result,.actions{grid-column:2;margin-top:0}.actions{align-self:start}}
   </style>
 </head>
 <body>
