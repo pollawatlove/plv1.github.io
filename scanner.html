@@ -106,7 +106,7 @@
       value = String(value || '').trim();
       if(!value || locked) return;
       const now = Date.now();
-      if(value === lastBarcode && now - lastBarcodeAt < 900) return;
+      if(value === lastBarcode && now - lastBarcodeAt < 2500) return;
       lastBarcode = value;
       lastBarcodeAt = now;
       locked = true;
