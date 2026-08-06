@@ -167,6 +167,7 @@
 <script>
 const SANOOK = 'https://news.sanook.com/lotto/archive/';
 let draws = [];
+const CACHE_VERSION='lotto-v3-sanook-priority';
 const fallback = [
 ['16 กรกฎาคม 2569','639214',['683','709'],['746','427'],'71'],
 ['1 กรกฎาคม 2569','751495',['001','980'],['304','531'],'62'],
@@ -211,20 +212,48 @@ function cleanText(raw){
 }
 function parseSanook(html){
   const text=cleanText(html), out=[];
-  const re=/(?:ตรวจสลากกินแบ่งรัฐบาล|ตรวจหวย)[^]{0,120}?งวด(?:วันที่|ประจำวันที่)?\s*([0-9]{1,2}\s*[^\d\s]{2,15}\s*(?:25)?[0-9]{2,4})[^]{0,260}?รางวัลที่\s*1\s*([0-9]{6})[^]{0,180}?เลขหน้า\s*3\s*ตัว\s*([0-9]{3})\s*([0-9]{3})[^]{0,180}?เลขท้าย\s*3\s*ตัว\s*([0-9]{3})\s*([0-9]{3})[^]{0,120}?เลขท้าย\s*2\s*ตัว\s*([0-9]{2})/g;
-  let m;
-  while((m=re.exec(text))!==null) out.push({date:m[1].trim(),first:m[2],front:[m[3],m[4]],back:[m[5],m[6]],two:m[7]});
+  // แยกทีละงวด เพื่อไม่ให้ตัวเลขจากงวดถัดไปหรือข้อความจำนวนเงินปะปนกัน
+  const drawStart=/(?:ตรวจสลากกินแบ่งรัฐบาล|ตรวจหวย)\s*([0-9]{1,2}\s*(?:มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม)\s*25[0-9]{2})/g;
+  const marks=[...text.matchAll(drawStart)];
+  for(let i=0;i<marks.length;i++){
+    const block=text.slice(marks[i].index, marks[i+1]?.index ?? text.length);
+    const date=marks[i][1].trim();
+    const first=block.match(/รางวัลที่\s*1\s*(?:รางวัลละ\s*[0-9,]+\s*บาท\s*)?([0-9]{6})(?![0-9])/);
+    const front=block.match(/เลขหน้า\s*3\s*ตัว[^0-9xX]{0,80}([0-9]{3})\s+([0-9]{3})(?![0-9])/);
+    const back=block.match(/เลขท้าย\s*3\s*ตัว[^0-9xX]{0,80}([0-9]{3})\s+([0-9]{3})(?![0-9])/);
+    const two=block.match(/เลขท้าย\s*2\s*ตัว[^0-9xX]{0,80}([0-9]{2})(?![0-9])/);
+    if(first&&front&&back&&two){
+      out.push({date,first:first[1],front:[front[1],front[2]],back:[back[1],back[2]],two:two[1]});
+    }
+  }
   return out;
+}
+function sectionBetween(text,startPattern,endPattern){
+  const start=text.search(startPattern);
+  if(start<0) return '';
+  const tail=text.slice(start);
+  const end=endPattern ? tail.slice(1).search(endPattern) : -1;
+  return end>=0 ? tail.slice(0,end+1) : tail.slice(0,260);
+}
+function prizeNumbers(section,len,count){
+  // ตัดจำนวนเงินรางวัล เช่น 2,000 / 4,000 / 100,000 ออกก่อน
+  const safe=section.replace(/\b\d{1,3}(?:,\d{3})+\b/g,' ');
+  const nums=[...safe.matchAll(new RegExp('(?:^|[^0-9])([0-9]{'+len+'})(?![0-9])','g'))].map(m=>m[1]);
+  return nums.slice(0,count);
 }
 function parseCurrentDraw(raw){
   const text=cleanText(raw);
   const dateMatch=text.match(/(?:งวดวันที่|งวดประจำวันที่)\s*([0-9]{1,2}\s*(?:มกราคม|กุมภาพันธ์|มีนาคม|เมษายน|พฤษภาคม|มิถุนายน|กรกฎาคม|สิงหาคม|กันยายน|ตุลาคม|พฤศจิกายน|ธันวาคม)\s*25[0-9]{2})/);
-  const firstMatch=text.match(/รางวัลที่\s*1(?:\s*รางวัลละ[\s\S]{0,40}?)?\s*([0-9]{6})(?![0-9])/);
-  const frontMatch=text.match(/เลขหน้า\s*3\s*ตัว(?:\s*2\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{3})\s+([0-9]{3})(?![0-9])/);
-  const backMatch=text.match(/เลขท้าย\s*3\s*ตัว(?:\s*2\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{3})\s+([0-9]{3})(?![0-9])/);
-  const twoMatch=text.match(/เลขท้าย\s*2\s*ตัว(?:\s*1\s*รางวัล[\s\S]{0,50}?)?\s*([0-9]{2})(?![0-9])/);
-  if(!dateMatch||!firstMatch||!frontMatch||!backMatch||!twoMatch) return [];
-  const result={date:dateMatch[1].trim(),first:firstMatch[1],front:[frontMatch[1],frontMatch[2]],back:[backMatch[1],backMatch[2]],two:twoMatch[1]};
+  const firstSection=sectionBetween(text,/รางวัลที่\s*1/,/เลขหน้า\s*3\s*ตัว/);
+  const frontSection=sectionBetween(text,/เลขหน้า\s*3\s*ตัว/,/เลขท้าย\s*3\s*ตัว/);
+  const backSection=sectionBetween(text,/เลขท้าย\s*3\s*ตัว/,/เลขท้าย\s*2\s*ตัว/);
+  const twoSection=sectionBetween(text,/เลขท้าย\s*2\s*ตัว/,/(?:รางวัลข้างเคียง|รางวัลที่\s*2|ตรวจหวย|ข่าวหวย|$)/);
+  const first=prizeNumbers(firstSection,6,1);
+  const front=prizeNumbers(frontSection,3,2);
+  const back=prizeNumbers(backSection,3,2);
+  const two=prizeNumbers(twoSection,2,1);
+  if(!dateMatch||first.length<1||front.length<2||back.length<2||two.length<1) return [];
+  const result={date:dateMatch[1].trim(),first:first[0],front,back,two:two[0]};
   if(/x{2,6}/i.test([result.first,...result.front,...result.back,result.two].join(''))) return [];
   return [result];
 }
@@ -285,9 +314,10 @@ async function fetchAll(){
   draws=[...unique.values()].sort((a,b)=>dateValue(b)-dateValue(a));
   const saved=JSON.parse(localStorage.getItem('lottoDraws')||'null')||[];
   const freshCount=draws.length;
-  const merged=new Map([...draws,...saved,...fallback].map(x=>[x.date+'-'+x.first,x]));
+  const merged=new Map([...fallback,...saved,...draws].map(x=>[x.date+'-'+x.first,x]));
   draws=[...merged.values()].sort((a,b)=>dateValue(b)-dateValue(a));
   localStorage.setItem('lottoDraws',JSON.stringify(draws));
+  localStorage.setItem('lottoCacheVersion',CACHE_VERSION);
   if(freshCount){
     document.getElementById('sourceMode').textContent='Sanook + สำรอง';
     log('พบข้อมูลใหม่จาก Sanook '+freshCount+' งวด และรวมกับประวัติเดิมแล้ว','good');
@@ -312,29 +342,40 @@ function drawMonth(d){
   return i+1;
 }
 function scoreNumbers(values,len){
-  const n=values.length, exact=new Map(), digits=Array.from({length:len},()=>Array(10).fill(0)), lastSeen=new Map();
-  values.forEach((v,i)=>{
-    v=String(v).padStart(len,'0'); const recency=Math.exp(-i/18);
-    exact.set(v,(exact.get(v)||0)+1.1+recency*1.7);
-    if(!lastSeen.has(v))lastSeen.set(v,i);
-    [...v].forEach((ch,p)=>digits[p][+ch]+=1+recency*1.25);
+  const clean=values.map(v=>String(v).padStart(len,'0')).filter(v=>new RegExp('^[0-9]{'+len+'}$').test(v));
+  const n=clean.length;
+  if(!n) return [];
+  const exact=new Map(), lastSeen=new Map();
+  const digits=Array.from({length:len},()=>Array(10).fill(0));
+  const recentDigits=Array.from({length:len},()=>Array(10).fill(0));
+  clean.forEach((v,i)=>{
+    const decay=Math.exp(-i/24);
+    exact.set(v,(exact.get(v)||0)+decay);
+    if(!lastSeen.has(v)) lastSeen.set(v,i);
+    [...v].forEach((ch,p)=>{
+      digits[p][+ch]+=1;
+      recentDigits[p][+ch]+=decay;
+    });
   });
-  const pool=new Set(values.map(v=>String(v).padStart(len,'0')));
-  // สร้างเลขผู้สมัครจากตัวเลขเด่นรายหลัก
-  const tops=digits.map(a=>a.map((v,d)=>[d,v]).sort((a,b)=>b[1]-a[1]).slice(0,len===2?7:5).map(x=>x[0]));
-  const build=(p,s='')=>{if(p===len){pool.add(s);return} tops[p].forEach(d=>build(p+1,s+d))}; build(0);
+  // เลข 2 ตัวประเมินครบ 00–99 เพื่อไม่ตัดตัวเลือกที่ไม่เคยออก
+  const pool=new Set();
+  if(len===2){for(let i=0;i<100;i++)pool.add(String(i).padStart(2,'0'))}
+  else{
+    clean.forEach(v=>pool.add(v));
+    const tops=recentDigits.map(a=>a.map((v,d)=>[d,v]).sort((a,b)=>b[1]-a[1]).slice(0,5).map(x=>x[0]));
+    const build=(p,s='')=>{if(p===len){pool.add(s);return}tops[p].forEach(d=>build(p+1,s+d))};build(0);
+  }
   const arr=[...pool].map(v=>{
-    let pos=[...v].reduce((sum,ch,p)=>sum+digits[p][+ch]/Math.max(1,n),0)/len;
-    let freq=(exact.get(v)||0)/Math.max(1,n);
-    let gap=lastSeen.has(v)?Math.min(lastSeen.get(v)/Math.max(1,n),1):.55;
-    let pair=0;
-    for(let i=0;i<len-1;i++) pair += values.slice(0,Math.min(30,n)).filter(x=>String(x).padStart(len,'0').slice(i,i+2)===v.slice(i,i+2)).length/Math.max(1,Math.min(30,n));
-    pair/=Math.max(1,len-1);
-    const raw=.48*pos+.18*freq+.18*gap+.16*pair;
+    const positional=[...v].reduce((sum,ch,p)=>sum+(recentDigits[p][+ch]/Math.max(1,recentDigits[p].reduce((a,b)=>a+b,0))),0)/len;
+    const longTerm=[...v].reduce((sum,ch,p)=>sum+(digits[p][+ch]/n),0)/len;
+    const exactFreq=(exact.get(v)||0)/Math.max(1,clean.reduce((sum,_,i)=>sum+Math.exp(-i/24),0));
+    const gap=lastSeen.has(v)?Math.min(lastSeen.get(v)/Math.max(12,n),1):0.65;
+    const reversal=len===2 ? ((exact.get(v[1]+v[0])||0)/Math.max(1,n)) : 0;
+    const raw=.42*positional+.22*longTerm+.16*exactFreq+.14*gap+.06*reversal;
     return {number:v,raw};
   }).sort((a,b)=>b.raw-a.raw).slice(0,5);
   const min=Math.min(...arr.map(x=>x.raw)), max=Math.max(...arr.map(x=>x.raw));
-  return arr.map((x,i)=>({...x,score:Math.round(72+(max===min?0:(x.raw-min)/(max-min))*22-i*.7)}));
+  return arr.map((x,i)=>({...x,score:Math.max(1,Math.round(70+(max===min?0:(x.raw-min)/(max-min))*24-i*.6))}));
 }
 function predHTML(items){
   return items.map((x,i)=>`<div class="prediction"><div class="rank">${i+1}</div><div class="number">${x.number}</div><div class="scorebox"><div class="scoreline"><span>AI Score</span><b>${x.score}%</b></div><div class="bar"><div class="fill" style="width:${x.score}%"></div></div></div></div>`).join('');
@@ -358,9 +399,10 @@ function exportCSV(){
   const blob=new Blob(['\ufeff'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sanook-lotto-history.csv';a.click();URL.revokeObjectURL(a.href);
 }
-function clearCache(){localStorage.removeItem('lottoDraws');draws=[];render();log('ล้างข้อมูลที่บันทึกแล้ว','info');status('พร้อมใช้งาน')}
+function clearCache(){localStorage.removeItem('lottoDraws');localStorage.removeItem('lottoCacheVersion');draws=[];render();log('ล้างข้อมูลที่บันทึกแล้ว','info');status('พร้อมใช้งาน')}
 window.addEventListener('DOMContentLoaded',()=>{document.getElementById('monthSelect').value=new Date().getMonth()+1;
-  const saved=localStorage.getItem('lottoDraws');draws=saved?JSON.parse(saved):fallback;
+  const cacheOK=localStorage.getItem('lottoCacheVersion')===CACHE_VERSION;
+  const saved=cacheOK?localStorage.getItem('lottoDraws'):null;draws=saved?JSON.parse(saved):fallback;
   document.getElementById('sourceMode').textContent=saved?'แคช':'สำรอง';render();analyze();
 });
 </script>
